@@ -1,6 +1,7 @@
 package com.issuetracker.domain.comment;
 
 import com.issuetracker.domain.comment.request.CommentCreateRequest;
+import com.issuetracker.domain.comment.request.CommentUpdateRequest;
 import com.issuetracker.domain.issue.Issue;
 import com.issuetracker.domain.issue.IssueRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,5 +28,9 @@ public class CommentService {
 
     public void delete(Long commentId) {
         commentRepository.deleteById(commentId);
+    }
+
+    public void edit(Long commentId, CommentUpdateRequest request) {
+        commentRepository.update(commentId, request.getContent());
     }
 }

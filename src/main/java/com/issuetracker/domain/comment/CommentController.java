@@ -1,12 +1,14 @@
 package com.issuetracker.domain.comment;
 
 import com.issuetracker.domain.comment.request.CommentCreateRequest;
+import com.issuetracker.domain.comment.request.CommentUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,6 +36,18 @@ public class CommentController {
     @DeleteMapping("/{commentId}")
     public ResponseEntity<Long> delete(@PathVariable("commentId") Long commentId) {
         commentService.delete(commentId);
+        return ResponseEntity.ok(commentId);
+    }
+
+    @PatchMapping("/{commentId}")
+    public ResponseEntity<?> edit(@PathVariable("commentId") Long commentId,
+                                  @Validated @RequestBody CommentUpdateRequest request, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            log.info("검증 에러={}", bindingResult.getFieldError("content").toString());
+            return ResponseEntity.badRequest().body(bindingResult.getFieldError("content").getDefaultMessage());
+        }
+
+        commentService.edit(commentId, request);
         return ResponseEntity.ok(commentId);
     }
 }
