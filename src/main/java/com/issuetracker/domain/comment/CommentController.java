@@ -2,6 +2,9 @@ package com.issuetracker.domain.comment;
 
 import com.issuetracker.domain.comment.request.CommentCreateRequest;
 import com.issuetracker.domain.comment.request.CommentUpdateRequest;
+import com.issuetracker.domain.comment.response.CommentUpdateResponse;
+import java.util.Collections;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -30,13 +33,13 @@ public class CommentController {
             return ResponseEntity.badRequest().body(bindingResult.getFieldError("content").getDefaultMessage());
         }
 
-        return ResponseEntity.ok(commentService.create(request));
+        return ResponseEntity.ok().body(Collections.singletonMap("commentId", commentService.create(request)));
     }
 
     @DeleteMapping("/{commentId}")
-    public ResponseEntity<Long> delete(@PathVariable("commentId") Long commentId) {
+    public ResponseEntity<Map<String, Long>> delete(@PathVariable("commentId") Long commentId) {
         commentService.delete(commentId);
-        return ResponseEntity.ok(commentId);
+        return ResponseEntity.ok().body(Collections.singletonMap("commentId", commentId));
     }
 
     @PatchMapping("/{commentId}")
@@ -48,6 +51,9 @@ public class CommentController {
         }
 
         commentService.edit(commentId, request);
-        return ResponseEntity.ok(commentId);
+        return ResponseEntity.ok().body(CommentUpdateResponse.builder()
+                .commentId(commentId)
+                .content(request.getContent())
+                .build());
     }
 }
