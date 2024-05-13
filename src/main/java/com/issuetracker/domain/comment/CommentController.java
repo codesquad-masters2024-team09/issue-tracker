@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,5 +29,11 @@ public class CommentController {
         }
 
         return ResponseEntity.ok(commentService.create(request));
+    }
+
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<Long> delete(@PathVariable("commentId") Long commentId) {
+        commentService.delete(commentId);
+        return ResponseEntity.ok(commentId);
     }
 }

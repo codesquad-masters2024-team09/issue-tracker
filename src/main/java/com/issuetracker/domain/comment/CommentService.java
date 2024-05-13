@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 public class CommentService {
 
     private final IssueRepository issueRepository;
+    private final CommentRepository commentRepository;
 
     public Long create(CommentCreateRequest request) {
         Issue issue = issueRepository.findById(request.getIssueId())
@@ -22,5 +23,9 @@ public class CommentService {
         issueRepository.save(issue);
 
         return comment.getId();
+    }
+
+    public void delete(Long commentId) {
+        commentRepository.deleteById(commentId);
     }
 }
