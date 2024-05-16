@@ -3,6 +3,7 @@ package com.issuetracker.domain.issue;
 import com.issuetracker.domain.comment.Comment;
 import com.issuetracker.domain.common.BaseDateTime;
 import com.issuetracker.domain.label.Label;
+import com.issuetracker.domain.milestone.Milestone;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -13,6 +14,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.MappedCollection;
 
@@ -41,6 +43,10 @@ public class Issue extends BaseDateTime {
     @MappedCollection(idColumn = "ISSUE_ID")
     private Set<IssueLabel> issueLabels = new HashSet<>();
 
+    @Column("MILESTONE_ID")
+    private AggregateReference<Milestone, String> milestoneRef;
+
+
     public void addComment(Comment comment) {
         this.comments.add(comment);
     }
@@ -59,6 +65,14 @@ public class Issue extends BaseDateTime {
         IssueLabel ref = convertToIssueLabel(label);
 
         issueLabels.remove(ref);
+    }
+
+    public void assignMilestone(Milestone milestone) {
+        milestoneRef = AggregateReference.to(milestone.getId());
+    }
+
+    public void deleteMilestone() {
+        milestoneRef = null;
     }
 
     private IssueLabel convertToIssueLabel(Label label) {
