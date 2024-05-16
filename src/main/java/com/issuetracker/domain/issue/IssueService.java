@@ -9,6 +9,10 @@ import com.issuetracker.domain.label.Label;
 import com.issuetracker.domain.milestone.Milestone;
 import java.util.HashMap;
 import java.util.Map;
+import com.issuetracker.domain.issue.response.IssueListResponse;
+import com.issuetracker.domain.issue.response.IssueResponse;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -42,6 +46,13 @@ public class IssueService {
         requestMap.put("form", form);
 
         issueMapper.update(requestMap);
+    }
+
+    public IssueListResponse getIssues() {
+        List<Issue> issues = issueRepository.findAll();
+        return IssueListResponse.of(
+                issues.stream().map(IssueResponse::of).collect(Collectors.toList())
+        );
     }
 
     public Issue addLabel(Long issueId, Label label) {
