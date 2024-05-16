@@ -41,6 +41,10 @@ public class Issue extends BaseDateTime {
     @MappedCollection(idColumn = "ISSUE_ID")
     private Set<IssueLabel> issueLabels = new HashSet<>();
 
+    public void addComment(Comment comment) {
+        this.comments.add(comment);
+    }
+
     public void addLabel(Label label) {
         IssueLabel ref = convertToIssueLabel(label);
 
