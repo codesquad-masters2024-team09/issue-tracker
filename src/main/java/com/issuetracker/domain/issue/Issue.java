@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
@@ -29,4 +30,7 @@ public class Issue extends BaseDateTime {
     @Builder.Default
     @MappedCollection(idColumn = "ISSUE_ID", keyColumn = "COMMENT_SEQ")
     private List<Comment> comments = new ArrayList<>();
+
+    @Builder.Default
+    private boolean isOpen = true;
 }
