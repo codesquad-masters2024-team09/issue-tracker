@@ -16,7 +16,7 @@ public class MilestoneCreateRequest {
 
     @NotBlank
     @Size(max = 30)
-    private String name;
+    private String id;
 
     private LocalDateTime dueDate;
 
@@ -25,7 +25,7 @@ public class MilestoneCreateRequest {
 
     public Milestone toEntity() {
         return Milestone.builder()
-                .name(name)
+                .id(id)
                 .dueDate(dueDate)
                 .description(description)
                 .build();

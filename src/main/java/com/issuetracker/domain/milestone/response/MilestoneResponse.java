@@ -12,15 +12,13 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class MilestoneResponse {
 
-    private Long id;
-    private String name;
+    private String id;
     private LocalDateTime dueDate;
     private String description;
 
     public static MilestoneResponse of(Milestone milestone) {
         return MilestoneResponse.builder()
                 .id(milestone.getId())
-                .name(milestone.getName())
                 .dueDate(milestone.getDueDate())
                 .description(milestone.getDescription())
                 .build();

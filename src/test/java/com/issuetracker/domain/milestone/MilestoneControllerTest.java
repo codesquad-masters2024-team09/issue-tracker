@@ -74,7 +74,7 @@ class MilestoneControllerTest {
         final LocalDateTime dueDate = LocalDateTime.now();
 
         given(milestoneService.create(any(MilestoneCreateRequest.class))).willReturn(MilestoneResponse.builder()
-                .name(name)
+                .id(name)
                 .description(description)
                 .dueDate(dueDate)
                 .build());
@@ -135,10 +135,10 @@ class MilestoneControllerTest {
         String urlForClosed = urlPrefix + "/milestones?isOpen=false";
 
         MilestoneListResponse openedMilestones = MilestoneListResponse.of(
-                List.of(Milestone.builder().isOpen(true).id(1L).name("openedMilestone").build())
+                List.of(Milestone.builder().isOpen(true).id("openedMilestone").build())
         );
         MilestoneListResponse closedMilestones = MilestoneListResponse.of(
-                List.of(Milestone.builder().isOpen(false).id(2L).name("closedMilestone").build())
+                List.of(Milestone.builder().isOpen(false).id("closedMilestone").build())
         );
 
         String responseJsonOfOpened = objectMapper.writeValueAsString(openedMilestones);
@@ -170,7 +170,7 @@ class MilestoneControllerTest {
         String updatedName = "Milestone update";
 
         MilestoneUpdateRequest request = MilestoneUpdateRequest.builder()
-                .name(updatedName)
+                .id(updatedName)
                 .build();
         String requestJson = objectMapper.writeValueAsString(request);
 
@@ -188,7 +188,7 @@ class MilestoneControllerTest {
     @DisplayName("마일스톤의 id를 통해 해당 id의 마일스톤에 대한 삭제를 요청받아 성공할 경우 200 OK를 반환한다")
     void deletion() throws Exception {
         // given
-        Long milestoneId = 1L;
+        String milestoneId = "test milestone";
         String url = urlPrefix + "/milestones/" + milestoneId;
         willDoNothing().given(milestoneService).delete(milestoneId);
 
@@ -225,7 +225,7 @@ class MilestoneControllerTest {
     @DisplayName("마일스톤 상태를 업데이트 요청에 성공하면 200 OK를 반환한다")
     void updateStatus() throws Exception {
         // given
-        Long milestoneId = 1L;
+        String milestoneId = "test milestone";
         boolean isOpen = false;
         String url = urlPrefix + "/milestones/status?milestoneId=" + milestoneId + "&isOpen=" + isOpen;
         doNothing().when(milestoneService).updateStatus(milestoneId, isOpen);
