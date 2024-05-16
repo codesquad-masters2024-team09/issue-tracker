@@ -76,9 +76,8 @@ public class Issue extends BaseDateTime {
     }
 
     private IssueLabel convertToIssueLabel(Label label) {
-        IssueLabel ref = IssueLabel.builder()
+        return IssueLabel.builder()
                 .labelId(label.getId())
                 .build();
-        return ref;
     }
 }
