@@ -33,7 +33,7 @@ public class LabelService {
     }
 
     public LabelListResponse getLabels() {
-        List<Label> labels = labelRepository.findAllLabels();
+        List<Label> labels = labelRepository.findAll();
         return LabelListResponse.of(
                 labels.stream().map(LabelResponse::of).collect(Collectors.toList())
         );
