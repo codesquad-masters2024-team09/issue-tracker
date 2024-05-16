@@ -1,7 +1,13 @@
 <script>
-  let message = "hello world!"
+  import {Route} from "tinro";
+  import IssueAddPage from "./pages/issue/IssueAddPage.svelte";
+  import Header from "./components/common/Header.svelte";
+
 </script>
 
-<div>
-  {message}
+<Header />
+<div id="container">
+  <Route path="/issues/add">
+    <IssueAddPage />
+  </Route>
 </div>
