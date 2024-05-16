@@ -2,8 +2,11 @@ package com.issuetracker.domain.issue;
 
 import com.issuetracker.domain.comment.Comment;
 import com.issuetracker.domain.common.BaseDateTime;
+import com.issuetracker.domain.label.Label;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -33,4 +36,31 @@ public class Issue extends BaseDateTime {
 
     @Builder.Default
     private boolean isOpen = true;
+
+    @Builder.Default
+    @MappedCollection(idColumn = "ISSUE_ID")
+    private Set<IssueLabel> issueLabels = new HashSet<>();
+
+    public void addLabel(Label label) {
+        IssueLabel ref = convertToIssueLabel(label);
+
+        issueLabels.add(ref);
+    }
+
+    public void addLabels(List<Label> labels) {
+        labels.forEach(this::addLabel);
+    }
+
+    public void deleteLabel(Label label) {
+        IssueLabel ref = convertToIssueLabel(label);
+
+        issueLabels.remove(ref);
+    }
+
+    private IssueLabel convertToIssueLabel(Label label) {
+        IssueLabel ref = IssueLabel.builder()
+                .labelId(label.getId())
+                .build();
+        return ref;
+    }
 }
