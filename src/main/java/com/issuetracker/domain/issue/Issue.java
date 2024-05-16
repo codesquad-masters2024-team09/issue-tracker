@@ -16,6 +16,7 @@ import org.springframework.data.relational.core.mapping.MappedCollection;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(of = "id", callSuper = false)
 public class Issue extends BaseDateTime {
 
     @Id

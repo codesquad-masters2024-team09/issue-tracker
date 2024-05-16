@@ -3,6 +3,7 @@ package com.issuetracker.domain.milestone;
 import com.issuetracker.domain.common.BaseDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
@@ -16,7 +17,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Milestone extends BaseDateTime {
+@EqualsAndHashCode(of = {"id"}, callSuper = false)
 public class Milestone extends BaseDateTime implements Persistable<String> {
 
     @Id
