@@ -1,6 +1,7 @@
 package com.issuetracker.domain.issue;
 
 import com.issuetracker.domain.issue.request.IssueCreateRequest;
+import com.issuetracker.domain.issue.request.IssueLabelCreateRequest;
 import com.issuetracker.domain.issue.request.IssueUpdateRequest;
 import com.issuetracker.domain.issue.response.IssueDetailResponse;
 import jakarta.validation.Valid;
@@ -21,6 +22,13 @@ public class IssueController {
     public ResponseEntity<?> create(@Valid @RequestBody IssueCreateRequest request) {
         return ResponseEntity
                 .ok(Collections.singletonMap("issueId", issueService.create(request)));
+    }
+
+    @PostMapping("/{issueId}")
+    public ResponseEntity<Void> addLabel(@PathVariable("issueId") Long issueId,
+                                      @Valid @RequestBody IssueLabelCreateRequest issueLabelCreateRequest) {
+        issueService.addLabel(issueId, issueLabelCreateRequest);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{issueId}")

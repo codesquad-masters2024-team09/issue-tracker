@@ -2,6 +2,7 @@ package com.issuetracker.domain.issue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.issuetracker.domain.issue.request.IssueCreateRequest;
+import com.issuetracker.domain.issue.request.IssueLabelCreateRequest;
 import com.issuetracker.domain.issue.request.IssueUpdateRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
@@ -68,6 +69,27 @@ class IssueControllerTest {
         result.andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json("{issueId: 1}"));
+    }
+
+    @Test
+    @DisplayName("이슈에 레이블 추가를 성공하면 200 OK를 응답한다.")
+    void add_label() throws Exception {
+        // given
+        Long issueId = 1L;
+        String url = urlPrefix + "/issues/" + issueId;
+
+        IssueLabelCreateRequest request = new IssueLabelCreateRequest("bug");
+        String requestJson = objectMapper.writeValueAsString(request);
+        willDoNothing().given(issueService).addLabel(anyLong(), any(IssueLabelCreateRequest.class));
+
+        // when
+        ResultActions result = mockMvc.perform(
+                post(url).content(requestJson)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        result.andExpect(status().isOk());
     }
 
     @TestFactory
