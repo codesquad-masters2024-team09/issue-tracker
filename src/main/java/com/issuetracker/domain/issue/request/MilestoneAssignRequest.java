@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class IssueMilestoneCreateRequest {
+public class MilestoneAssignRequest {
 
     @NotBlank
     private String milestoneId;

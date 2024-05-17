@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class IssueLabelCreateRequest {
+public class LabelAddRequest {
 
     @NotBlank
     private String labelId;
