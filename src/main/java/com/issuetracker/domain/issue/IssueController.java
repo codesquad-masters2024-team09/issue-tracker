@@ -2,6 +2,7 @@ package com.issuetracker.domain.issue;
 
 import com.issuetracker.domain.issue.request.IssueCreateRequest;
 import com.issuetracker.domain.issue.request.IssueLabelCreateRequest;
+import com.issuetracker.domain.issue.request.IssueMilestoneCreateRequest;
 import com.issuetracker.domain.issue.request.IssueUpdateRequest;
 import com.issuetracker.domain.issue.response.IssueDetailResponse;
 import jakarta.validation.Valid;
@@ -24,10 +25,17 @@ public class IssueController {
                 .ok(Collections.singletonMap("issueId", issueService.create(request)));
     }
 
-    @PostMapping("/{issueId}")
+    @PostMapping("/{issueId}/label")
     public ResponseEntity<Void> addLabel(@PathVariable("issueId") Long issueId,
                                       @Valid @RequestBody IssueLabelCreateRequest issueLabelCreateRequest) {
         issueService.addLabel(issueId, issueLabelCreateRequest);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{issueId}/milestone")
+    public ResponseEntity<Void> assignMilestone(@PathVariable("issueId") Long issueId,
+                                                @Valid @RequestBody IssueMilestoneCreateRequest issueMilestoneCreateRequest) {
+        issueService.assignMilestone(issueId, issueMilestoneCreateRequest);
         return ResponseEntity.ok().build();
     }
 

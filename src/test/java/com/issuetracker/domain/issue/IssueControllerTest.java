@@ -3,6 +3,7 @@ package com.issuetracker.domain.issue;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.issuetracker.domain.issue.request.IssueCreateRequest;
 import com.issuetracker.domain.issue.request.IssueLabelCreateRequest;
+import com.issuetracker.domain.issue.request.IssueMilestoneCreateRequest;
 import com.issuetracker.domain.issue.request.IssueUpdateRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
@@ -76,11 +77,32 @@ class IssueControllerTest {
     void add_label() throws Exception {
         // given
         Long issueId = 1L;
-        String url = urlPrefix + "/issues/" + issueId;
+        String url = urlPrefix + "/issues/" + issueId + "/label";
 
         IssueLabelCreateRequest request = new IssueLabelCreateRequest("bug");
         String requestJson = objectMapper.writeValueAsString(request);
         willDoNothing().given(issueService).addLabel(anyLong(), any(IssueLabelCreateRequest.class));
+
+        // when
+        ResultActions result = mockMvc.perform(
+                post(url).content(requestJson)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        result.andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("이슈에 마일스톤 추가를 성공하면 200 OK를 응답한다.")
+    void assign_milestone() throws Exception {
+        // given
+        Long issueId = 1L;
+        String url = urlPrefix + "/issues/" + issueId + "/milestone";
+
+        IssueMilestoneCreateRequest request = new IssueMilestoneCreateRequest("테스트 기능 구현");
+        String requestJson = objectMapper.writeValueAsString(request);
+        willDoNothing().given(issueService).assignMilestone(anyLong(), any(IssueMilestoneCreateRequest.class));
 
         // when
         ResultActions result = mockMvc.perform(
