@@ -54,7 +54,7 @@ class IssueControllerTest {
 
         IssueCreateRequest request =
                 new IssueCreateRequest("testMember", "testTitle", "testContent",
-                        List.of("bug", "fix"));
+                        List.of("bug", "fix"), "테스트 기능 구현");
         String requestJson = objectMapper.writeValueAsString(request);
         given(issueService.create(any(IssueCreateRequest.class))).willReturn(1L);
 
@@ -84,7 +84,8 @@ class IssueControllerTest {
                 dynamicTest("제목은 최대 120자 이내여야 한다.", () -> {
                     // given
                     IssueCreateRequest tooLongTitle =
-                            new IssueCreateRequest(memberId, title.repeat(120 + 1), content, List.of());
+                            new IssueCreateRequest(memberId, title.repeat(120 + 1), content, List.of(),
+                                    "테스트 기능 구현");
                     String requestJson = objectMapper.writeValueAsString(tooLongTitle);
 
                     // when
@@ -100,7 +101,8 @@ class IssueControllerTest {
                 dynamicTest("내용은 최대 2000자 이내여야 한다.", () -> {
                     // given
                     IssueCreateRequest tooLongContent
-                            = new IssueCreateRequest(memberId, title, content.repeat(2000 + 1), List.of());
+                            = new IssueCreateRequest(memberId, title, content.repeat(2000 + 1), List.of(),
+                            "테스트 기능 구현");
                     String requestJson = objectMapper.writeValueAsString(tooLongContent);
 
                     // when
@@ -113,9 +115,10 @@ class IssueControllerTest {
                     result.andExpect(status().is4xxClientError());
                 }),
 
-                dynamicTest("모든 필드는 공백이거나 빈 값, null이어선 안 된다.", () -> {
+                dynamicTest("마일스톤 아이디를 제외한 모든 필드는 공백이거나 빈 값, null이어선 안 된다.", () -> {
                     // given
-                    IssueCreateRequest blankRequest = new IssueCreateRequest(" ", " ", " ", null);
+                    IssueCreateRequest blankRequest = new IssueCreateRequest(" ", " ", " ",
+                            null, null);
                     String requestJson = objectMapper.writeValueAsString(blankRequest);
 
                     // when
@@ -131,7 +134,7 @@ class IssueControllerTest {
     }
 
     @Test
-    @DisplayName("이슈 id가 1번의 제목을 'Hello update' 로 수정 요청하면 '/issues/1' 로 리다이렉트 된다")
+    @DisplayName("이슈 id가 1번의 제목을 'Hello update' 로 수정 요청하면 200 OK를 응답한다")
     void editTitle() throws Exception {
         // given
         String url = urlPrefix + "/issues/1";
