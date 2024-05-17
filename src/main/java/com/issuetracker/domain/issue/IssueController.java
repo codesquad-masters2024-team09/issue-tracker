@@ -5,11 +5,10 @@ import com.issuetracker.domain.issue.request.IssueUpdateRequest;
 import com.issuetracker.domain.issue.response.IssueDetailResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
+import java.util.Collections;
 
 @RestController
 @RequestMapping("/api/v1/issues")
@@ -19,10 +18,9 @@ public class IssueController {
     private final IssueService issueService;
 
     @PostMapping
-    public ResponseEntity<Void> create(@Valid @RequestBody IssueCreateRequest request) {
+    public ResponseEntity<?> create(@Valid @RequestBody IssueCreateRequest request) {
         return ResponseEntity
-                .created(URI.create("/issues/" + issueService.create(request)))
-                .build();
+                .ok(Collections.singletonMap("issueId", issueService.create(request)));
     }
 
     @GetMapping("/{issueId}")
@@ -34,10 +32,7 @@ public class IssueController {
     @DeleteMapping("/{issueId}")
     public ResponseEntity<Void> delete(@PathVariable("issueId") Long issueId) {
         issueService.delete(issueId);
-        String redirectUrl = "/";
-        return ResponseEntity.status(HttpStatus.FOUND)
-                .header("Location", redirectUrl)
-                .build();
+        return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/{issueId}")

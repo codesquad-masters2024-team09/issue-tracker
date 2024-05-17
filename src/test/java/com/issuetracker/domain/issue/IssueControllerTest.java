@@ -19,6 +19,8 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
+import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
@@ -44,13 +46,15 @@ class IssueControllerTest {
     private final String urlPrefix = "/api/v1";
 
     @Test
-    @DisplayName("이슈를 생성하면 201 상태코드와 Location 헤더로 해당 이슈 상세조회 uri를 응답한다.")
+    @DisplayName("이슈를 생성하면 200 상태코드로 생성된 issueId를 응답한다.")
     void create() throws Exception {
       
         // given
         String url = urlPrefix + "/issues";
 
-        IssueCreateRequest request = new IssueCreateRequest("testMember", "testTitle", "testContent");
+        IssueCreateRequest request =
+                new IssueCreateRequest("testMember", "testTitle", "testContent",
+                        List.of("bug", "fix"));
         String requestJson = objectMapper.writeValueAsString(request);
         given(issueService.create(any(IssueCreateRequest.class))).willReturn(1L);
 
@@ -61,8 +65,9 @@ class IssueControllerTest {
         );
 
         // then
-        result.andExpect(status().isCreated())
-                .andExpect(header().string("Location", "/issues/1"));
+        result.andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{issueId: 1}"));
     }
 
     @TestFactory
@@ -78,7 +83,8 @@ class IssueControllerTest {
         return Stream.of(
                 dynamicTest("제목은 최대 120자 이내여야 한다.", () -> {
                     // given
-                    IssueCreateRequest tooLongTitle = new IssueCreateRequest(memberId, title.repeat(120 + 1), content);
+                    IssueCreateRequest tooLongTitle =
+                            new IssueCreateRequest(memberId, title.repeat(120 + 1), content, List.of());
                     String requestJson = objectMapper.writeValueAsString(tooLongTitle);
 
                     // when
@@ -93,7 +99,8 @@ class IssueControllerTest {
 
                 dynamicTest("내용은 최대 2000자 이내여야 한다.", () -> {
                     // given
-                    IssueCreateRequest tooLongContent = new IssueCreateRequest(memberId, title, content.repeat(2000 + 1));
+                    IssueCreateRequest tooLongContent
+                            = new IssueCreateRequest(memberId, title, content.repeat(2000 + 1), List.of());
                     String requestJson = objectMapper.writeValueAsString(tooLongContent);
 
                     // when
@@ -108,7 +115,7 @@ class IssueControllerTest {
 
                 dynamicTest("모든 필드는 공백이거나 빈 값, null이어선 안 된다.", () -> {
                     // given
-                    IssueCreateRequest blankRequest = new IssueCreateRequest(" ", " ", " ");
+                    IssueCreateRequest blankRequest = new IssueCreateRequest(" ", " ", " ", null);
                     String requestJson = objectMapper.writeValueAsString(blankRequest);
 
                     // when
@@ -177,7 +184,6 @@ class IssueControllerTest {
         );
 
         // then
-        result.andExpect(status().is3xxRedirection())
-                .andExpect(header().string("Location", "/"));
+        result.andExpect(status().isOk());
     }
 }

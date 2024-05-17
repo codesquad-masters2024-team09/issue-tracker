@@ -2,6 +2,7 @@ package com.issuetracker.domain.issue;
 
 import com.issuetracker.domain.issue.request.IssueCreateRequest;
 import com.issuetracker.domain.issue.request.IssueUpdateRequest;
+import com.issuetracker.domain.label.LabelRepository;
 import lombok.RequiredArgsConstructor;
 import com.issuetracker.domain.issue.response.IssueDetailResponse;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import java.util.Map;
 import com.issuetracker.domain.issue.response.IssueListResponse;
 import com.issuetracker.domain.issue.response.IssueResponse;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,10 +21,17 @@ import java.util.stream.Collectors;
 public class IssueService {
 
     private final IssueRepository issueRepository;
+    private final LabelRepository labelRepository;
     private final IssueMapper issueMapper;
 
     public Long create(IssueCreateRequest request) {
         Issue issue = request.toEntity();
+        issue.addLabels(
+                request.getLabels().stream().map(
+                        labelId -> labelRepository.findById(labelId)
+                                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 레이블입니다."))
+                ).collect(Collectors.toList())
+        );
         Issue savedIssue = issueRepository.save(issue);
         return savedIssue.getId();
     }
