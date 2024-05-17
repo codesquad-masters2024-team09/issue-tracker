@@ -1,11 +1,13 @@
 package com.issuetracker.domain.issue;
 
 import com.issuetracker.domain.issue.request.IssueCreateRequest;
-import com.issuetracker.domain.issue.request.IssueLabelCreateRequest;
-import com.issuetracker.domain.issue.request.IssueMilestoneCreateRequest;
+import com.issuetracker.domain.issue.request.LabelAddRequest;
+import com.issuetracker.domain.issue.request.MilestoneAssignRequest;
 import com.issuetracker.domain.issue.request.IssueUpdateRequest;
 import com.issuetracker.domain.issue.response.IssueDetailResponse;
 import jakarta.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,20 +24,20 @@ public class IssueController {
     @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody IssueCreateRequest request) {
         return ResponseEntity
-                .ok(Collections.singletonMap("issueId", issueService.create(request)));
+                .ok(Collections.singletonMap("issueId", issueService.create(request.toEntity())));
     }
 
     @PostMapping("/{issueId}/label")
     public ResponseEntity<Void> addLabel(@PathVariable("issueId") Long issueId,
-                                      @Valid @RequestBody IssueLabelCreateRequest issueLabelCreateRequest) {
-        issueService.addLabel(issueId, issueLabelCreateRequest);
+                                      @Valid @RequestBody LabelAddRequest labelAddRequest) {
+        issueService.addLabel(issueId, labelAddRequest.getLabelId());
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/{issueId}/milestone")
     public ResponseEntity<Void> assignMilestone(@PathVariable("issueId") Long issueId,
-                                                @Valid @RequestBody IssueMilestoneCreateRequest issueMilestoneCreateRequest) {
-        issueService.assignMilestone(issueId, issueMilestoneCreateRequest);
+                                                @Valid @RequestBody MilestoneAssignRequest milestoneAssignRequest) {
+        issueService.assignMilestone(issueId, milestoneAssignRequest.getMilestoneId());
         return ResponseEntity.ok().build();
     }
 
@@ -52,8 +54,16 @@ public class IssueController {
     }
 
     @PatchMapping("/{issueId}")
-    public ResponseEntity<Void> edit(@PathVariable("issueId") Long issueId, @Valid @RequestBody IssueUpdateRequest request) {
-        issueService.edit(issueId, request);
+    public ResponseEntity<Void> edit(@PathVariable("issueId") Long issueId, @Valid @RequestBody IssueUpdateRequest form) {
+        if (!form.validate()) {
+            throw new IllegalArgumentException();
+        }
+
+        Map<String, Object> requestForm = new HashMap<>();
+        requestForm.put("issueId", issueId);
+        requestForm.put("form", form);
+
+        issueService.edit(requestForm);
         return ResponseEntity
                 .ok()
                 .build();

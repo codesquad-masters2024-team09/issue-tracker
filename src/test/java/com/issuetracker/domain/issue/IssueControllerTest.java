@@ -2,9 +2,10 @@ package com.issuetracker.domain.issue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.issuetracker.domain.issue.request.IssueCreateRequest;
-import com.issuetracker.domain.issue.request.IssueLabelCreateRequest;
-import com.issuetracker.domain.issue.request.IssueMilestoneCreateRequest;
+import com.issuetracker.domain.issue.request.LabelAddRequest;
+import com.issuetracker.domain.issue.request.MilestoneAssignRequest;
 import com.issuetracker.domain.issue.request.IssueUpdateRequest;
+import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import com.issuetracker.domain.issue.response.IssueDetailResponse;
@@ -22,7 +23,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
-import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
@@ -56,9 +56,9 @@ class IssueControllerTest {
 
         IssueCreateRequest request =
                 new IssueCreateRequest("testMember", "testTitle", "testContent",
-                        List.of("bug", "fix"), "테스트 기능 구현");
+                        Set.of("bug", "fix"), "테스트 기능 구현");
         String requestJson = objectMapper.writeValueAsString(request);
-        given(issueService.create(any(IssueCreateRequest.class))).willReturn(1L);
+        given(issueService.create(any(Issue.class))).willReturn(1L);
 
         // when
         ResultActions result = mockMvc.perform(
@@ -79,9 +79,9 @@ class IssueControllerTest {
         Long issueId = 1L;
         String url = urlPrefix + "/issues/" + issueId + "/label";
 
-        IssueLabelCreateRequest request = new IssueLabelCreateRequest("bug");
+        LabelAddRequest request = new LabelAddRequest("bug");
         String requestJson = objectMapper.writeValueAsString(request);
-        willDoNothing().given(issueService).addLabel(anyLong(), any(IssueLabelCreateRequest.class));
+        willDoNothing().given(issueService).addLabel(anyLong(), any(String.class));
 
         // when
         ResultActions result = mockMvc.perform(
@@ -100,9 +100,9 @@ class IssueControllerTest {
         Long issueId = 1L;
         String url = urlPrefix + "/issues/" + issueId + "/milestone";
 
-        IssueMilestoneCreateRequest request = new IssueMilestoneCreateRequest("테스트 기능 구현");
+        MilestoneAssignRequest request = new MilestoneAssignRequest("테스트 기능 구현");
         String requestJson = objectMapper.writeValueAsString(request);
-        willDoNothing().given(issueService).assignMilestone(anyLong(), any(IssueMilestoneCreateRequest.class));
+        willDoNothing().given(issueService).assignMilestone(anyLong(), any(String.class));
 
         // when
         ResultActions result = mockMvc.perform(
@@ -122,13 +122,13 @@ class IssueControllerTest {
         final String title = "t";
         final String content = "c";
 
-        given(issueService.create(any(IssueCreateRequest.class))).willReturn(1L);
+        given(issueService.create(any(Issue.class))).willReturn(1L);
 
         return Stream.of(
                 dynamicTest("제목은 최대 120자 이내여야 한다.", () -> {
                     // given
                     IssueCreateRequest tooLongTitle =
-                            new IssueCreateRequest(memberId, title.repeat(120 + 1), content, List.of(),
+                            new IssueCreateRequest(memberId, title.repeat(120 + 1), content, Set.of(),
                                     "테스트 기능 구현");
                     String requestJson = objectMapper.writeValueAsString(tooLongTitle);
 
@@ -145,7 +145,7 @@ class IssueControllerTest {
                 dynamicTest("내용은 최대 2000자 이내여야 한다.", () -> {
                     // given
                     IssueCreateRequest tooLongContent
-                            = new IssueCreateRequest(memberId, title, content.repeat(2000 + 1), List.of(),
+                            = new IssueCreateRequest(memberId, title, content.repeat(2000 + 1), Set.of(),
                             "테스트 기능 구현");
                     String requestJson = objectMapper.writeValueAsString(tooLongContent);
 
