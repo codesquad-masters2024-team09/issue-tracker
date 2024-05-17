@@ -3,6 +3,7 @@ package com.issuetracker.domain.issue;
 import com.issuetracker.domain.issue.request.IssueCreateRequest;
 import com.issuetracker.domain.issue.request.IssueUpdateRequest;
 import com.issuetracker.domain.label.LabelRepository;
+import com.issuetracker.domain.milestone.MilestoneRepository;
 import lombok.RequiredArgsConstructor;
 import com.issuetracker.domain.issue.response.IssueDetailResponse;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ public class IssueService {
 
     private final IssueRepository issueRepository;
     private final LabelRepository labelRepository;
+    private final MilestoneRepository milestoneRepository;
     private final IssueMapper issueMapper;
 
     public Long create(IssueCreateRequest request) {
@@ -32,6 +34,14 @@ public class IssueService {
                                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 레이블입니다."))
                 ).collect(Collectors.toList())
         );
+
+        if (request.getMilestoneId() != null) {
+            issue.assignMilestone(
+                    milestoneRepository.findById(request.getMilestoneId())
+                            .orElseThrow(() -> new NoSuchElementException("존재하지 않는 마일스톤입니다."))
+            );
+        }
+
         Issue savedIssue = issueRepository.save(issue);
         return savedIssue.getId();
     }

@@ -29,6 +29,8 @@ public class IssueCreateRequest {
     @NotNull
     private List<String> labels;
 
+    private String milestoneId;
+
     public Issue toEntity() {
         return Issue.builder()
                 .memberId(memberId)
