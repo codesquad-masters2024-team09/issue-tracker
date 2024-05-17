@@ -19,7 +19,7 @@ public class Comment extends BaseDateTime {
     @Id
     @Column("COMMENT_ID")
     private Long id;
-    private String member_id;
-    private Long issue_id;
+    private String memberId;
+    private Long issueId;
     private String content;
 }
