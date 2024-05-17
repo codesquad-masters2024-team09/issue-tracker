@@ -20,7 +20,7 @@ public class CommentService {
 
         Comment comment = request.toEntity();
 
-        issue.getComments().add(comment);
+        issue.addComment(comment);
         issueRepository.save(issue);
 
         return comment.getId();

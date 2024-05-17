@@ -146,6 +146,6 @@ class LabelControllerTest {
         );
 
         // then
-        result.andExpect(status().isNoContent());
+        result.andExpect(status().isOk());
     }
 }

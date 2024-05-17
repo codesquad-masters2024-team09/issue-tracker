@@ -1,6 +1,5 @@
 package com.issuetracker.domain.milestone;
 
-import com.issuetracker.domain.issue.IssueRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +16,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class MilestoneTest {
 
     @Autowired
-    private IssueRepository issueRepository;
-
-    @Autowired
     private MilestoneRepository milestoneRepository;
 
     @Test
@@ -28,7 +24,7 @@ class MilestoneTest {
     void create_success() {
         // given
         Milestone milestone = Milestone.builder()
-                .name("testName")
+                .id("this is a test")
                 .dueDate(LocalDateTime.of(2999, 12, 31, 23, 59))
                 .description("testDescription")
                 .build();
@@ -49,7 +45,7 @@ class MilestoneTest {
     void create_with_only_name_success() {
         // given
         Milestone milestone = Milestone.builder()
-                .name("testName")
+                .id("this is a test")
                 .build();
 
         // when

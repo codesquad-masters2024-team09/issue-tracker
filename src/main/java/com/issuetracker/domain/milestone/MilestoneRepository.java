@@ -8,12 +8,12 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface MilestoneRepository extends CrudRepository<Milestone, Long> {
+public interface MilestoneRepository extends CrudRepository<Milestone, String> {
 
     List<Milestone> findMilestonesByIsOpen(boolean openStatus);
     Long countByIsOpen(boolean openStatus);
 
     @Modifying
     @Query("UPDATE MILESTONE SET IS_OPEN = :desiredState WHERE MILESTONE_ID = :milestoneId")
-    void updateOpenStatus(Long milestoneId, boolean desiredState);
+    void updateOpenStatus(String milestoneId, boolean desiredState);
 }

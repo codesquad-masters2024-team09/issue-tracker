@@ -30,12 +30,12 @@ public class MilestoneService {
         return MilestoneListResponse.of(milestones);
     }
 
-    public void delete(Long milestoneId) {
+    public void delete(String milestoneId) {
         milestoneRepository.deleteById(milestoneId);
     }
 
-    public void edit(Long milestoneId, MilestoneUpdateRequest form) {
-        if (form.getName() == null && form.getDueDate() == null && form.getDescription() == null) {
+    public void edit(String milestoneId, MilestoneUpdateRequest form) {
+        if (form.getId() == null && form.getDueDate() == null && form.getDescription() == null) {
             throw new IllegalArgumentException();
         }
 
@@ -51,7 +51,7 @@ public class MilestoneService {
     }
 
 
-    public void updateStatus(Long milestoneId, boolean desiredState) {
+    public void updateStatus(String milestoneId, boolean desiredState) {
         milestoneRepository.updateOpenStatus(milestoneId, desiredState);
     }
 }

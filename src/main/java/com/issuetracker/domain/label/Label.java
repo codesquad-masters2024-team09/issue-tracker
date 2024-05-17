@@ -11,6 +11,7 @@ import org.springframework.data.relational.core.mapping.Column;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
+@EqualsAndHashCode(of = "id", callSuper = false)
 public class Label extends BaseDateTime implements Persistable<String> {
 
     @Id
