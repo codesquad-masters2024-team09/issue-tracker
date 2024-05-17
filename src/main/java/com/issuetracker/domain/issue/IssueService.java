@@ -1,6 +1,7 @@
 package com.issuetracker.domain.issue;
 
 import com.issuetracker.domain.issue.request.IssueCreateRequest;
+import com.issuetracker.domain.issue.request.IssueLabelCreateRequest;
 import com.issuetracker.domain.issue.request.IssueUpdateRequest;
 import com.issuetracker.domain.label.LabelRepository;
 import com.issuetracker.domain.milestone.MilestoneRepository;
@@ -74,11 +75,13 @@ public class IssueService {
         );
     }
 
-    public Issue addLabel(Long issueId, Label label) {
+    public void addLabel(Long issueId, IssueLabelCreateRequest request) {
         Issue issue = issueRepository.findById(issueId).orElseThrow(RuntimeException::new);
-        issue.addLabel(label);
+        issue.addLabel(
+                labelRepository.findById(request.getLabelId())
+                        .orElseThrow(() -> new NoSuchElementException("존재하지 않는 레이블입니다.")));
 
-        return issueRepository.save(issue);
+        issueRepository.save(issue);
     }
 
     public Issue addLabels(Long issueId, List<Label> labels) {
