@@ -134,17 +134,17 @@ class MilestoneControllerTest {
         String urlForOpened = urlPrefix + "/milestones?isOpen=true";
         String urlForClosed = urlPrefix + "/milestones?isOpen=false";
 
-        MilestoneListResponse openedMilestones = MilestoneListResponse.of(
-                List.of(Milestone.builder().isOpen(true).id("openedMilestone").build())
+        MilestoneListResponse openMilestones = MilestoneListResponse.of(
+                List.of(Milestone.builder().isOpen(true).id("openMilestone").build())
         );
         MilestoneListResponse closedMilestones = MilestoneListResponse.of(
                 List.of(Milestone.builder().isOpen(false).id("closedMilestone").build())
         );
 
-        String responseJsonOfOpened = objectMapper.writeValueAsString(openedMilestones);
+        String responseJsonOfOpened = objectMapper.writeValueAsString(openMilestones);
         String responseJsonOfClosed = objectMapper.writeValueAsString(closedMilestones);
 
-        given(milestoneService.getMilestones(true)).willReturn(openedMilestones);
+        given(milestoneService.getMilestones(true)).willReturn(openMilestones);
         given(milestoneService.getMilestones(false)).willReturn(closedMilestones);
 
         // when & then
