@@ -52,7 +52,7 @@ public class Issue extends BaseDateTime {
     }
 
     public void addLabel(Label label) {
-        IssueLabel ref = convertToIssueLabel(label);
+        IssueLabel ref = IssueLabel.of(label.getId());
 
         issueLabels.add(ref);
     }
@@ -62,7 +62,7 @@ public class Issue extends BaseDateTime {
     }
 
     public void deleteLabel(Label label) {
-        IssueLabel ref = convertToIssueLabel(label);
+        IssueLabel ref = IssueLabel.of(label.getId());
 
         issueLabels.remove(ref);
     }
@@ -73,11 +73,5 @@ public class Issue extends BaseDateTime {
 
     public void deleteMilestone() {
         milestoneRef = null;
-    }
-
-    private IssueLabel convertToIssueLabel(Label label) {
-        return IssueLabel.builder()
-                .labelId(label.getId())
-                .build();
     }
 }
