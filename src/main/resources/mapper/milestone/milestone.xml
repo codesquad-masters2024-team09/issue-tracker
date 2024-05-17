@@ -6,8 +6,8 @@
     <update id="update" parameterType="map">
         UPDATE MILESTONE
         <set>
-            <if test="form.name != null">
-                NAME = #{form.name},
+            <if test="form.id != null">
+                MILESTONE_ID = #{form.id},
             </if>
             <if test="form.dueDate != null">
                 DUE_DATE = #{form.dueDate},
