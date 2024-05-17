@@ -2,6 +2,7 @@ package com.issuetracker.domain.issue;
 
 import com.issuetracker.domain.issue.request.IssueCreateRequest;
 import com.issuetracker.domain.issue.request.IssueLabelCreateRequest;
+import com.issuetracker.domain.issue.request.IssueMilestoneCreateRequest;
 import com.issuetracker.domain.issue.request.IssueUpdateRequest;
 import com.issuetracker.domain.label.LabelRepository;
 import com.issuetracker.domain.milestone.MilestoneRepository;
@@ -9,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import com.issuetracker.domain.issue.response.IssueDetailResponse;
 import org.springframework.stereotype.Service;
 import com.issuetracker.domain.label.Label;
-import com.issuetracker.domain.milestone.Milestone;
 import java.util.HashMap;
 import java.util.Map;
 import com.issuetracker.domain.issue.response.IssueListResponse;
@@ -98,11 +98,14 @@ public class IssueService {
         return issueRepository.save(issue);
     }
 
-    public Issue assignMilestone(Long issueId, Milestone milestone) {
+    public void assignMilestone(Long issueId, IssueMilestoneCreateRequest request) {
         Issue issue = issueRepository.findById(issueId).orElseThrow(RuntimeException::new);
-        issue.assignMilestone(milestone);
+        issue.assignMilestone(
+                milestoneRepository.findById(request.getMilestoneId())
+                        .orElseThrow(() -> new NoSuchElementException("존재하지 않는 마일스톤입니다."))
+        );
 
-        return issueRepository.save(issue);
+        issueRepository.save(issue);
     }
 
     public Issue deleteMilestone(Long issueId) {
