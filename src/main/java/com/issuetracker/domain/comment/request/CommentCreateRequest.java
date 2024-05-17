@@ -27,8 +27,8 @@ public class CommentCreateRequest {
 
     public Comment toEntity() {
         return Comment.builder()
-                .member_id(memberId)
-                .issue_id(issueId)
+                .memberId(memberId)
+                .issueId(issueId)
                 .content(content)
                 .build();
     }
