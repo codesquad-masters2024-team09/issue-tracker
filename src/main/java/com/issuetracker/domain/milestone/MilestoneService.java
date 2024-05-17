@@ -35,7 +35,7 @@ public class MilestoneService {
     }
 
     public void edit(String milestoneId, MilestoneUpdateRequest form) {
-        if (form.getId() == null && form.getDueDate() == null && form.getDescription() == null) {
+        if (form.getDueDate() == null && form.getDescription() == null) {
             throw new IllegalArgumentException();
         }
 

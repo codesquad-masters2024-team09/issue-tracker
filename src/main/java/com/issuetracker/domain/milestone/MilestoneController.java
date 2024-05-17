@@ -1,5 +1,6 @@
 package com.issuetracker.domain.milestone;
 
+import com.issuetracker.domain.milestone.argumentresolver.MilestoneId;
 import com.issuetracker.domain.milestone.request.MilestoneCreateRequest;
 import com.issuetracker.domain.milestone.request.MilestoneUpdateRequest;
 import com.issuetracker.domain.milestone.response.MilestoneListResponse;
@@ -31,7 +32,7 @@ public class MilestoneController {
     }
 
     @DeleteMapping("/{milestoneId}")
-    public ResponseEntity<Void> delete(@PathVariable("milestoneId") String milestoneId) {
+    public ResponseEntity<Void> delete(@PathVariable("milestoneId") @MilestoneId String milestoneId) {
         milestoneService.delete(milestoneId);
         return ResponseEntity
                 .ok()
@@ -39,7 +40,8 @@ public class MilestoneController {
     }
 
     @PatchMapping("/{milestoneId}")
-    public ResponseEntity<Void> edit(@PathVariable("milestoneId") String milestoneId, @Valid @RequestBody MilestoneUpdateRequest request) {
+    public ResponseEntity<Void> edit(@PathVariable("milestoneId") @MilestoneId String milestoneId,
+                                     @Valid @RequestBody MilestoneUpdateRequest request) {
         milestoneService.edit(milestoneId, request);
         return ResponseEntity
                 .ok()
@@ -54,7 +56,8 @@ public class MilestoneController {
     }
 
     @PatchMapping("/status")
-    public ResponseEntity<Void> updateStatus(@RequestParam("milestoneId") String milestoneId, @RequestParam("isOpen") boolean isOpen) {
+    public ResponseEntity<Void> updateStatus(@RequestParam("milestoneId") @MilestoneId String milestoneId,
+                                             @RequestParam("isOpen") boolean isOpen) {
         milestoneService.updateStatus(milestoneId, isOpen);
         return ResponseEntity
                 .ok()
