@@ -22,6 +22,7 @@ p, a {
 }
 
 header {
+    width: 1280px;
     padding: 20px 20px;            /* 상하좌우 패딩 설정 */
     display: flex;                 /* Flexbox 모델 사용 */
     justify-content: space-between;/* 요소들을 양 끝에 배치 */
@@ -48,7 +49,7 @@ header {
 #container {
     flex: 1;                       /* Flex 아이템이 남은 공간을 모두 차지하도록 설정 */
     display: flex;                 /* Flexbox 모델 사용 */
-    flex-wrap: wrap;               /* 내용이 넘칠 경우 다음 줄로 자동 이동 */
+                  /* 내용이 넘칠 경우 다음 줄로 자동 이동 */
     align-items: stretch;          /* 교차 축에서 아이템을 늘려 꽉 차게 배치 */
     flex-direction: column;        /* 요소들을 세로로 배치 */
     margin: 40px 30px 40px 30px;   /* 마진 설정 */
@@ -59,6 +60,10 @@ header {
 #header-area {
     padding: 20px;                 /* 패딩 설정 */
     border-bottom: 1px solid #e0e0e0; /* 바닥 영역에 자연스러운 경계선 추가 */
+}
+
+#header-area-non-line {
+    padding: 20px;                 /* 패딩 설정 */
 }
 
 #main-area {
@@ -211,7 +216,7 @@ header {
     cursor: pointer;
 }
 
-#content-box {
+.content-box {
     background-color: #FEFEFE;
     width: 960px;
     border-radius: 10px;       /* 모서리 둥글게 처리 (반지름 10px) */
@@ -219,13 +224,13 @@ header {
     overflow: hidden;          /* 내용이 상자를 넘어갈 경우 숨기기 (내부 요소가 박스 밖으로 나가지 못하게 함) */
 }
 
-#content-box-header {
+.content-box-header {
     background-color: #F7F7FC;
     padding: 20px;             /* 헤더 내부에 상하좌우 20px 여백 추가 */
     border-bottom: 1px solid #e0e0e0; /* 헤더와 본문 구분 하단 경계선 추가 */
 }
 
-#content-box-main {
+.content-box-main {
     padding: 20px; /* 패딩 설정 */
 }
 
@@ -250,6 +255,10 @@ header {
     width: 100%;
 }
 
+.content-box-header > img {
+    display: inline-block;
+}
+
 .comment-box textarea {
     width: 100%; /* 너비를 부모 요소에 맞춤 */
     height: 120px; /* 높이를 150px로 설정 */
@@ -264,4 +273,259 @@ header {
 
 input:focus, textarea:focus {
     outline: none; /* 포커스 시 나타나는 외곽선을 없앰 */
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #F7F7FC;
+    width: 1280px;
+}
+
+
+.filter-container {
+    display: flex;
+    align-items: center;
+    border-radius: 8px;
+    background-color: #F7F7FC;
+    width: 560px ;
+    height: 40px;
+}
+
+
+.filter-button {
+    background-color: #fff;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-right: 1px solid #d0d4da;
+    font-size: 16px;
+}
+
+.filter-button:hover {
+    background-color: #e0e0e0;
+}
+
+.search-bar-container {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+}
+
+.search-icon {
+    margin-right: 8px;
+    font-size: 16px;
+    color: #555;
+}
+
+.search-bar {
+    border: none;
+    outline: none;
+    background-color: #f6f8fa;
+    font-size: 16px;
+    width: 200px;
+}
+
+.filter-button {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.actions-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #F7F7FC;
+    padding: 5px;
+}
+
+.label-milestone-action-buttons {
+    display: flex;
+    align-items: center;
+    border: 1px solid #d0d4da;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #F7F7FC;
+    margin: auto;
+}
+
+.action-button {
+    background-color: #F7F7FC;
+    border: none;
+    padding: 5px 15px;
+    min-width: 100px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid #d0d4da;
+}
+
+.action-button:last-child {
+    border-right: none;
+}
+
+.action-button:hover {
+    background-color: #e0e0e0;
+}
+
+.create-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 20px;
+}
+
+.create-button:hover {
+    background-color: #0056b3;
+}
+
+.create-button {
+    padding: 5px 15px; /* 패딩 조정 */
+    min-width: 150px; /* 최소 너비 설정 */
+}
+
+.search-bar {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    width: 300px;
+}
+
+.issue-list {
+    width: 1280px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+}
+
+.issue-category {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+
+.issue-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 64px;
+    padding: 10px 20px;
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+    background: #F7F7FC;
+}
+
+.checkbox-container {
+    margin-right: 10px;
+}
+
+.issue-status {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+}
+
+.issue-status > div {
+    margin-right: 20px;
+    font-weight: bold;
+}
+
+.issue-filters {
+    display: flex;
+    gap: 10px;
+}
+
+.filter-button {
+    background: none;
+    color: #586069;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 5px 10px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.issue-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #e0e0e0;
+    background-color: #FEFEFE;
+    margin-bottom: 0px; /* 아이템 간격 */
+}
+
+.issue-item:last-child {
+    /* 마지막 박스 하단만 둥그스름하게 깎기 */
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.issue-info {
+    flex: 1;
+    margin-left: 15px;
+}
+
+.issue-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.issue-icon {
+    margin-right: 10px;
+    font-size: 20px;
+}
+
+.issue-title {
+    font-weight: bold;
+    border-radius: 4px;
+    padding: 2px 4px;
+    margin-left: 5px;
+}
+
+.issue-label {
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    padding: 2px 4px;
+    margin-left: 5px;
+}
+
+.issue-details {
+    margin-top: 10px;
+    display: flex;
+    gap: 15px;
+    font-size: 14px;
+    color: #555;
+}
+
+.issue-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.issue-avatar img {
+    margin-right: 30px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
 }
