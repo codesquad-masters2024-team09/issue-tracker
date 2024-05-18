@@ -119,3 +119,58 @@
         </div>
     </div>
 </div>
+
+
+<style>
+    .content-box {
+        background-color: #FEFEFE;
+        width: 960px;
+        border-radius: 10px;       /* 모서리 둥글게 처리 (반지름 10px) */
+        border: 1px solid #e0e0e0; /* 테두리 회색으로 설정, 두께는 1px */
+        overflow: hidden;          /* 내용이 상자를 넘어갈 경우 숨기기 (내부 요소가 박스 밖으로 나가지 못하게 함) */
+    }
+
+    .content-box-header {
+        background-color: #F7F7FC;
+        padding: 20px;             /* 헤더 내부에 상하좌우 20px 여백 추가 */
+        border-bottom: 1px solid #e0e0e0; /* 헤더와 본문 구분 하단 경계선 추가 */
+    }
+
+    .content-box-main {
+        padding: 20px; /* 패딩 설정 */
+    }
+
+    .comment-container {
+        width: 100%;
+        max-width: 960px;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .comment-box {
+        background-color: #EFF0F6;
+        border-radius: 10px;
+        padding: 10px;
+        width: 100%;
+    }
+
+    .content-box-header > img {
+        display: inline-block;
+    }
+
+    .comment-box textarea {
+        width: 100%; /* 너비를 부모 요소에 맞춤 */
+        height: 120px; /* 높이를 150px로 설정 */
+        border: none; /* 테두리를 없앰 */
+        padding: 15px; /* 내부 여백을 15px로 설정 */
+        font-size: 16px; /* 글자 크기를 16px로 설정 */
+        resize: none; /* 사용자가 텍스트 영역 크기를 조정할 수 없도록 함 */
+        box-sizing: border-box; /* 패딩과 테두리를 포함한 전체 너비와 높이를 설정 */
+        background-color: #EFF0F6; /* 배경색을 연한 회색으로 설정 */
+        margin-bottom: 10px; /* 아래쪽 여백 추가 */
+    }
+
+    input:focus, textarea:focus {
+        outline: none; /* 포커스 시 나타나는 외곽선을 없앰 */
+    }
+</style>

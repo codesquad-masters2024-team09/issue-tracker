@@ -76,3 +76,30 @@
         </div>
     </div>
 </div>
+
+
+<style>
+    .profile-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+    }
+
+    .title-input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 16px;
+    }
+
+    .content-input textarea {
+        width: 960px;
+        height: 200px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 16px;
+        resize: none;
+    }
+</style>
