@@ -150,8 +150,8 @@ class IssueTest {
 
         for (int i = 0; i < 3; i++) {
             Comment comment = Comment.builder()
-                    .issue_id(savedIssue.getId())
-                    .member_id(testMember.getId())
+                    .issueId(savedIssue.getId())
+                    .memberId(testMember.getId())
                     .content("test comment" + i)
                     .build();
 

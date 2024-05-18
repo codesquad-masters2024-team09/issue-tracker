@@ -1,15 +1,16 @@
 package com.issuetracker.domain.issue;
 
 import com.issuetracker.domain.issue.request.IssueCreateRequest;
+import com.issuetracker.domain.issue.request.IssueLabelCreateRequest;
+import com.issuetracker.domain.issue.request.IssueMilestoneCreateRequest;
 import com.issuetracker.domain.issue.request.IssueUpdateRequest;
 import com.issuetracker.domain.issue.response.IssueDetailResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
+import java.util.Collections;
 
 @RestController
 @RequestMapping("/api/v1/issues")
@@ -19,10 +20,23 @@ public class IssueController {
     private final IssueService issueService;
 
     @PostMapping
-    public ResponseEntity<Void> create(@Valid @RequestBody IssueCreateRequest request) {
+    public ResponseEntity<?> create(@Valid @RequestBody IssueCreateRequest request) {
         return ResponseEntity
-                .created(URI.create("/issues/" + issueService.create(request)))
-                .build();
+                .ok(Collections.singletonMap("issueId", issueService.create(request)));
+    }
+
+    @PostMapping("/{issueId}/label")
+    public ResponseEntity<Void> addLabel(@PathVariable("issueId") Long issueId,
+                                      @Valid @RequestBody IssueLabelCreateRequest issueLabelCreateRequest) {
+        issueService.addLabel(issueId, issueLabelCreateRequest);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{issueId}/milestone")
+    public ResponseEntity<Void> assignMilestone(@PathVariable("issueId") Long issueId,
+                                                @Valid @RequestBody IssueMilestoneCreateRequest issueMilestoneCreateRequest) {
+        issueService.assignMilestone(issueId, issueMilestoneCreateRequest);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{issueId}")
@@ -34,10 +48,7 @@ public class IssueController {
     @DeleteMapping("/{issueId}")
     public ResponseEntity<Void> delete(@PathVariable("issueId") Long issueId) {
         issueService.delete(issueId);
-        String redirectUrl = "/";
-        return ResponseEntity.status(HttpStatus.FOUND)
-                .header("Location", redirectUrl)
-                .build();
+        return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/{issueId}")
