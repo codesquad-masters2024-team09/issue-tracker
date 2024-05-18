@@ -2,7 +2,6 @@ package com.issuetracker.domain.issue;
 
 import com.issuetracker.domain.comment.Comment;
 import com.issuetracker.domain.common.BaseDateTime;
-import com.issuetracker.domain.label.Label;
 import com.issuetracker.domain.milestone.Milestone;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -48,27 +47,28 @@ public class Issue extends BaseDateTime {
 
 
     public void addComment(Comment comment) {
+        comment.initBaseDateTime();
         this.comments.add(comment);
     }
 
-    public void addLabel(Label label) {
-        IssueLabel ref = IssueLabel.of(label.getId());
+    public void addLabel(String labelId) {
+        IssueLabel ref = IssueLabel.of(labelId);
 
         issueLabels.add(ref);
     }
 
-    public void addLabels(List<Label> labels) {
-        labels.forEach(this::addLabel);
+    public void addLabels(List<String> labelIds) {
+        labelIds.forEach(this::addLabel);
     }
 
-    public void deleteLabel(Label label) {
-        IssueLabel ref = IssueLabel.of(label.getId());
+    public void deleteLabel(String labelId) {
+        IssueLabel ref = IssueLabel.of(labelId);
 
         issueLabels.remove(ref);
     }
 
-    public void assignMilestone(Milestone milestone) {
-        milestoneRef = AggregateReference.to(milestone.getId());
+    public void assignMilestone(String milestoneId) {
+        milestoneRef = AggregateReference.to(milestoneId);
     }
 
     public void deleteMilestone() {

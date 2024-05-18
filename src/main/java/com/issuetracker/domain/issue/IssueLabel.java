@@ -1,6 +1,5 @@
 package com.issuetracker.domain.issue;
 
-import com.issuetracker.domain.common.BaseDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -11,7 +10,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode(callSuper = false)
 @Table("ISSUE_LABEL")
-public class IssueLabel extends BaseDateTime {
+public class IssueLabel {
 
     private String labelId;
 

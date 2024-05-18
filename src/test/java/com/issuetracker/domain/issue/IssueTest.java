@@ -90,8 +90,8 @@ class IssueTest {
         Issue issue = makePureIssue();
 
         // when
-        issue.addLabel(savedDocument);
-        issue.addLabel(savedBug);
+        issue.addLabel(savedDocument.getId());
+        issue.addLabel(savedBug.getId());
 
         Issue savedIssue = issueRepository.save(issue);
 
@@ -100,7 +100,7 @@ class IssueTest {
         assertThat(savedIssue.getIssueLabels()).extracting("labelId").contains("document", "bug");
 
         // when
-        savedIssue.deleteLabel(savedDocument);
+        savedIssue.deleteLabel(savedDocument.getId());
         Issue savedIssueAfterDeleteLabel = issueRepository.save(savedIssue);
         Issue findIssue2 = issueRepository.findById(savedIssueAfterDeleteLabel.getId())
                 .orElseThrow(RuntimeException::new);
@@ -124,13 +124,13 @@ class IssueTest {
 
         Issue issue = makePureIssue();
 
-        issue.addLabel(savedDocument);
-        issue.addLabel(savedBug);
+        issue.addLabel(savedDocument.getId());
+        issue.addLabel(savedBug.getId());
 
         Issue savedIssue = issueRepository.save(issue);
 
         // when
-        savedIssue.deleteLabel(savedDocument);
+        savedIssue.deleteLabel(savedDocument.getId());
         Issue issueWithDeletedLabel = issueRepository.save(savedIssue);
 
         List<Label> labels = labelRepository.findAll();
@@ -183,7 +183,7 @@ class IssueTest {
                 .build();
 
         Milestone savedMilestone = milestoneRepository.save(milestone);
-        issue.assignMilestone(savedMilestone);
+        issue.assignMilestone(savedMilestone.getId());
 
         // when
         Issue savedIssue = issueRepository.save(issue);
@@ -205,7 +205,7 @@ class IssueTest {
                 .build();
 
         Milestone savedMilestone = milestoneRepository.save(milestone);
-        issue.assignMilestone(savedMilestone);
+        issue.assignMilestone(savedMilestone.getId());
 
         Issue savedIssue = issueRepository.save(issue);
 

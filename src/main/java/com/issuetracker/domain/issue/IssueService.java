@@ -1,21 +1,12 @@
 package com.issuetracker.domain.issue;
 
-import com.issuetracker.domain.issue.request.IssueCreateRequest;
-import com.issuetracker.domain.issue.request.IssueLabelCreateRequest;
-import com.issuetracker.domain.issue.request.IssueMilestoneCreateRequest;
-import com.issuetracker.domain.issue.request.IssueUpdateRequest;
-import com.issuetracker.domain.label.LabelRepository;
-import com.issuetracker.domain.milestone.MilestoneRepository;
 import lombok.RequiredArgsConstructor;
 import com.issuetracker.domain.issue.response.IssueDetailResponse;
 import org.springframework.stereotype.Service;
-import com.issuetracker.domain.label.Label;
-import java.util.HashMap;
 import java.util.Map;
 import com.issuetracker.domain.issue.response.IssueListResponse;
 import com.issuetracker.domain.issue.response.IssueResponse;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,26 +14,9 @@ import java.util.stream.Collectors;
 public class IssueService {
 
     private final IssueRepository issueRepository;
-    private final LabelRepository labelRepository;
-    private final MilestoneRepository milestoneRepository;
     private final IssueMapper issueMapper;
 
-    public Long create(IssueCreateRequest request) {
-        Issue issue = request.toEntity();
-        issue.addLabels(
-                request.getLabels().stream().map(
-                        labelId -> labelRepository.findById(labelId)
-                                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 레이블입니다."))
-                ).collect(Collectors.toList())
-        );
-
-        if (request.getMilestoneId() != null) {
-            issue.assignMilestone(
-                    milestoneRepository.findById(request.getMilestoneId())
-                            .orElseThrow(() -> new NoSuchElementException("존재하지 않는 마일스톤입니다."))
-            );
-        }
-
+    public Long create(Issue issue) {
         Issue savedIssue = issueRepository.save(issue);
         return savedIssue.getId();
     }
@@ -56,16 +30,8 @@ public class IssueService {
         issueRepository.deleteById(issueId);
     }
 
-    public void edit(Long issueId, IssueUpdateRequest form) {
-        if (form.getTitle() == null && form.getContent() == null) {
-            throw new IllegalArgumentException();
-        }
-
-        Map<String, Object> requestMap = new HashMap<>();
-        requestMap.put("issueId", issueId);
-        requestMap.put("form", form);
-
-        issueMapper.update(requestMap);
+    public void edit(Map<String, Object> form) {
+        issueMapper.update(form);
     }
 
     public IssueListResponse getIssues() {
@@ -75,35 +41,30 @@ public class IssueService {
         );
     }
 
-    public void addLabel(Long issueId, IssueLabelCreateRequest request) {
+    public void addLabel(Long issueId, String labelId) {
         Issue issue = issueRepository.findById(issueId).orElseThrow(RuntimeException::new);
-        issue.addLabel(
-                labelRepository.findById(request.getLabelId())
-                        .orElseThrow(() -> new NoSuchElementException("존재하지 않는 레이블입니다.")));
+        issue.addLabel(labelId);
 
         issueRepository.save(issue);
     }
 
-    public Issue addLabels(Long issueId, List<Label> labels) {
+    public Issue addLabels(Long issueId, List<String> labelIds) {
         Issue issue = issueRepository.findById(issueId).orElseThrow(RuntimeException::new);
-        issue.addLabels(labels);
+        issue.addLabels(labelIds);
 
         return issueRepository.save(issue);
     }
 
-    public Issue deleteLabel(Long issueId, Label label) {
+    public Issue deleteLabel(Long issueId, String labelId) {
         Issue issue = issueRepository.findById(issueId).orElseThrow(RuntimeException::new);
-        issue.deleteLabel(label);
+        issue.deleteLabel(labelId);
 
         return issueRepository.save(issue);
     }
 
-    public void assignMilestone(Long issueId, IssueMilestoneCreateRequest request) {
+    public void assignMilestone(Long issueId, String milestoneId) {
         Issue issue = issueRepository.findById(issueId).orElseThrow(RuntimeException::new);
-        issue.assignMilestone(
-                milestoneRepository.findById(request.getMilestoneId())
-                        .orElseThrow(() -> new NoSuchElementException("존재하지 않는 마일스톤입니다."))
-        );
+        issue.assignMilestone(milestoneId);
 
         issueRepository.save(issue);
     }
