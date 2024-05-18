@@ -1,6 +1,6 @@
 <script>
     import {onMount} from "svelte";
-    import {getApi} from "../../service/api.js";
+    import {getApi, postApi} from "../../service/api.js";
     import {Route, meta} from "tinro";
     import {MOCK_USER_ID} from "../../utils/constants.js";
 
@@ -13,12 +13,12 @@
         createdAt: '',
         title: '',
         content: '',
+        comments: [],
     }
+
     let commentInput = '';
     let isSubmitLocked = true;
-    $: {
-        isSubmitLocked = commentInput.trim() === '';
-    }
+    $:isSubmitLocked = commentInput.trim() === '';
 
     const fetchIssue = (issueID) => {
         try {
@@ -32,8 +32,29 @@
         }
     }
 
+    const onCreateComment = () => {
+        try {
+            const options = {
+                path: '/api/v1/comments',
+                data: {
+                    memberId: MOCK_USER_ID,
+                    issueId: issueId,
+                    content: commentInput,
+                }
+            }
+            postApi(options);
+            issueData.comments = [...issueData.comments, options.data];
+            commentInput = '';
+        }
+        catch (err) {
+            console.log(err);
+            alert("코멘트 저장 중 오류가 발생했습니다! 다시 시도해주세요!")
+        }
+    }
+
     onMount(async () => {
          issueData = await fetchIssue(issueId);
+         console.log(issueData.comments);
     });
 
 
@@ -46,14 +67,24 @@
 <div id="main-area">
     <div id="content-area">
         <div class="left-section">
-            <div id="content-box">
-                <div id="content-box-header">
+            <div class="content-box">
+                <div class="content-box-header">
                     <p>{issueData.memberId}</p>
                 </div>
-                <div id="content-box-main">
+                <div class="content-box-main">
                     <p>{issueData.content}</p>
                 </div>
             </div>
+            {#each issueData.comments as comment}
+                <div class="content-box">
+                    <div class="content-box-header">
+                        <p>{comment.memberId}</p>
+                    </div>
+                    <div class="content-box-main">
+                        <p>{comment.content}</p>
+                    </div>
+                </div>
+            {/each}
 
             <div class="comment-container">
                 <div class="comment-box">
@@ -65,7 +96,7 @@
                 </div>
                 <div class="action-buttons">
                     <button class="submit-button"
-                            disabled={isSubmitLocked}>+ 코멘트 작성</button>
+                            disabled={isSubmitLocked} on:click={onCreateComment}>+ 코멘트 작성</button>
                 </div>
             </div>
         </div>
