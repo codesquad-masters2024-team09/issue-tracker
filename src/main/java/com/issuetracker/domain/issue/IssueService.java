@@ -9,11 +9,14 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 import com.issuetracker.domain.issue.response.IssueListResponse;
 import com.issuetracker.domain.issue.response.IssueResponse;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class IssueService {
 
     private final IssueRepository issueRepository;
@@ -24,6 +27,7 @@ public class IssueService {
         return savedIssue.getId();
     }
 
+    @Transactional(readOnly = true)
     public IssueDetailResponse getDetail(Long issueId) {
         Issue issue = issueRepository.findById(issueId).orElseThrow(IssueNotFoundException::new);
         return IssueDetailResponse.from(issue);
@@ -37,6 +41,7 @@ public class IssueService {
         issueMapper.update(form);
     }
 
+    @Transactional(readOnly = true)
     public IssueListResponse getIssues() {
         List<Issue> issues = issueRepository.findAll();
         return IssueListResponse.of(

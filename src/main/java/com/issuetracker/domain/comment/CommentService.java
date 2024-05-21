@@ -7,9 +7,11 @@ import com.issuetracker.domain.issue.IssueRepository;
 import com.issuetracker.global.exception.issue.IssueNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class CommentService {
 
     private final IssueRepository issueRepository;

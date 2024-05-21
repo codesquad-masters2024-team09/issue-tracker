@@ -7,6 +7,7 @@ import com.issuetracker.domain.label.response.LabelResponse;
 import com.issuetracker.global.exception.label.LabelDuplicateException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class LabelService {
 
     private final LabelRepository labelRepository;
@@ -32,6 +34,7 @@ public class LabelService {
         return LabelResponse.of(savedLabel);
     }
 
+    @Transactional(readOnly = true)
     public LabelListResponse getLabels() {
         List<Label> labels = labelRepository.findAll();
         return LabelListResponse.of(
