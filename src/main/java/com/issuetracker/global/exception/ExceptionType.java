@@ -12,6 +12,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -25,6 +26,7 @@ public enum ExceptionType {
      * Global Exception
      */
     UNHANDLED(1000, "알 수 없는 서버 에러가 발생했습니다.", null),
+    METHOD_ARGUMENT_NOT_VALID(1001, "요청 데이터가 유효하지 않습니다.", MethodArgumentNotValidException.class),
 
     /**
      * Auth (2XXX)
