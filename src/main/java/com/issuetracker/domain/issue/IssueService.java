@@ -1,5 +1,7 @@
 package com.issuetracker.domain.issue;
 
+import com.issuetracker.domain.issue.request.IssueSearchCondition;
+import java.util.HashMap;
 import lombok.RequiredArgsConstructor;
 import com.issuetracker.domain.issue.response.IssueDetailResponse;
 import org.springframework.stereotype.Service;
@@ -74,5 +76,17 @@ public class IssueService {
         issue.deleteMilestone();
 
         return issueRepository.save(issue);
+    }
+
+    public List<Issue> getIssueByCondition(IssueSearchCondition condition) {
+        Map<String, Object> conditionMap = new HashMap<>();
+
+        conditionMap.put("author", condition.getAuthor());
+        conditionMap.put("isOpen", condition.isOpen());
+        conditionMap.put("milestoneId", condition.getMilestoneId());
+        conditionMap.put("labelIds", condition.getLabelIds());
+        conditionMap.put("title", condition.getTitle());
+
+        return issueMapper.findByCondition(conditionMap);
     }
 }
