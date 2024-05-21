@@ -21,7 +21,7 @@ public class MilestoneIdArgumentResolver implements HandlerMethodArgumentResolve
 
         String pathVariableName = parameter.getParameterAnnotation(MilestoneId.class).value();
 
-        if (pathVariableName.isEmpty()) {
+        if (!pathVariableName.isEmpty()) {
             pathVariableName = parameter.getParameterName();
         }
 
