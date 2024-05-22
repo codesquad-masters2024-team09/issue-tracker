@@ -67,8 +67,9 @@ jobs:
 
     - name: Transfer file to Bastion Host
       run: |
-        scp -i ~/private-key.pem issue-tracker-0.0.1-SNAPSHOT.jar ${{ secrets.BASTION_USER }}@${{ secrets.BASTION_HOST_IP }}:/home/${{ secrets.BASTION_USER }}/deploy
-        scp -i ~/private-key.pem ~/private-key.pem ${{ secrets.BASTION_USER }}@${{ secrets.BASTION_HOST_IP }}:/home/${{ secrets.BASTION_USER }}/deploy
+        ssh -i ~/private-key.pem ${{ secrets.BASTION_USER }}@${{ secrets.BASTION_HOST_IP }} "mkdir -p /home/${{ secrets.BASTION_USER }}/deploy"
+        scp -i ~/private-key.pem issue-tracker-0.0.1-SNAPSHOT.jar ${{ secrets.BASTION_USER }}@${{ secrets.BASTION_HOST_IP }}:/home/${{ secrets.BASTION_USER }}/deploy/
+        scp -i ~/private-key.pem ~/private-key.pem ${{ secrets.BASTION_USER }}@${{ secrets.BASTION_HOST_IP }}:/home/${{ secrets.BASTION_USER }}/deploy/
     
     - name: Transfer file to WAS Server
       run: |
