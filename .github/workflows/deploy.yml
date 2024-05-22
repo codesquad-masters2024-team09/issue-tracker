@@ -80,7 +80,6 @@ jobs:
       run: |
         ssh -i ~/private-key.pem ${{ secrets.BASTION_USER }}@${{ secrets.BASTION_HOST_IP }} \
         "ssh -i ~/private-key.pem ${{ secrets.WAS_USER }}@${{ secrets.WAS_HOST_IP }} << 'INNER_EOF'
-        "ssh -i ~/private-key.pem ${{ secrets.WAS_USER }}@${{ secrets.WAS_HOST_IP }} << 'INNER_EOF'
         echo '>>>> ☠️ 기존 프로세스를 kill 합니다'
         CURRENT_PID=\$(pgrep -f gist-competition)
         echo '>>>> 🎯 목표: 현재 프로세스인 \$CURRENT_PID'
