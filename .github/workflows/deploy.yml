@@ -58,16 +58,16 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_REGION }}
 
-    - name: Setup SSH
-      uses: webfactory/ssh-agent@v0.9.0
-      with:
-        ssh-private-key: |
-          ${{ secrets.SSH_PRIVATE_KEY }}
+    - name: Create SSH key
+      run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/private-key.pem
+          chmod +x ~/private-key.pem
 
     - name: Transfer file to Bastion Host
       run: |
         ls -al
-        scp /home/runner/work/issue-tracker/issue-tracker/build/libs/issue-tracker-0.0.1-SNAPSHOT.jar ${{ secrets.BASTION_USER }}@${{ secrets.BASTION_HOST_IP }}:/home/${{ secrets.BASTION_USER }}/deploy
+        scp -i ~/private-key.pem ~/private-key.pem ${{ secrets.BASTION_USER }}@${{ secrets.BASTION_HOST_IP }}:/home/${{ secrets.BASTION_USER }}/deploy
+        scp -i ~/private-key.pem /home/runner/work/issue-tracker/issue-tracker/build/libs/issue-tracker-0.0.1-SNAPSHOT.jar ${{ secrets.BASTION_USER }}@${{ secrets.BASTION_HOST_IP }}:/home/${{ secrets.BASTION_USER }}/deploy
 
     - name: Transfer file to WAS Server
       run: |
@@ -76,8 +76,8 @@ jobs:
 
     - name: Start application on WAS Server
       run: |
-        ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} ${{ secrets.BASTION_USER }}@${{ secrets.BASTION_HOST_IP }} \
-        "ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} ${{ secrets.WAS_USER }}@${{ secrets.WAS_HOST_IP }} << 'INNER_EOF'
+        ssh -i ${{ secrets.SSH_PRIVATE_KEY }} ${{ secrets.BASTION_USER }}@${{ secrets.BASTION_HOST_IP }} \
+        "ssh -i ${{ secrets.SSH_PRIVATE_KEY }} ${{ secrets.WAS_USER }}@${{ secrets.WAS_HOST_IP }} << 'INNER_EOF'
         echo '>>>> ☠️ 기존 프로세스를 kill 합니다'
         CURRENT_PID=\$(pgrep -f gist-competition)
         echo '>>>> 🎯 목표: 현재 프로세스인 \$CURRENT_PID'
