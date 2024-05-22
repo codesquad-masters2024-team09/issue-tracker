@@ -74,6 +74,7 @@ jobs:
       run: |
         ssh -i ~/private-key.pem ${{ secrets.BASTION_USER }}@${{ secrets.BASTION_HOST_IP }} \
         "ls -al /home/${{ secrets.BASTION_USER }} && \
+        chmod 600 ~/private-key.pem && \
         scp -i ~/private-key.pem /home/${{ secrets.BASTION_USER }}/issue-tracker-0.0.1-SNAPSHOT.jar ${{ secrets.WAS_USER }}@${{ secrets.WAS_HOST_IP }}:/home/${{ secrets.WAS_USER }}"
         
     - name: Start application on WAS Server
