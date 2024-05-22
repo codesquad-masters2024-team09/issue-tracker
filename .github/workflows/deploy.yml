@@ -80,26 +80,22 @@ jobs:
       run: |
         ssh -i ~/private-key.pem ${{ secrets.BASTION_USER }}@${{ secrets.BASTION_HOST_IP }} \
         "ssh -i ~/private-key.pem ${{ secrets.WAS_USER }}@${{ secrets.WAS_HOST_IP }} << 'INNER_EOF'
+        "ssh -i ~/private-key.pem ${{ secrets.WAS_USER }}@${{ secrets.WAS_HOST_IP }} << 'INNER_EOF'
         echo '>>>> ☠️ 기존 프로세스를 kill 합니다'
-
         CURRENT_PID=\$(pgrep -f gist-competition)
-        
         echo '>>>> 🎯 목표: 현재 프로세스인 \$CURRENT_PID'
-        
         if [ -z \$CURRENT_PID ]; then
-                echo '>>>> 🤔 지금 돌아가는 프로세스 없습니다'
-                else
-                    echo '>>>> 🔪 \$CURRENT_PID를 죽이겠습니다'
-                    kill -9 \$CURRENT_PID
-                    sleep 3  # 프로세스가 완전히 종료될 시간을 줌
-                fi
-        
+            echo '>>>> 🤔 지금 돌아가는 프로세스 없습니다'
+        else
+            echo '>>>> 🔪 \$CURRENT_PID를 죽이겠습니다'
+            kill -9 \$CURRENT_PID
+            sleep 3  # 프로세스가 완전히 종료될 시간을 줌
+        fi
         echo '>>>> 🚀 새로운 애플리케이션 배포합니다'
+        JAR_NAME=\$(ls | grep 'gist-competition' | tail -n 1)
         
-        JAR_NAME=$(ls -t ./build/libs/ | grep -v plain | grep .jar | head -n 1)
-        
-        echo ">>>>> 🚀 프로젝트 실행- JAR name: $JAR_NAME"
-        
-        nohup java -jar ./$JAR_NAME -Duser.timezone=Asia/Seoul 1>nohup/stdout.txt 2>nohup/stderr.txt &
+        echo '>>>> 🚀 프로젝트 실행- JAR name: \$JAR_NAME'
+        nohup java -jar ./issue-tracker-0.0.1-SNAPSHOT.jar -Duser.timezone=Asia/Seoul 1>nohup/stdout.txt 2>nohup/stderr.txt &
         INNER_EOF
         "
+    
