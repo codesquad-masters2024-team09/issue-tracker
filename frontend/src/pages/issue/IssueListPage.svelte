@@ -3,6 +3,7 @@
     import {handleCheckboxes} from "../../service/buttonSelection.js";
     import {router} from "tinro";
     import IssueFilterOptionButtons from "../../components/issue/IssueFilterOptionButtons.svelte";
+    import {optionsStore} from "../../stores/filter.js";
 
     const MOCK_ISSUE_LIST_DATA = {
         openedIssueCount: 4,
@@ -91,11 +92,13 @@
             <input type="checkbox" class="parent-checkbox">
         </div>
         <div class="issue-status">
-            <div class="open-issues">
+            <div class="open-issues"
+            on:click={() => optionsStore.toggleIsOpenOption("isOpen")}>
                 <img src="/assets/issue_icon_black.svg" alt="issue icon black">
                 열린 이슈({MOCK_ISSUE_LIST_DATA.openedIssueCount})
             </div>
-            <div class="closed-issues">
+            <div class="closed-issues"
+                 on:click={() => optionsStore.toggleIsOpenOption("isClosed")}>
                 <img src="/assets/issue_icon_closed.svg" alt="issue closed icon">
                 닫힌 이슈({MOCK_ISSUE_LIST_DATA.closedIssueCount})
             </div>
@@ -244,6 +247,10 @@
 
     .action-button > img {
         margin-right: 5px;
+    }
+
+    .open-issues, .closed-issues{
+        cursor: pointer;
     }
 
     .create-button {
