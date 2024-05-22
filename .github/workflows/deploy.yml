@@ -61,15 +61,15 @@ jobs:
     - name: Create SSH key, SSH directory
       run: |
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/private-key.pem
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod +x ~/private-key.pem
           mkdir -p ~/.ssh
+          ssh-keyscan ${{ secrets.BASTION_HOST_IP }} >> ~/.ssh/known_hosts
 
     - name: Transfer file to Bastion Host
       run: |
         ls -al
-        scp ~/private-key.pem ${{ secrets.BASTION_USER }}@${{ secrets.BASTION_HOST_IP }}:/home/${{ secrets.BASTION_USER }}/deploy
-        scp issue-tracker-0.0.1-SNAPSHOT.jar ${{ secrets.BASTION_USER }}@${{ secrets.BASTION_HOST_IP }}:/home/${{ secrets.BASTION_USER }}/deploy
+        scp -i ~/private-key.pem issue-tracker-0.0.1-SNAPSHOT.jar ${{ secrets.BASTION_USER }}@${{ secrets.BASTION_HOST_IP }}:/home/${{ secrets.BASTION_USER }}/deploy
+        scp -i ~/private-key.pem ~/private-key.pem ${{ secrets.BASTION_USER }}@${{ secrets.BASTION_HOST_IP }}:/home/${{ secrets.BASTION_USER }}/deploy
 
     - name: Transfer file to WAS Server
       run: |
