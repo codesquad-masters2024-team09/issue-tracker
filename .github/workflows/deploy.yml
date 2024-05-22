@@ -61,7 +61,7 @@ jobs:
     - name: Create SSH key, SSH directory
       run: |
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/private-key.pem
-          chmod +x ~/private-key.pem
+          chmod 600 ~/private-key.pem
           mkdir -p ~/.ssh
           ssh-keyscan ${{ secrets.BASTION_HOST_IP }} >> ~/.ssh/known_hosts
 
