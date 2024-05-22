@@ -64,7 +64,6 @@ jobs:
           chmod 600 ~/private-key.pem
           mkdir -p ~/.ssh
           ssh-keyscan ${{ secrets.BASTION_HOST_IP }} >> ~/.ssh/known_hosts
-
     - name: Transfer file to Bastion Host
       run: |
         scp -i ~/private-key.pem issue-tracker-0.0.1-SNAPSHOT.jar ${{ secrets.BASTION_USER }}@${{ secrets.BASTION_HOST_IP }}:/home/${{ secrets.BASTION_USER }}
@@ -80,6 +79,23 @@ jobs:
     - name: Start application on WAS Server
       run: |
         ssh -i ~/private-key.pem ${{ secrets.BASTION_USER }}@${{ secrets.BASTION_HOST_IP }} \
-        "ssh -i ~/private-key.pem ${{ secrets.WAS_USER }}@${{ secrets.WAS_HOST_IP }} && \
-        ls -al && \
-        ./run.sh"
+        "ssh -i ~/private-key.pem ${{ secrets.WAS_USER }}@${{ secrets.WAS_HOST_IP }} << 'INNER_EOF'
+        echo '>>>> ☠️ 기존 프로세스를 kill 합니다'
+        CURRENT_PID=\$(pgrep -f gist-competition)
+        echo '>>>> 🎯 목표: 현재 프로세스인 \$CURRENT_PID'
+        if [ -z \$CURRENT_PID ]; then
+            echo '>>>> 🤔 지금 돌아가는 프로세스 없습니다'
+        else
+            echo '>>>> 🔪 \$CURRENT_PID를 죽이겠습니다'
+            kill -9 \$CURRENT_PID
+            sleep 3  # 프로세스가 완전히 종료될 시간을 줌
+        fi
+        echo '>>>> 🚀 새로운 애플리케이션 배포합니다'
+        cd /home/${{ secrets.WAS_USER }}/deploy
+        JAR_NAME=\$(ls | grep 'gist-competition' | tail -n 1)
+        
+        echo '>>>> 🚀 프로젝트 실행- JAR name: \$JAR_NAME'
+        nohup java -jar -Duser.timezone=Asia/Seoul \$JAR_NAME 1>nohup/stdout.txt 2>nohup/stderr.txt &
+        sleep 2  # 애플리케이션이 안정적으로 시작될 시간을 줌
+        INNER_EOF
+        "
