@@ -1,5 +1,6 @@
 package com.issuetracker.domain.milestone.argumentresolver;
 
+import lombok.NonNull;
 import org.springframework.core.MethodParameter;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.ObjectError;
@@ -8,6 +9,8 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+
+import java.util.Objects;
 
 public class MilestoneIdArgumentResolver implements HandlerMethodArgumentResolver {
 
@@ -18,14 +21,15 @@ public class MilestoneIdArgumentResolver implements HandlerMethodArgumentResolve
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
-                                  NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+                                  @NonNull NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
 
-        String pathVariableName = parameter.getParameterAnnotation(MilestoneId.class).value();
+        String pathVariableName = Objects.requireNonNull(parameter.getParameterAnnotation(MilestoneId.class)).value();
 
         if (!pathVariableName.isEmpty()) {
             pathVariableName = parameter.getParameterName();
         }
 
+        assert pathVariableName != null;
         String value = webRequest.getParameter(pathVariableName);
 
         validateMilestoneId(value, pathVariableName, parameter);
