@@ -67,15 +67,15 @@ jobs:
 
     - name: Transfer file to Bastion Host
       run: |
-        ls -al
         scp -i ~/private-key.pem issue-tracker-0.0.1-SNAPSHOT.jar ${{ secrets.BASTION_USER }}@${{ secrets.BASTION_HOST_IP }}:/home/${{ secrets.BASTION_USER }}/deploy
         scp -i ~/private-key.pem ~/private-key.pem ${{ secrets.BASTION_USER }}@${{ secrets.BASTION_HOST_IP }}:/home/${{ secrets.BASTION_USER }}/deploy
     
     - name: Transfer file to WAS Server
       run: |
         ssh -i ~/private-key.pem ${{ secrets.BASTION_USER }}@${{ secrets.BASTION_HOST_IP }} \
-        "scp -i /home/${{ secrets.BASTION_USER }}/deploy/private-key.pem /home/${{ secrets.BASTION_USER }}/deploy/issue-tracker-0.0.1-SNAPSHOT.jar ${{ secrets.WAS_USER }}@${{ secrets.WAS_HOST_IP }}:/home/${{ secrets.WAS_USER }}/deploy/issue-tracker-0.0.1-SNAPSHOT.jar"
-    
+        "ls -al /home/${{ secrets.BASTION_USER }}/deploy && \
+        scp -i /home/${{ secrets.BASTION_USER }}/deploy/private-key.pem /home/${{ secrets.BASTION_USER }}/deploy/issue-tracker-0.0.1-SNAPSHOT.jar ${{ secrets.WAS_USER }}@${{ secrets.WAS_HOST_IP }}:/home/${{ secrets.WAS_USER }}/deploy/issue-tracker-0.0.1-SNAPSHOT.jar"
+        
     - name: Start application on WAS Server
       run: |
         ssh -i ~/private-key.pem ${{ secrets.BASTION_USER }}@${{ secrets.BASTION_HOST_IP }} \
