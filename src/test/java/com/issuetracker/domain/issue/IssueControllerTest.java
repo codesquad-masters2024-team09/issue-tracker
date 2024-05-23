@@ -8,7 +8,7 @@ import com.issuetracker.domain.issue.request.IssueUpdateRequest;
 import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
-import com.issuetracker.domain.issue.response.IssueDetailResponse;
+import com.issuetracker.domain.issue.response.IssueDetailsResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -203,7 +203,7 @@ class IssueControllerTest {
     void detail(Long issueId) throws Exception {
         // given
         String url = urlPrefix + "/issues/" + issueId.toString();
-        IssueDetailResponse response = IssueDetailResponse.builder()
+        IssueDetailsResponse response = IssueDetailsResponse.builder()
                 .id(issueId)
                 .build();
         given(issueService.getDetail(issueId)).willReturn(response);
