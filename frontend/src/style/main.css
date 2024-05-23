@@ -204,3 +204,41 @@ header {
     align-items: center;
     margin-bottom: 5px;
 }
+
+.label {
+    --lightness-threshold: 0.453;
+    --border-threshold: 0.96;
+    --perceived-lightness: calc(
+            (
+            (var(--label-r) * 0.2126) + (var(--label-g) * 0.7152) +
+            (var(--label-b) * 0.0722)
+            ) / 255
+    );
+    --lightness-switch: max(
+            0,
+            min(
+                    calc((1 / (var(--lightness-threshold) - var(--perceived-lightness)))),
+                    1
+            )
+    );
+    --border-alpha: max(
+            0,
+            min(calc((var(--perceived-lightness) - var(--border-threshold)) * 100), 1)
+    );
+    color: hsl(0deg, 0%, calc(var(--lightness-switch) * 100%));
+    background: rgb(var(--label-r), var(--label-g), var(--label-b));
+    display: inline-block;
+    border-width: 1px;
+    border-style: solid;
+    border-color: hsla(
+            var(--label-h),
+            calc(var(--label-s) * 1%),
+            calc((var(--label-l) - 25) * 1%),
+            var(--border-alpha)
+    );
+    padding: 0px 10px;
+    border-radius: 16px;
+    line-height: 22px;
+    font-size: 12px;
+    font-weight: bold;
+}
