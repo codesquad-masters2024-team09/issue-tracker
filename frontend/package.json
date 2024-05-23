@@ -14,5 +14,10 @@
     "svelte": "^4.2.12",
     "tinro": "^0.6.12",
     "vite": "^5.2.0"
+  },
+  "dependencies": {
+    "date-fns": "^3.6.0",
+    "date-picker-svelte": "^2.13.0",
+    "yup": "^1.4.0"
   }
 }

@@ -37,6 +37,10 @@ const putApi = ({path='', data={}} = {}) => {
   return send({method: 'PUT', path, data})
 }
 
+const patchApi = ({path='', data={}} = {}) => {
+  return send({method: 'PATCH', path, data})
+}
+
 const postApi = ({path='', data={}} = {}) => {
   return send({method: 'POST', path, data})
 }
@@ -48,6 +52,7 @@ const delApi = ({path='', data={}} = {}) => {
 export {
   getApi,
   putApi,
+  patchApi,
   postApi,
   delApi,
 }
