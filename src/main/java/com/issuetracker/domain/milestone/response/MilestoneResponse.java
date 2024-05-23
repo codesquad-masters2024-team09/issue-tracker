@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @Getter
 @Builder
@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 public class MilestoneResponse {
 
     private String id;
-    private LocalDateTime dueDate;
+    private Date dueDate;
     private String description;
 
     public static MilestoneResponse of(Milestone milestone) {

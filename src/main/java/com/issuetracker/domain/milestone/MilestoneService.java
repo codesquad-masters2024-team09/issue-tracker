@@ -7,7 +7,6 @@ import com.issuetracker.domain.milestone.response.MilestoneResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +52,6 @@ public class MilestoneService {
     public Long count(boolean openStatus) {
         return milestoneRepository.countByIsOpen(openStatus);
     }
-
 
     public void updateStatus(String milestoneId, boolean desiredState) {
         milestoneRepository.updateOpenStatus(milestoneId, desiredState);
