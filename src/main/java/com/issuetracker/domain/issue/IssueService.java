@@ -4,16 +4,16 @@ import com.issuetracker.domain.issue.request.IssueSearchCondition;
 import java.util.HashMap;
 
 import com.issuetracker.domain.issue.response.IssueDetailsResponse;
+
+import com.issuetracker.domain.issue.response.SimpleIssue;
 import com.issuetracker.global.exception.issue.IssueNotFoundException;
 import lombok.RequiredArgsConstructor;
+import com.issuetracker.domain.issue.response.IssueDetailResponse;
 import org.springframework.stereotype.Service;
 import java.util.Map;
-import com.issuetracker.domain.issue.response.IssueListResponse;
-import com.issuetracker.domain.issue.response.IssueResponse;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +28,6 @@ public class IssueService {
         Issue savedIssue = issueRepository.save(issue);
         return savedIssue.getId();
     }
-
 
     @Transactional(readOnly = true)
     public IssueDetailsResponse getDetail(Long issueId) {
@@ -45,15 +44,11 @@ public class IssueService {
     }
 
     @Transactional(readOnly = true)
-    public IssueListResponse getIssues() {
-        List<Issue> issues = issueRepository.findAll();
-        return IssueListResponse.of(
-                issues.stream().map(IssueResponse::of).collect(Collectors.toList())
-        );
+    public List<SimpleIssue> getIssues() {
+        return issueViewMapper.findAll();
     }
 
     public void addLabel(Long issueId, String labelId) {
-        // TODO: 레이블이 존재하는지 확인하는 로직 넣어야 함
         Issue issue = issueRepository.findById(issueId).orElseThrow(IssueNotFoundException::new);
         issue.addLabel(labelId);
 
