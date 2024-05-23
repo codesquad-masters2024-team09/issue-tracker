@@ -73,23 +73,10 @@ public class IssueController {
     }
 
     @GetMapping
-    public ResponseEntity<IssueListResponse> getIssues() {
-        List<SimpleIssue> issues = issueService.getIssues();
+    public ResponseEntity<IssueListResponse> getIssuesByCondition(@RequestParam("q") String condition) {
+        List<SimpleIssue> issues = issueService.getIssuesByCondition(IssueSearchCondition.of(condition));
 
         return ResponseEntity
                 .ok(IssueListResponse.from(issues));
     }
-
-    // TODO: 필터링
-//    @GetMapping
-//    public ResponseEntity<?> getIssuesByCondition(@RequestParam("q") String condition) {
-//        List<Issue> issues = issueService.getIssueByCondition(IssueSearchCondition.of(condition));
-//
-//        List<IssuePreviewResponse> issuePreviewRespons = issues.stream()
-//                .map(IssuePreviewResponse::from)
-//                .collect(Collectors.toList());
-//
-//        return ResponseEntity
-//                .ok(IssueListResponse.of(issuePreviewRespons));
-//    }
 }

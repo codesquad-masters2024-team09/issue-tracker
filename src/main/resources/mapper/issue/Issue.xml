@@ -16,42 +16,4 @@
         WHERE ISSUE_ID = #{issueId}
     </update>
 
-    <resultMap id="IssueResultMap" type="com.issuetracker.domain.issue.Issue">
-        <id property="id" column="ISSUE_ID" />
-        <result property="memberId" column="MEMBER_ID" />
-        <result property="isOpen" column="IS_OPEN" />
-        <result property="title" column="TITLE" />
-        <result property="milestoneRef" column="MILESTONE_ID" typeHandler="com.issuetracker.domain.issue.AggregateReferenceTypeHandler"/>
-        <collection property="issueLabels" column="ISSUE_ID" javaType="java.util.Set" ofType="com.issuetracker.domain.issue.IssueLabel"
-                    select="com.issuetracker.domain.issue.IssueLabelMapper.findByIssueId"/>
-    </resultMap>
-
-    <select id="findByCondition" parameterType="Map" resultMap="IssueResultMap">
-        SELECT I.* FROM ISSUE I
-        <where>
-            <if test="author != null and author != ''">
-                I.MEMBER_ID = #{author}
-            </if>
-            <if test="milestoneId != null and milestoneId != ''">
-                AND I.MILESTONE_ID = #{milestoneId}
-            </if>
-            <if test="labelIds != null and labelIds.size() > 0">
-                AND EXISTS (
-                    SELECT 1 FROM ISSUE_LABEL IL
-                    WHERE IL.ISSUE_ID = I.ISSUE_ID
-                    AND IL.LABEL_ID IN
-                    <foreach item="labelId" index="index" collection="labelIds" open="(" separator="," close=")">
-                        #{labelId}
-                    </foreach>
-                    )
-            </if>
-            <if test="title != null and title != ''">
-                AND I.TITLE LIKE CONCAT('%', #{title}, '%')
-            </if>
-            <if test="isOpen != null">
-                AND I.IS_OPEN = #{isOpen}
-            </if>
-        </where>
-    </select>
-
 </mapper>

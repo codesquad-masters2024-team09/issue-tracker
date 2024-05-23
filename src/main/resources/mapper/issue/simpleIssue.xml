@@ -22,7 +22,7 @@
         <collection property="labels" ofType="com.issuetracker.domain.label.Label" resultMap="LabelResultMap" javaType="java.util.Set" />
     </resultMap>
 
-    <select id="findAll" resultMap="SimpleIssueResultMap">
+    <select id="findAllByCondition" resultMap="SimpleIssueResultMap">
         SELECT
             I.ISSUE_ID,
             I.MEMBER_ID AS ISSUE_MEMBER_ID,
@@ -39,6 +39,26 @@
              ISSUE_LABEL IL ON I.ISSUE_ID = IL.ISSUE_ID
                  LEFT JOIN
              LABEL L ON IL.LABEL_ID = L.LABEL_ID
+        <where>
+            <if test="author != null and author != ''">
+                I.MEMBER_ID = #{author}
+            </if>
+            <if test="milestoneId != null and milestoneId != ''">
+                AND I.MILESTOND_ID = #{milestoneId}
+            </if>
+            <if test="labelIds != null and labelIds.size() > 0">
+                AND IL.LABEL_ID IN
+                <foreach item="labelId" index="index" collection="labelIds" open="(" separator="," close=")">
+                    #{labelId}
+                </foreach>
+            </if>
+            <if test="title != null and title != ''">
+                AND I.TITLE LIKE CONCAT('%', #{title}, '%')
+            </if>
+            <if test="isOpen != null">
+                AND I.IS_OPEN = #{isOpen}
+            </if>
+        </where>
     </select>
 
 </mapper>

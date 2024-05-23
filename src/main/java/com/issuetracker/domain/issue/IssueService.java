@@ -43,11 +43,6 @@ public class IssueService {
         issueMapper.update(form);
     }
 
-    @Transactional(readOnly = true)
-    public List<SimpleIssue> getIssues() {
-        return issueViewMapper.findAll();
-    }
-
     public void addLabel(Long issueId, String labelId) {
         Issue issue = issueRepository.findById(issueId).orElseThrow(IssueNotFoundException::new);
         issue.addLabel(labelId);
@@ -83,15 +78,16 @@ public class IssueService {
         return issueRepository.save(issue);
     }
 
-    public List<Issue> getIssueByCondition(IssueSearchCondition condition) {
+    @Transactional(readOnly = true)
+    public List<SimpleIssue> getIssuesByCondition(IssueSearchCondition condition) {
         Map<String, Object> conditionMap = new HashMap<>();
 
         conditionMap.put("author", condition.getAuthor());
         conditionMap.put("isOpen", condition.isOpen());
         conditionMap.put("milestoneId", condition.getMilestoneId());
         conditionMap.put("labelIds", condition.getLabelIds());
-        conditionMap.put("title", condition.getTitle());
+        conditionMap.put("title", condition.getTitle()); // TODO: content 추가
 
-        return issueMapper.findByCondition(conditionMap);
+        return issueViewMapper.findAllByCondition(conditionMap);
     }
 }
