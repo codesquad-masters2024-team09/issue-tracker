@@ -1,101 +1,80 @@
 <script>
-  export let label = {};
+  import {hexToRgb, rgbToHsl} from "../../utils/color.js";
+  import {labels} from "../../store/label.js";
+
   const lightColor = "#FFFFFF";
   const darkColor = "#000000";
 
-  let labelId = label.labelId;
-  let description = label.description;
-  let colorCode = label.colorCode;
-  let textColor = label.textColor;
+  export let label;
+  let originData = {...label}
 
-  let rgb = hexToRgb(colorCode);
-  let hsl = rgbToHsl(rgb);
+  $: rgb = hexToRgb(label.colorCode);
+  $: hsl = rgbToHsl(rgb);
 
-  function hexToRgb(hex) {
-    if (!hex) return { r: 0, g: 0, b: 0 };
-    hex = hex.replace(/^#/, "");
-    const bigint = parseInt(hex, 16);
-    const r = (bigint >> 16) & 255;
-    const g = (bigint >> 8) & 255;
-    const b = bigint & 255;
-    return { r, g, b };
+  const onCloseEditModeLabel = () => {
+    label = {...originData}
+    labels.closeEditModeLabel()
   }
 
-  function rgbToHsl({ r, g, b }) {
-    r /= 255;
-    g /= 255;
-    b /= 255;
-    const max = Math.max(r, g, b);
-    const min = Math.min(r, g, b);
-    const l = (max + min) / 2;
-    if (max === min) {
-      return { h: 0, s: 0, l: Math.round(l * 100) };
+  const onUpdateLabel = () => {
+    const changes = diff(originData, label);
+    if(Object.keys(changes).length > 0) {
+      labels.updateLabel(originData.labelId, changes);
     }
-    const diff = max - min;
-    const s = diff / (1 - Math.abs(2 * l - 1));
-    let h;
-    switch (max) {
-      case r:
-        h = ((g - b) / diff + (g < b ? 6 : 0)) % 6;
-        break;
-      case g:
-        h = (b - r) / diff + 2;
-        break;
-      case b:
-        h = (r - g) / diff + 4;
-        break;
+  }
+
+  function diff(oldData, newData) {
+    const changes = {};
+    for (const key in newData) {
+      if (oldData[key] !== newData[key]) {
+        changes[key] = newData[key];
+      }
     }
-    h = Math.round(h * 60);
-    return { h, s: Math.round(s * 100), l: Math.round(l * 100) };
+    return changes;
   }
 
   function generateRandomColor() {
     const red = Math.floor(Math.random() * 256);
     const green = Math.floor(Math.random() * 256);
     const blue = Math.floor(Math.random() * 256);
-    const rgb = { r: red, g: green, b: blue };
     const colorCode = `#${red.toString(16).padStart(2, "0").toUpperCase()}${green.toString(16).padStart(2, "0").toUpperCase()}${blue.toString(16).padStart(2, "0").toUpperCase()}`;
+    const rgb = { r: red, g: green, b: blue };
     const hsl = rgbToHsl(rgb);
-    updateTextColor(rgb);
     return { colorCode, rgb, hsl };
   }
 
   function determineTextColor(rgb) {
-    const perceivedLightness =
-      (rgb.r * 0.299 + rgb.g * 0.587 + rgb.b * 0.114) / 255;
+    const perceivedLightness = (rgb.r * 0.299 + rgb.g * 0.587 + rgb.b * 0.114) / 255;
     return perceivedLightness > 0.453 ? darkColor : lightColor;
   }
 
-  function updateTextColor(rgb) {
-    textColor = determineTextColor(rgb);
+  function updateLabelColor(colorCode) {
+    const rgb = hexToRgb(colorCode);
+    label.colorCode = colorCode;
+    label.textColor = determineTextColor(rgb);
   }
 
   function onColorCodeInput(event) {
-    colorCode = event.target.value;
-    rgb = hexToRgb(colorCode);
-    hsl = rgbToHsl(rgb);
-    updateTextColor(rgb);
+    updateLabelColor(event.target.value);
   }
 
   function onGenerateRandomColorClick() {
-    const newColor = generateRandomColor();
-    colorCode = newColor.colorCode;
-    rgb = newColor.rgb;
-    hsl = newColor.hsl;
+    const { colorCode } = generateRandomColor();
+    updateLabelColor(colorCode);
   }
 
   function onTextColorChange(event) {
-    textColor = event.target.value === lightColor ? lightColor : darkColor;
+    label.textColor = event.target.value;
   }
 </script>
 
 <div class="label-form-container">
   <div
     class="label"
-    style="--label-r: {rgb.r}; --label-g: {rgb.g}; --label-b: {rgb.b}; --label-h: {hsl.h}; --label-s: {hsl.s}; --label-l: {hsl.l}; color: {textColor}"
+    style="--label-r: {rgb.r}; --label-g: {rgb.g}; --label-b: {rgb.b}; --label-h: {hsl.h}; --label-s: {hsl.s}; --label-l: {hsl.l}; color: {label.textColor}"
   >
-    {#if labelId}
-      <div>{labelId}</div>
+    {#if label.labelId}
+      <div>{label.labelId}</div>
     {:else}
       <div>Label</div>
     {/if}
@@ -107,7 +86,7 @@
       <input
         id="labelId"
         type="text"
-        bind:value={labelId}
+        bind:value={label.labelId}
         placeholder="레이블의 이름을 입력하세요"
         maxlength="20"
       />
@@ -117,7 +96,7 @@
       <input
         id="description"
         type="text"
-        bind:value={description}
+        bind:value={label.description}
         placeholder="레이블에 대한 설명을 입력하세요"
         maxlength="50"
       />
@@ -127,7 +106,7 @@
       <input
         id="colorCode"
         type="text"
-        bind:value={colorCode}
+        bind:value={label.colorCode}
         on:input={onColorCodeInput}
         maxlength="7"
       />
@@ -138,7 +117,7 @@
       <select
         id="textColor"
         on:change={onTextColorChange}
-        bind:value={textColor}
+        bind:value={label.textColor}
       >
         <option value="" disabled selected hidden>텍스트 색상</option>
         <option value={lightColor}>밝은 색</option>
@@ -148,47 +127,7 @@
   </div>
 
   <div>
-    <button>취소</button>
-    <button>완료</button>
+    <button on:click={onCloseEditModeLabel}>취소</button>
+    <button on:click={onUpdateLabel}>완료</button>
   </div>
 </div>
-
-<style>
-  .label {
-    --lightness-threshold: 0.453;
-    --border-threshold: 0.96;
-    --perceived-lightness: calc(
-      (
-          (var(--label-r) * 0.2126) + (var(--label-g) * 0.7152) +
-            (var(--label-b) * 0.0722)
-        ) / 255
-    );
-    --lightness-switch: max(
-      0,
-      min(
-        calc((1 / (var(--lightness-threshold) - var(--perceived-lightness)))),
-        1
-      )
-    );
-    --border-alpha: max(
-      0,
-      min(calc((var(--perceived-lightness) - var(--border-threshold)) * 100), 1)
-    );
-    color: hsl(0deg, 0%, calc(var(--lightness-switch) * 100%));
-    background: rgb(var(--label-r), var(--label-g), var(--label-b));
-    display: inline-block;
-    border-width: 1px;
-    border-style: solid;
-    border-color: hsla(
-      var(--label-h),
-      calc(var(--label-s) * 1%),
-      calc((var(--label-l) - 25) * 1%),
-      var(--border-alpha)
-    );
-    padding: 0px 10px;
-    border-radius: 16px;
-    line-height: 22px;
-    font-size: 12px;
-    font-weight: bold;
-  }
-</style>
