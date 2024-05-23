@@ -8,9 +8,13 @@ import lombok.Getter;
 @AllArgsConstructor
 public class IssueListResponse {
 
-    private List<IssueResponse> issues;
+    private List<IssuePreviewResponse> issues;
 
-    public static IssueListResponse of(List<IssueResponse> elements) {
-        return new IssueListResponse(elements);
+    public static IssueListResponse from(List<SimpleIssue> simpleIssues) {
+        return new IssueListResponse(
+                simpleIssues.stream()
+                        .map(IssuePreviewResponse::from)
+                        .toList()
+        );
     }
 }
