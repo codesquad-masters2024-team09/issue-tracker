@@ -6,6 +6,7 @@ import com.issuetracker.domain.milestone.response.MilestoneListResponse;
 import com.issuetracker.domain.milestone.response.MilestoneResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class MilestoneService {
 
     private final MilestoneRepository milestoneRepository;
@@ -25,6 +27,7 @@ public class MilestoneService {
         return MilestoneResponse.of(savedMilestone);
     }
 
+    @Transactional(readOnly = true)
     public MilestoneListResponse getMilestones(boolean openStatus) {
         List<Milestone> milestones =  milestoneRepository.findMilestonesByIsOpen(openStatus);
         return MilestoneListResponse.of(milestones);
@@ -46,6 +49,7 @@ public class MilestoneService {
         milestoneMapper.update(requestMap);
     }
 
+    @Transactional(readOnly = true)
     public Long count(boolean openStatus) {
         return milestoneRepository.countByIsOpen(openStatus);
     }
