@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @NoArgsConstructor
@@ -16,6 +16,6 @@ public class MilestoneUpdateRequest {
     @NotBlank
     @Size(max = 30)
     private String id;
-    private LocalDateTime dueDate;
+    private LocalDate dueDate;
     private String description;
 }
