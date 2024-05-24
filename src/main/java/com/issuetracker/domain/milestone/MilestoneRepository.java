@@ -10,7 +10,8 @@ import java.util.List;
 @Repository
 public interface MilestoneRepository extends CrudRepository<Milestone, String> {
 
-    List<Milestone> findMilestonesByIsOpen(boolean openStatus);
+    List<Milestone> findMilestonesByIsOpenOrderByCreatedAtDesc(boolean openStatus);
+
     Long countByIsOpen(boolean openStatus);
 
     @Modifying
