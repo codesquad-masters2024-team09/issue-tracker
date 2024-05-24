@@ -1,7 +1,7 @@
 import {get, writable} from "svelte/store";
 import {getApi, postApi, putApi, delApi} from "../service/api.js";
 import {router} from "tinro";
-import {MOCK_USER_ID, MOCK_USER_PWD} from "../utils/constants.js";
+import {urlPrefix, MOCK_USER_ID, MOCK_USER_PWD} from "../utils/constants.js";
 
 function setIssues() {
     let initValues = {
@@ -11,18 +11,21 @@ function setIssues() {
 
     const { subscribe, update, set } = writable({...initValues});
 
-    const createIssue = async (title, content) => {
+    const createIssue = async (form) => {
         try {
             const options = {
-                path: "/api/v1/issues",
+                path: urlPrefix + "/issues",
                 data: {
-                    memberId: MOCK_USER_ID,
-                    title: title,
-                    content: content,
+                    memberId: form.memberId,
+                    title: form.title,
+                    content: form.content,
+                    lables: form.lables,
+                    milestone: form.milestone,
                 },
             }
-            await postApi(options);
-            router.goto("/");
+
+            const savedId = await postApi(options);
+            router.goto(/issues/ + savedId.issueId);
         }
         catch (err) {
             console.log(err);
@@ -31,6 +34,7 @@ function setIssues() {
     }
 
     return {
+        subscribe,
         createIssue,
     }
 }
