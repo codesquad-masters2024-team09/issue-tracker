@@ -1,49 +1,55 @@
 <script>
+    import { writable } from 'svelte/store';
+
     import {onMount} from "svelte";
     import {getApi, postApi} from "../../service/api.js";
     import {Route, meta} from "tinro";
-    import {MOCK_USER_ID} from "../../utils/constants.js";
+    import {urlPrefix, MOCK_USER_ID} from "../../utils/constants.js";
 
     const route = meta();
     const issueId = Number(route.params.issueId);
 
     let issueData = {
-        memberId: MOCK_USER_ID,
         issueId: issueId,
-        createdAt: '',
+        memberId: MOCK_USER_ID,
         title: '',
         content: '',
         comments: [],
+        createdAt: '',
     }
 
     let commentInput = '';
     let isSubmitLocked = true;
     $:isSubmitLocked = commentInput.trim() === '';
 
-    const fetchIssue = (issueID) => {
+    const fetchIssue = async (issueID) => {
         try {
             const options = {
-                path: `/api/v1/issues/${issueID}`,
+                path: `${urlPrefix}/issues/${issueID}`,
             }
-            return getApi(options);
+            const responseData = await getApi(options);
+            console.log('Fetched issue data:', responseData)
+            return responseData;
         }
         catch (err) {
+            console.error(err);
             alert("오류가 발생했습니다! 다시 시도해주세요!");
         }
     }
 
-    const onCreateComment = () => {
+    const onCreateComment = async () => {
         try {
             const options = {
-                path: '/api/v1/comments',
+                path: `${urlPrefix}/comments`,
                 data: {
                     memberId: MOCK_USER_ID,
                     issueId: issueId,
                     content: commentInput,
                 }
             }
-            postApi(options);
-            issueData.comments = [...issueData.comments, options.data];
+            await postApi(options);
+            const newComments = [...issueData.comments, options.data]
+            issueData.comments = newComments
             commentInput = '';
         }
         catch (err) {
@@ -53,124 +59,137 @@
     }
 
     onMount(async () => {
-         issueData = await fetchIssue(issueId);
-         console.log(issueData.comments);
+        const responseData = await fetchIssue(issueId);
+        if (responseData) {
+            issueData = {...responseData}
+        }
+        console.log('responseData:', issueData)
     });
-
 
 </script>
 
-<div id="header-area">
-    <p id="title-text">{issueData.title}</p>
-    <p class="detail-info">이 이슈는 {issueData.createdAt}에 {issueData.memberId}에 의해 열렸습니다</p>
-</div>
-<div id="main-area">
-    <div id="content-area">
-        <div class="left-section">
-            <div class="content-box">
-                <div class="content-box-header">
-                    <p>{issueData.memberId}</p>
-                </div>
-                <div class="content-box-main">
-                    <p>{issueData.content}</p>
-                </div>
+<div class="flex flex-col w-full">
+    <div id="header-area">
+        <div class="flex gap-3 m-2 p-1 justify-start items-center">
+            <span id="title-text" class="inline-block text-4xl">{issueData.title}</span>
+            <span class="inline-block text-2xl text-gray-400">
+                #
+                {#if issueData && issueData.issueId}
+                    {issueData.issueId.toString()}
+                {/if}
+            </span>
+        </div>
+        <div class="flex gap-1 m-4 justify-start items-center">
+            <div class="flex m-1 p-1 justify-center items-center bg-blue-500 text-white text-[11px] w-[80px] rounded-2xl">
+                <span class="pr-[3px]">
+                    <i class="bi bi-exclamation-circle"></i>
+                    열린 이슈
+                </span>
             </div>
-            {#each issueData.comments as comment}
-                <div class="content-box">
-                    <div class="content-box-header">
-                        <p>{comment.memberId}</p>
+            <p class="detail-info inline-block ">이 이슈는 {issueData.createdAt}에 {issueData.memberId}에 의해 열렸습니다</p>
+        </div>
+    </div>
+
+    <div class="w-full mb-3">
+        <hr>
+    </div>
+
+    <div id="main-area">
+        <div id="content-area" class="flex flex-col items-start">
+            <div class="left-section flex gap-4">
+
+                <!-- 이슈와 댓글 -->
+                <div class="content-box flex-col my-3 w-[960px] w-min-[500px]">
+                    <!-- 이슈 -->
+                    <div class="content-box header flex gap-2 justify-start items-center">
+                        <!-- 프로필 아이콘 -->
+                        <div class="size-9">
+                            <img src="/assets/profile_icon.svg" alt="Profile Icon" class="profile-icon">
+                        </div>
+                        <!-- 작성자 -->
+                        <div class="grow">{issueData.memberId}</div>
                     </div>
-                    <div class="content-box-main">
+                    <!-- 이슈 내용 -->
+                    <div class="content-box main">
+                        <p>{issueData.content}</p>
+                    </div>
+
+                    <div class="content-box header mt-3 flex gap-2 justify-start items-center">
+                        <!-- 프로필 아이콘 -->
+                        <div class="size-9">
+                            <img src="/assets/profile_icon.svg" alt="Profile Icon" class="profile-icon">
+                        </div>
+                        <!-- 작성자 -->
+                        <div class="grow">댓글돌이</div>
+                    </div>
+                    <!-- 댓글 내용 -->
+                    <div class="content-box main">
+                        <p>모든 이슈에 댓글돌이가 댓글을 달아줍니다 :) </p>
+                    </div>
+
+                    <!-- 댓글 -->
+                    {#each issueData.comments as comment}
+                    <div class="content-box header mt-3 flex gap-2 justify-start items-center">
+                        <!-- 프로필 아이콘 -->
+                        <div class="size-9">
+                            <img src="/assets/profile_icon.svg" alt="Profile Icon" class="profile-icon">
+                        </div>
+                        <!-- 작성자 -->
+                        <div class="grow">{comment.memberId}</div>
+                    </div>
+                    <!-- 댓글 내용 -->
+                    <div class="content-box main">
                         <p>{comment.content}</p>
                     </div>
+                    {/each}
                 </div>
-            {/each}
 
-            <div class="comment-container">
-                <div class="comment-box">
-                    <textarea placeholder="코멘트를 입력하세요"
-                              bind:value={commentInput}></textarea>
-                    <div class="attachment">
-                        <span class="detail-info">📎 파일 첨부하기</span>
+                <div class="flex-1">
+                    <div id="additional-info-area" class="option-parent">
+                        <div class="option-item">
+                            <div class="option-item-container">
+                                <span>담당자</span>
+                                <button class="add-button">+</button>
+                            </div>
+                        </div>
+                        <div class="option-item">
+                            <div class="option-item-container">
+                                <span>레이블</span>
+                                <button class="add-button">+</button>
+                            </div>
+                        </div>
+                        <div class="option-item">
+                            <div class="option-item-container">
+                                <span>마일스톤</span>
+                                <button class="add-button">+</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="action-buttons">
-                    <button class="submit-button"
-                            disabled={isSubmitLocked} on:click={onCreateComment}>+ 코멘트 작성</button>
+            </div>
+
+            <!-- 댓글 -->
+            <div class="flex flex-col w-[960px] w-min-[500px]">
+                <!-- 입력 폼 -->
+                <div class="comment-container">
+                    <div class="flex flex-col p-1 w-full">
+                        <div class="flex flex-col content-input rounded-lg">
+                            <textarea placeholder="내용을 입력하세요" class="mb-1 w-full h-[250px] rounded-lg p-3 focus:bg-white focus:outline outline-neutral-500" bind:value={commentInput}></textarea>
+                            <div class="attachment flex justify-start items-center  bg-neutral-100 rounded-md cursor-pointer">
+                                <span class="m-1">
+                                    <i class="bi bi-paperclip"></i>
+                                </span>
+                                <span class="text-sm text-gray-600">파일 첨부하기</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 작성완료 버튼 -->
+                <div class="flex justify-end">
+                    <button type="button" class="btn issue create submit-button" disabled={isSubmitLocked} on:click={onCreateComment}>+ 코멘트 작성</button>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <div id="additional-info-area">
-        <div class="option-container">
-            <div class="option-item">
-                <span>담당자</span>
-                <button class="add-button">+</button>
-            </div>
-            <div class="option-item">
-                <span>레이블</span>
-                <button class="add-button">+</button>
-            </div>
-            <div class="option-item">
-                <span>마일스톤</span>
-                <button class="add-button">+</button>
-            </div>
         </div>
     </div>
 </div>
-
-
-<style>
-    .content-box {
-        background-color: #FEFEFE;
-        width: 960px;
-        border-radius: 10px;       /* 모서리 둥글게 처리 (반지름 10px) */
-        border: 1px solid #e0e0e0; /* 테두리 회색으로 설정, 두께는 1px */
-        overflow: hidden;          /* 내용이 상자를 넘어갈 경우 숨기기 (내부 요소가 박스 밖으로 나가지 못하게 함) */
-    }
-
-    .content-box-header {
-        background-color: #F7F7FC;
-        padding: 20px;             /* 헤더 내부에 상하좌우 20px 여백 추가 */
-        border-bottom: 1px solid #e0e0e0; /* 헤더와 본문 구분 하단 경계선 추가 */
-    }
-
-    .content-box-main {
-        padding: 20px; /* 패딩 설정 */
-    }
-
-    .comment-container {
-        width: 100%;
-        max-width: 960px;
-        justify-content: center;
-        margin-top: 20px;
-    }
-
-    .comment-box {
-        background-color: #EFF0F6;
-        border-radius: 10px;
-        padding: 10px;
-        width: 100%;
-    }
-
-    .content-box-header > img {
-        display: inline-block;
-    }
-
-    .comment-box textarea {
-        width: 100%; /* 너비를 부모 요소에 맞춤 */
-        height: 120px; /* 높이를 150px로 설정 */
-        border: none; /* 테두리를 없앰 */
-        padding: 15px; /* 내부 여백을 15px로 설정 */
-        font-size: 16px; /* 글자 크기를 16px로 설정 */
-        resize: none; /* 사용자가 텍스트 영역 크기를 조정할 수 없도록 함 */
-        box-sizing: border-box; /* 패딩과 테두리를 포함한 전체 너비와 높이를 설정 */
-        background-color: #EFF0F6; /* 배경색을 연한 회색으로 설정 */
-        margin-bottom: 10px; /* 아래쪽 여백 추가 */
-    }
-
-    input:focus, textarea:focus {
-        outline: none; /* 포커스 시 나타나는 외곽선을 없앰 */
-    }
-</style>
