@@ -72,12 +72,7 @@
     <div id="header-area">
         <div class="flex gap-3 m-2 p-1 justify-start items-center">
             <span id="title-text" class="inline-block text-4xl">{issueData.title}</span>
-            <span class="inline-block text-2xl text-gray-400">
-                #
-                {#if issueData && issueData.issueId}
-                    {issueData.issueId.toString()}
-                {/if}
-            </span>
+            <span class="inline-block text-2xl text-gray-400">#{issueId}</span>
         </div>
         <div class="flex gap-1 m-4 justify-start items-center">
             <div class="flex m-1 p-1 justify-center items-center bg-blue-500 text-white text-[11px] w-[80px] rounded-2xl">
