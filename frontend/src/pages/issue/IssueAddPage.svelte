@@ -1,5 +1,5 @@
 <script>
-    import { issues } from "../../stores/issue.js";
+    import { issues } from "../../stores/issue";
     import { router } from "tinro";
 
     let issueFormValues = {
