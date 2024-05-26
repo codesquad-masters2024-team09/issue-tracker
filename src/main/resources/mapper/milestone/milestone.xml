@@ -18,4 +18,9 @@
         </set>
         WHERE MILESTONE_ID = #{milestoneId}
     </update>
+
+    <select id="findById" parameterType="String" resultType="String">
+        SELECT MILESTONE_ID FROM MILESTONE WHERE MILESTONE_ID = #{milestoneId}
+    </select>
+
 </mapper>

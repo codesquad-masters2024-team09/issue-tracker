@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.issuetracker.domain.issue.IssueLabelMapper">
+
+    <select id="findByIssueId" parameterType="Long" resultType="com.issuetracker.domain.issue.IssueLabel">
+        SELECT * FROM ISSUE_LABEL WHERE ISSUE_ID = #{issueId}
+    </select>
+
+</mapper>

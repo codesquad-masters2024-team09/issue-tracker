@@ -1,6 +1,7 @@
 package com.issuetracker.domain.comment;
 
 import com.issuetracker.domain.common.BaseDateTime;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -19,7 +20,13 @@ public class Comment extends BaseDateTime {
     @Id
     @Column("COMMENT_ID")
     private Long id;
-    private String member_id;
-    private Long issue_id;
+    private String memberId;
+    private Long issueId;
     private String content;
+
+    public void initBaseDateTime() {
+        LocalDateTime now = LocalDateTime.now();
+        setCreatedAt(now);
+        setModifiedAt(now);
+    }
 }
