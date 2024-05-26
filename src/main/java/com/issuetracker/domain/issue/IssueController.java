@@ -73,7 +73,8 @@ public class IssueController {
     }
 
     @GetMapping
-    public ResponseEntity<IssueListResponse> getIssuesByCondition(@RequestParam("q") String condition) {
+    public ResponseEntity<IssueListResponse> getIssuesByCondition(
+            @RequestParam(required = false, defaultValue ="is:open", name = "q") String condition) {
         List<SimpleIssue> issues = issueService.getIssuesByCondition(IssueSearchCondition.of(condition));
 
         return ResponseEntity
