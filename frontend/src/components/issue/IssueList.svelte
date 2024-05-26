@@ -1,14 +1,15 @@
 <script>
     import { onMount } from "svelte";
     import { get } from 'svelte/store';
-    import { issues, loadingIssue, issuesPageLock } from '../../stores/issue.js';
+    import { issues, loadingIssue, issuesPageLock } from '../../stores/issue';
     import { handleCheckboxes } from "../../service/buttonSelection.js";
     import { router } from "tinro";
     import { optionsStore } from "../../stores/filter.js";
     import IssueFilterOptions from "./FilterOptions.svelte";
-    import Issue from '../../components/issue/Issue.svelte';
+    import Issue from './IssueItem.svelte';
     import NoIssue from "./NoIssue.svelte";
     import IssueLoading from "./IssueLoading.svelte";
+    import LabelMilestoneNavTab from "../common/LabelMilestoneNavtab.svelte";
 
     onMount(() => {
         // checkbox multi select 부분
@@ -20,9 +21,9 @@
 
         // 이슈 리스트 가져오기
         issues.resetIssues()
-        issues.fetchIssues()
-
-        console.log('리스트 컴포넌트에서 받은 이슈 목록: ', get(issues).issueList)
+        issues.fetchIssues().then(() => {
+            console.log('리스트 컴포넌트에서 받은 이슈 목록: ', get(issues).issueList)
+        });
     })
 </script>
 
@@ -43,20 +44,7 @@
 
         <!--    카테고리: 레이블/마일스톤 이동버튼 패널   -->
         <div class="flex justify-between items-center">
-            <div class="flex mx-3 rounded-md min-w-[350px] min-h-[30px] max-h-[44px]" role="group">
-                <button type="button" class="gray-btn label-milestone-pannel rounded-s-2xl" on:click={() => router.goto("/labels")}>
-                <span class="text-[16px]">
-                    <i class="bi bi-tag"></i>
-                </span>
-                    레이블(3)
-                </button>
-                <button type="button" class="gray-btn label-milestone-pannel rounded-e-2xl" on:click={() => router.goto("/milestones")}>
-                <span class="text-[16px]">
-                    <i class="bi bi-signpost"></i>
-                </span>
-                    마일스톤(1)
-                </button>
-            </div>
+            <LabelMilestoneNavTab />
             <button type="button" class="btn issue create max-h-[44px] h-lvh" on:click={() => router.goto("/issues/add")}>
                 <span>
                     <i class="bi bi-plus-lg"></i>
@@ -76,13 +64,13 @@
         <div class="checkbox">
             <input type="checkbox" class="parent-checkbox">
         </div>
-        <div class="issue-filter open on:click={() => optionsStore.toggleIsOpenOption("isOpen")}">
+        <div class="issue-filter open on:click={() => optionsStore.toggleIsOpenOption('isOpen')}">
             <span class="pr-[3px]">
                 <i class="bi bi-exclamation-circle"></i>
             </span>
             열린 이슈(2)
         </div>
-        <div class="issue-filter closed on:click={() => optionsStore.toggleIsOpenOption("isClosed")}">
+        <div class="issue-filter closed on:click={() => optionsStore.toggleIsOpenOption('isClosed')}">
             <span class="pr-[3px]">
                 <i class="bi bi-archive"></i>
             </span>
