@@ -17,7 +17,13 @@ public class Member extends BaseDateTime implements Persistable<String> {
     @Id
     @Column("MEMBER_ID")
     private String id;
-    private String password;
+
+    @Column("IMG_URL")
+    private String profileImgUrl;
+
+    @Column("PASSWORD")
+    private String encodedPassword;
+    private String refreshToken;
 
     @Transient
     @Builder.Default
@@ -26,5 +32,9 @@ public class Member extends BaseDateTime implements Persistable<String> {
     @Override
     public boolean isNew() {
         return isNew;
+    }
+
+    public void updateRefreshToken(String token) {
+        this.refreshToken = token;
     }
 }
