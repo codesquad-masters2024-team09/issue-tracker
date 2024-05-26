@@ -73,9 +73,9 @@ public class IssueController {
                 .build();
     }
 
-    @PatchMapping("/{issueId}")
+    @PatchMapping("/status")
     public ResponseEntity<IssueStatusResponse> updateStatus(
-            @PathVariable("issueId") Long issueId, @RequestParam("isOpen") boolean openStatus) {
+            @RequestParam("issueId") Long issueId, @RequestParam("isOpen") boolean openStatus) {
         Issue issue = issueService.updateStatus(issueId, openStatus);
         IssueStatusResponse response = IssueStatusResponse.from(issue);
         return ResponseEntity.ok(response);
