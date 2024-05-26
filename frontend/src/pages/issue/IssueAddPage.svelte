@@ -1,6 +1,6 @@
 <script>
-    import {issues} from "../../stores/issue.js";
-    import {router} from "tinro";
+    import { issues } from "../../stores/issue.js";
+    import { router } from "tinro";
 
     let issueFormValues = {
         memberId: 'testUser',

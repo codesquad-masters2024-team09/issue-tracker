@@ -1,10 +1,10 @@
 <script>
     import { writable } from 'svelte/store';
-
-    import {onMount} from "svelte";
-    import {getApi, postApi} from "../../service/api.js";
-    import {Route, meta} from "tinro";
-    import {urlPrefix, MOCK_USER_ID} from "../../utils/constants.js";
+    import { onMount } from "svelte";
+    import { issues } from '../../stores/issue';
+    import { getApi, postApi } from "../../service/api.js";
+    import { Route, meta } from "tinro";
+    import { urlPrefix, MOCK_USER_ID } from "../../utils/constants.js";
 
     const route = meta();
     const issueId = Number(route.params.issueId);
@@ -15,27 +15,23 @@
         title: '',
         content: '',
         comments: [],
+        labels: [],
         createdAt: '',
     }
 
     let commentInput = '';
     let isSubmitLocked = true;
+
     $:isSubmitLocked = commentInput.trim() === '';
 
-    const fetchIssue = async (issueID) => {
-        try {
-            const options = {
-                path: `${urlPrefix}/issues/${issueID}`,
-            }
-            const responseData = await getApi(options);
-            console.log('Fetched issue data:', responseData)
-            return responseData;
+    onMount(async () => {
+        const responseData = await issues.fetchIssueDetail(issueId);
+        if (responseData) {
+            issueData = {...responseData}
         }
-        catch (err) {
-            console.error(err);
-            alert("오류가 발생했습니다! 다시 시도해주세요!");
-        }
-    }
+        console.log('responseData:', issueData)
+    });
+
 
     const onCreateComment = async () => {
         try {
@@ -58,14 +54,11 @@
         }
     }
 
-    onMount(async () => {
-        const responseData = await fetchIssue(issueId);
-        if (responseData) {
-            issueData = {...responseData}
+    const onDeleteIssue = (issuesId) => {
+        if (confirm('현재 이슈를 삭제하시겠습니까?')) {
+            issues.deleteIssue(issuesId)
         }
-        console.log('responseData:', issueData)
-    });
-
+    }
 </script>
 
 <div class="flex flex-col w-full">
