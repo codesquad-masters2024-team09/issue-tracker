@@ -40,3 +40,11 @@ logging:
       issuetracker:
         domain:
           issue: TRACE
+
+# custom -> profile change needed!!! & gitignore...
+pwd:
+  encrypt:
+    secret-key:
+
+jwt:
+  secret-key:
