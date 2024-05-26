@@ -13,4 +13,8 @@ public class IssueUpdateRequest {
 
     private String title;
     private String content;
+
+    public boolean validate() {
+        return !(title == null && content == null);
+    }
 }

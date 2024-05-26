@@ -25,6 +25,7 @@ mybatis:
   mapper-locations: classpath:mapper/**/*.xml
   configuration:
     map-underscore-to-camel-case: true
+    default-enum-type-handler: com.issuetracker.domain.issue.AggregateReferenceTypeHandler
 
 # logging
 logging:

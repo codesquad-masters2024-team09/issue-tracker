@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ko">
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<link rel="stylesheet" href="/css/style.css">
+<body>
+<header>
+    <div id="logo">
+        <img src="/images/logo.svg">
+    </div>
+</header>
+<div id="container">
+    <div id="header-area">
+        <p id="title-text">이슈 제목</p>
+        <P>기타 정보</P>
+    </div>
+    <div id="main-area">
+        <div id="content">
+            <div id="content-box">
+                <div id="content-box-header">
+                    <p></p>
+                </div>
+                <div id="content-box-main">
+                    <p></p>
+                </div>
+            </div>
+        </div>
+        <div id="additional-info">
+            <p>담당자 & 레이블 & 마일스톤 영역</p>
+        </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    const issue_title = document.getElementById('title-text');
+    const issue_member_id = document.querySelector('#content-box-header p');
+    const issue_content = document.querySelector('#content-box-main p');
+
+    function getDetail(issueId) {
+        const httpRequest = new XMLHttpRequest();
+        httpRequest.open('GET', '/api/v1/issues/' + issueId, true);
+        httpRequest.onreadystatechange = function() {
+            if (httpRequest.readyState === 4) {
+                if (httpRequest.status === 200) {
+                    const response = JSON.parse(httpRequest.responseText);
+                    issue_title.innerText = response.title;
+                    issue_member_id.innerText = response.memberId;
+                    issue_content.innerText = response.content;
+                } else {
+                    console.log("HTTP Error:", httpRequest.statusText);
+                }
+            }
+        };
+        httpRequest.send();
+    }
+
+    function getIssueIdFromUrl() {
+        const pathname = window.location.pathname;
+        const segments = pathname.split('/');
+        return segments.length > 2 ? segments[2] : null;
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const issueId = getIssueIdFromUrl();
+        if (issueId) {
+            getDetail(issueId);
+        } else {
+            alert('Issue ID가 URL에서 발견되지 않았습니다!');
+        }
+    });
+</script>
+
+</html>

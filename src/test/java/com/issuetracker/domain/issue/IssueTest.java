@@ -4,13 +4,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.issuetracker.domain.comment.Comment;
+import com.issuetracker.domain.issue.request.IssueSearchCondition;
 import com.issuetracker.domain.label.Label;
 import com.issuetracker.domain.label.LabelRepository;
 import com.issuetracker.domain.member.Member;
 import com.issuetracker.domain.member.MemberRepository;
 import com.issuetracker.domain.milestone.Milestone;
 import com.issuetracker.domain.milestone.MilestoneRepository;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,6 +31,9 @@ class IssueTest {
 
     @Autowired
     private IssueRepository issueRepository;
+
+    @Autowired
+    private IssueMapper issueMapper;
 
     @Autowired
     private LabelRepository labelRepository;
@@ -90,8 +96,8 @@ class IssueTest {
         Issue issue = makePureIssue();
 
         // when
-        issue.addLabel(savedDocument);
-        issue.addLabel(savedBug);
+        issue.addLabel(savedDocument.getId());
+        issue.addLabel(savedBug.getId());
 
         Issue savedIssue = issueRepository.save(issue);
 
@@ -100,7 +106,7 @@ class IssueTest {
         assertThat(savedIssue.getIssueLabels()).extracting("labelId").contains("document", "bug");
 
         // when
-        savedIssue.deleteLabel(savedDocument);
+        savedIssue.deleteLabel(savedDocument.getId());
         Issue savedIssueAfterDeleteLabel = issueRepository.save(savedIssue);
         Issue findIssue2 = issueRepository.findById(savedIssueAfterDeleteLabel.getId())
                 .orElseThrow(RuntimeException::new);
@@ -124,13 +130,13 @@ class IssueTest {
 
         Issue issue = makePureIssue();
 
-        issue.addLabel(savedDocument);
-        issue.addLabel(savedBug);
+        issue.addLabel(savedDocument.getId());
+        issue.addLabel(savedBug.getId());
 
         Issue savedIssue = issueRepository.save(issue);
 
         // when
-        savedIssue.deleteLabel(savedDocument);
+        savedIssue.deleteLabel(savedDocument.getId());
         Issue issueWithDeletedLabel = issueRepository.save(savedIssue);
 
         List<Label> labels = labelRepository.findAll();
@@ -150,8 +156,8 @@ class IssueTest {
 
         for (int i = 0; i < 3; i++) {
             Comment comment = Comment.builder()
-                    .issue_id(savedIssue.getId())
-                    .member_id(testMember.getId())
+                    .issueId(savedIssue.getId())
+                    .memberId(testMember.getId())
                     .content("test comment" + i)
                     .build();
 
@@ -183,7 +189,7 @@ class IssueTest {
                 .build();
 
         Milestone savedMilestone = milestoneRepository.save(milestone);
-        issue.assignMilestone(savedMilestone);
+        issue.assignMilestone(savedMilestone.getId());
 
         // when
         Issue savedIssue = issueRepository.save(issue);
@@ -205,7 +211,7 @@ class IssueTest {
                 .build();
 
         Milestone savedMilestone = milestoneRepository.save(milestone);
-        issue.assignMilestone(savedMilestone);
+        issue.assignMilestone(savedMilestone.getId());
 
         Issue savedIssue = issueRepository.save(issue);
 
@@ -234,5 +240,64 @@ class IssueTest {
                 .title("testTitle")
                 .content("testContent")
                 .build();
+    }
+
+    @Test
+    @DisplayName("필터 조건에 따른 동적 쿼리를 처리할 수 있다")
+    void findByCondition() {
+        // given
+        /* Issue 생성: Labels, milestone 지정 */
+        Issue issue = makePureIssue();
+        Issue issue2 = makePureIssue();
+
+        Issue savedIssue = issueRepository.save(issue);
+        Issue savedIssue2 = issueRepository.save(issue2);
+
+        // labels
+        Label document = makeLabel("document");
+        Label bug = makeLabel("bug");
+        Label bugFix = makeLabel("bug fix");
+        Label savedDocument = labelRepository.save(document);
+        Label savedBug = labelRepository.save(bug);
+        Label savedBugFix = labelRepository.save(bugFix);
+
+        savedIssue.addLabel(savedDocument.getId());
+        savedIssue.addLabel(savedBug.getId());
+        savedIssue.addLabel(savedBugFix.getId());
+
+        savedIssue2.addLabel(savedDocument.getId());
+        savedIssue2.addLabel(savedBugFix.getId());
+
+        // milestone
+        Milestone milestone = Milestone.builder()
+                .id("first milestone")
+                .description("test content")
+                .build();
+
+        Milestone savedMilestone = milestoneRepository.save(milestone);
+        savedIssue.assignMilestone(savedMilestone.getId());
+
+        issueRepository.save(savedIssue);
+        issueRepository.save(savedIssue2);
+
+        /* 검색 조건 */
+        IssueSearchCondition condition = IssueSearchCondition.builder()
+                .labelIds(List.of("bug fix", "document"))
+                .milestoneId("first milestone")
+                .isOpen(true)
+                .build();
+
+        Map<String, Object> conditionMap = new HashMap<>();
+        conditionMap.put("author", condition.getAuthor());
+        conditionMap.put("isOpen", condition.isOpen());
+        conditionMap.put("milestoneId", condition.getMilestoneId());
+        conditionMap.put("labelIds", condition.getLabelIds());
+        conditionMap.put("title", condition.getTitle());
+
+        // when
+        List<Issue> issues = issueMapper.findByCondition(conditionMap);
+
+        // then
+        assertThat(issues).hasSize(1);
     }
 }

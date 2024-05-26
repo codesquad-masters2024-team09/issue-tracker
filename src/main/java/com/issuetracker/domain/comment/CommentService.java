@@ -4,11 +4,14 @@ import com.issuetracker.domain.comment.request.CommentCreateRequest;
 import com.issuetracker.domain.comment.request.CommentUpdateRequest;
 import com.issuetracker.domain.issue.Issue;
 import com.issuetracker.domain.issue.IssueRepository;
+import com.issuetracker.global.exception.issue.IssueNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class CommentService {
 
     private final IssueRepository issueRepository;
@@ -16,7 +19,7 @@ public class CommentService {
 
     public Long create(CommentCreateRequest request) {
         Issue issue = issueRepository.findById(request.getIssueId())
-                .orElseThrow(IllegalStateException::new);
+                .orElseThrow(IssueNotFoundException::new);
 
         Comment comment = request.toEntity();
 

@@ -28,7 +28,7 @@ public class IssueResponse {
                 .title(issue.getTitle())
                 .isOpen(issue.isOpen())
                 .labelNames(convertToLabelNames(issue.getIssueLabels()))
-                .milestoneName(issue.getMilestoneRef().getId())
+                .milestoneName(issue.getMilestoneRef() == null ? null : issue.getMilestoneRef().getId())
                 .build();
     }
 
