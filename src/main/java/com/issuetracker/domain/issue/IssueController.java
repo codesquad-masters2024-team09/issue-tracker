@@ -6,6 +6,7 @@ import com.issuetracker.domain.issue.request.MilestoneAssignRequest;
 import com.issuetracker.domain.issue.request.IssueUpdateRequest;
 import com.issuetracker.domain.issue.response.IssueDetailsResponse;
 import com.issuetracker.domain.issue.response.IssueListResponse;
+import com.issuetracker.domain.issue.response.IssueStatusResponse;
 import com.issuetracker.domain.issue.response.SimpleIssue;
 import jakarta.validation.Valid;
 import java.util.HashMap;
@@ -70,6 +71,14 @@ public class IssueController {
         return ResponseEntity
                 .ok()
                 .build();
+    }
+
+    @PatchMapping("/{issueId}")
+    public ResponseEntity<IssueStatusResponse> updateStatus(
+            @PathVariable("issueId") Long issueId, @RequestParam("isOpen") boolean openStatus) {
+        Issue issue = issueService.updateStatus(issueId, openStatus);
+        IssueStatusResponse response = IssueStatusResponse.from(issue);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping

@@ -43,6 +43,16 @@ public class IssueService {
         issueMapper.update(form);
     }
 
+    public Issue updateStatus(Long issueId, boolean openStatus) {
+        Issue issue = issueRepository.findById(issueId)
+                .orElseThrow(IssueNotFoundException::new)
+                .updateStatus(openStatus);
+
+        issueRepository.updateOpenStatus(issue.getId(), issue.isOpen());
+
+        return issue;
+    }
+
     public void addLabel(Long issueId, String labelId) {
         Issue issue = issueRepository.findById(issueId).orElseThrow(IssueNotFoundException::new);
         issue.addLabel(labelId);
