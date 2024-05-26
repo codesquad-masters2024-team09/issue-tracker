@@ -13,6 +13,6 @@ public interface IssueRepository extends CrudRepository<Issue, Long> {
     List<Issue> findAll();
 
     @Modifying
-    @Query("UPDATE ISSUE SET IS_OPEN = :openStatus WHERE ISSUE_ID = :issueId")
-    void updateOpenStatus(Long issueId, boolean openStatus);
+    @Query("UPDATE ISSUE SET IS_OPEN = :openStatus WHERE ISSUE_ID IN (:issueIds)")
+    void updateOpenStatus(List<Long> issueIds, boolean openStatus);
 }

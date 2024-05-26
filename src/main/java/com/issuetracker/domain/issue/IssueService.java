@@ -1,6 +1,8 @@
 package com.issuetracker.domain.issue;
 
 import com.issuetracker.domain.issue.request.IssueSearchCondition;
+
+import java.util.Arrays;
 import java.util.HashMap;
 
 import com.issuetracker.domain.issue.response.IssueDetailsResponse;
@@ -14,6 +16,7 @@ import java.util.Map;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -43,14 +46,13 @@ public class IssueService {
         issueMapper.update(form);
     }
 
-    public Issue updateStatus(Long issueId, boolean openStatus) {
-        Issue issue = issueRepository.findById(issueId)
-                .orElseThrow(IssueNotFoundException::new)
-                .updateStatus(openStatus);
+    public void updateStatus(String issueIdString, boolean openStatus) {
+        List<Long> issueIds = Arrays.stream(issueIdString.split(","))
+                .map(String::trim)
+                .map(Long::parseLong)
+                .toList();
 
-        issueRepository.updateOpenStatus(issue.getId(), issue.isOpen());
-
-        return issue;
+        issueRepository.updateOpenStatus(issueIds, openStatus);
     }
 
     public void addLabel(Long issueId, String labelId) {
