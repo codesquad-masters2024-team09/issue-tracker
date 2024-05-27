@@ -1,7 +1,7 @@
 <script>
   import LabelEditForm from "./LabelEditForm.svelte";
   import {hexToRgb, rgbToHsl} from "../../utils/color.js";
-  import {labels} from "../../store/label.js";
+  import {labels} from "../../stores/label.js";
 
   export let label;
 
