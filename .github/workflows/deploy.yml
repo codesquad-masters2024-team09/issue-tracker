@@ -79,5 +79,5 @@ jobs:
     - name: Start application on WAS Server
       run: |
         ssh -i ~/private-key.pem ${{ secrets.BASTION_USER }}@${{ secrets.BASTION_HOST_IP }} \
-        "ssh -i ~/private-key.pem ${{ secrets.WAS_USER }}@${{ secrets.WAS_HOST_IP }} './run.sh'"
+        "ssh -i ~/private-key.pem ${{ secrets.WAS_USER }}@${{ secrets.WAS_HOST_IP }} 'chmod +x ./run.sh && ./run.sh'"
     
