@@ -19,6 +19,8 @@
     "vite": "^5.2.0"
   },
   "dependencies": {
+    "date-fns": "^3.6.0",
+    "date-picker-svelte": "^2.13.0",
     "yup": "^1.4.0"
   }
 }
