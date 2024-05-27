@@ -39,8 +39,8 @@ public class MilestoneController {
                 .build();
     }
 
-    @PatchMapping("/{milestoneId}")
-    public ResponseEntity<Void> edit(@PathVariable("milestoneId") @MilestoneId String milestoneId,
+    @PutMapping("/{milestoneId}")
+    public ResponseEntity<MilestoneResponse> edit(@PathVariable("milestoneId") @MilestoneId String milestoneId,
                                      @Valid @RequestBody MilestoneUpdateRequest request) {
         milestoneService.edit(milestoneId, request);
         return ResponseEntity

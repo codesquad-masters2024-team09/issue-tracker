@@ -6,10 +6,10 @@
     <update id="update" parameterType="map">
         UPDATE ISSUE
         <set>
-            <if test="form.title != null">
+            <if test="form.title != null and form.title != ''">
                 TITLE = #{form.title},
             </if>
-            <if test="form.content != null">
+            <if test="form.content != null and form.content != ''">
                 CONTENT = #{form.content},
             </if>
         </set>

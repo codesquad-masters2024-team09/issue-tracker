@@ -168,7 +168,7 @@ class MilestoneControllerTest {
     @DisplayName("id가 1인 마일스톤의 제목을 수정하면 200 OK를 반환한다")
     void editTitle() throws Exception {
         // given
-        String url = urlPrefix + "/milestones/1";
+        String url = urlPrefix + "/milestones/testMilestone";
         String updatedName = "Milestone update";
 
         MilestoneUpdateRequest request = new MilestoneUpdateRequest(
@@ -179,7 +179,7 @@ class MilestoneControllerTest {
 
         // when
         ResultActions result = mockMvc.perform(
-                patch(url).content(requestJson)
+                put(url).content(requestJson)
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
