@@ -33,13 +33,11 @@ public class MilestoneService {
         milestoneRepository.deleteById(milestoneId);
     }
 
-    @Transactional(readOnly = true)
-    public MilestoneResponse edit(String milestoneId, MilestoneUpdateRequest form) {
+    public void edit(String milestoneId, MilestoneUpdateRequest form) {
         if (form.getId() == null && form.getDueDate() == null && form.getDescription() == null) {
             throw new IllegalArgumentException();
         }
-        Milestone updatedMilestone = milestoneRepository.updateMilestoneBy(milestoneId, form);
-        return MilestoneResponse.of(updatedMilestone);
+        milestoneRepository.updateMilestoneBy(milestoneId, form);
     }
 
     @Transactional(readOnly = true)

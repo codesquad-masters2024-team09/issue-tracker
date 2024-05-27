@@ -42,8 +42,10 @@ public class MilestoneController {
     @PutMapping("/{milestoneId}")
     public ResponseEntity<MilestoneResponse> edit(@PathVariable("milestoneId") @MilestoneId String milestoneId,
                                      @Valid @RequestBody MilestoneUpdateRequest request) {
+        milestoneService.edit(milestoneId, request);
         return ResponseEntity
-                .ok(milestoneService.edit(milestoneId, request));
+                .ok()
+                .build();
     }
 
     @GetMapping("/count")
