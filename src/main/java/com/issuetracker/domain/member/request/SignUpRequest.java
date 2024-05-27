@@ -1,4 +1,4 @@
-package com.issuetracker.domain.auth.request;
+package com.issuetracker.domain.member.request;
 
 import com.issuetracker.domain.member.Member;
 import jakarta.validation.constraints.NotBlank;

@@ -4,9 +4,7 @@ import com.issuetracker.global.exception.comment.CommentNotFoundException;
 import com.issuetracker.global.exception.issue.IssueNotFoundException;
 import com.issuetracker.global.exception.label.LabelDuplicateException;
 import com.issuetracker.global.exception.label.LabelNotFoundException;
-import com.issuetracker.global.exception.member.InvalidLoginDataException;
-import com.issuetracker.global.exception.member.MemberDuplicateException;
-import com.issuetracker.global.exception.member.MemberNotFoundException;
+import com.issuetracker.global.exception.member.*;
 import com.issuetracker.global.exception.milestone.MilestoneDuplicateException;
 import com.issuetracker.global.exception.milestone.MilestoneNotFoundException;
 import lombok.AccessLevel;
@@ -33,6 +31,8 @@ public enum ExceptionType {
      * Auth (2XXX)
      */
     INVALID_LOGIN_DATA(2000, "아이디 또는 비밀번호가 일치하지 않습니다.", InvalidLoginDataException.class),
+    INVALID_TOKEN(2001, "유효하지 않은 JWT 토큰입니다.", InvalidTokenException.class),
+    TOKEN_EXPIRED(2002, "만료된 JWT 토큰입니다.", TokenExpiredException.class),
 
     /**
      * Member (25XX)

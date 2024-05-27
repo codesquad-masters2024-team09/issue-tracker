@@ -1,16 +1,16 @@
-package com.issuetracker.domain.auth;
+package com.issuetracker.domain.member;
 
-import com.issuetracker.domain.auth.request.LoginRequest;
-import com.issuetracker.domain.auth.request.LogoutRequest;
-import com.issuetracker.domain.auth.request.SignUpRequest;
-import com.issuetracker.domain.auth.response.AuthResponse;
-import com.issuetracker.domain.member.Member;
-import com.issuetracker.domain.member.MemberRepository;
+import com.issuetracker.domain.member.request.LoginRequest;
+import com.issuetracker.domain.member.request.LogoutRequest;
+import com.issuetracker.domain.member.request.SignUpRequest;
+import com.issuetracker.domain.member.response.AuthResponse;
 import com.issuetracker.global.exception.member.InvalidLoginDataException;
+import com.issuetracker.global.exception.member.InvalidTokenException;
 import com.issuetracker.global.exception.member.MemberDuplicateException;
 import com.issuetracker.global.exception.member.MemberNotFoundException;
 import com.issuetracker.global.security.JwtTokenProvider;
 import com.issuetracker.global.security.PasswordEncoder;
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,10 +38,9 @@ public class AuthService {
         String accessToken = jwtTokenProvider.createAccessToken(member.getId(), null);
         String refreshToken = jwtTokenProvider.createRefreshToken(member.getId(), null);
         member.updateRefreshToken(refreshToken);
-        Member savedMember = memberRepository.save(member);
+        memberRepository.save(member);
 
         return AuthResponse.builder()
-                .memberId(savedMember.getId())
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
@@ -60,7 +59,6 @@ public class AuthService {
         memberRepository.updateRefreshToken(member.getId(), member.getRefreshToken());
 
         return AuthResponse.builder()
-                .memberId(member.getId())
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
@@ -70,5 +68,31 @@ public class AuthService {
         Member member = memberRepository.findById(request.getMemberId()).orElseThrow(MemberNotFoundException::new);
         member.expireRefreshToken();
         memberRepository.updateRefreshToken(member.getId(), member.getRefreshToken());
+    }
+
+    public AuthResponse refresh (String bearerToken) {
+        String token = jwtTokenProvider.getToken(bearerToken);
+        Claims claims = jwtTokenProvider.validateToken(token);
+        String memberId = claims.getSubject();
+
+        Member member = memberRepository.findById(memberId).orElseThrow(InvalidTokenException::new);
+
+        if (member.getRefreshToken() == null || !member.getRefreshToken().equals(token)) {
+            throw new InvalidTokenException();
+        }
+
+        String accessToken = jwtTokenProvider.createAccessToken(memberId, null);
+        String refreshToken = member.getRefreshToken();
+
+        if(!jwtTokenProvider.refreshTokenExpired(claims)){
+            refreshToken = jwtTokenProvider.createRefreshToken(memberId, null);
+            member.updateRefreshToken(refreshToken);
+            memberRepository.updateRefreshToken(memberId, refreshToken);
+        }
+
+        return AuthResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
     }
 }

@@ -1,18 +1,16 @@
-package com.issuetracker.domain.auth;
+package com.issuetracker.domain.member;
 
-import com.issuetracker.domain.auth.request.IdDuplicateCheckRequest;
-import com.issuetracker.domain.auth.request.LoginRequest;
-import com.issuetracker.domain.auth.request.LogoutRequest;
-import com.issuetracker.domain.auth.request.SignUpRequest;
-import com.issuetracker.domain.auth.response.AuthResponse;
-import com.issuetracker.domain.auth.response.DuplicateCheckResponse;
+import com.issuetracker.domain.member.request.IdDuplicateCheckRequest;
+import com.issuetracker.domain.member.request.LoginRequest;
+import com.issuetracker.domain.member.request.LogoutRequest;
+import com.issuetracker.domain.member.request.SignUpRequest;
+import com.issuetracker.domain.member.response.AuthResponse;
+import com.issuetracker.domain.member.response.DuplicateCheckResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -42,5 +40,10 @@ public class AuthController {
     public ResponseEntity<Void> logout(@Valid @RequestBody LogoutRequest request) {
         authService.logout(request);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<AuthResponse> refresh(@RequestHeader(name = HttpHeaders.AUTHORIZATION) String refreshToken) {
+        return ResponseEntity.ok(authService.refresh(refreshToken));
     }
 }

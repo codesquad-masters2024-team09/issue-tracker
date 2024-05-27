@@ -1,4 +1,4 @@
-package com.issuetracker.domain.auth.request;
+package com.issuetracker.domain.member.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
