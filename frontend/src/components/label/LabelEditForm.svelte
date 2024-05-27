@@ -72,7 +72,7 @@
     }
 </script>
 
-<div class="label-form-edit-container">
+<div class="label-form-edit-container animate-slidein">
     <div class="label-form-header">레이블 편집</div>
     <div class="flex items-center">
         <!--      레이블 미리보기 창      -->

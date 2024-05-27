@@ -73,7 +73,7 @@
     }
 </script>
 
-<div class="label-form-container">
+<div class="label-form-container animate-slidein">
     <div class="flex flex-col gap-2 justify-between">
         <div class="label-form-header">새로운 레이블 추가</div>
         <div class="flex items-center">
