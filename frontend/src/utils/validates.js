@@ -8,6 +8,8 @@ export const milestoneValidate = yup.object().shape({
     description: yup.string()
         .nullable()
         .max(50, "설명은 최대 50자까지만 입력할 수 있습니다."),
+});
+
 export const labelValidate = yup.object().shape({
     labelId: yup.string().required("레이블 이름을 입력해 주세요.")
         .max(20, "레이블 이름은 최대 20자까지만 입력할 수 있습니다.")

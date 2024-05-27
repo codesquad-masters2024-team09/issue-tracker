@@ -1,5 +1,5 @@
 import {writable} from "svelte/store";
-import {postApi, getApi, patchApi, delApi} from "../service/api.js";
+import {postApi, getApi, patchApi, delApi, putApi} from "../service/api.js";
 
 const urlPrefix = '/api/v1';
 
@@ -83,7 +83,7 @@ function setMilestones() {
                 data: {...changes}
             }
 
-            const editedMilestone = await patchApi(options);
+            const editedMilestone = await putApi(options);
 
             update(data => {
                 data.milestones = data.milestones.map(milestone => {
