@@ -36,7 +36,7 @@
 
 
 <!-- 버튼 컨테이너 -->
-<div class="edit-title-contianer mt-3">
+<div class="edit-title-container mt-3">
     <!-- 편집 취소 버튼 -->
     <button id="edit-title-cancel" class="edit-title-btn blue-border" type="button" on:click={onCloseEditModeIssueContent}>
         <span class="text-[12px] text-center pr-1">
