@@ -1,4 +1,12 @@
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
+
+@font-face {
+  font-family: 'Pretendard-Regular';
+  src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+}
+
 @tailwind base;
 @layer base {
   body {
@@ -27,7 +35,7 @@
     @apply p-3 w-full min-h-[200px] rounded-lg bg-white focus:outline-none
   }
 
-  .edit-title-contianer {
+  .edit-title-container {
     @apply flex mx-2 gap-2 px-1 min-w-[270px] justify-end items-center
   }
 
@@ -42,8 +50,16 @@
     @apply text-blue-600/90 border border-blue-500
   }
 
+  .edit-title-btn.blue-border:hover {
+    @apply bg-gray-50/50
+  }
+
   .edit-title-btn.apply {
-    @apply text-gray-100 bg-blue-600 cursor-pointer
+    @apply text-gray-100 bg-blue-500 cursor-pointer
+  }
+
+  .edit-title-btn.apply:hover {
+    @apply bg-blue-600 text-gray-100 cursor-pointer
   }
 
   .edit-title-btn.apply:disabled {
@@ -73,8 +89,24 @@
       @apply scale-[0.98] shadow-none
   }
 
+  .rotate-btn:hover {
+    @apply transition-colors duration-75 text-slate-600
+  }
+
+  .rotate-btn:active {
+    @apply transition-all duration-100 scale-[0.75] shadow-none
+  }
+
   .gray-btn:hover {
-    @apply hover:bg-gray-200/50 active:scale-[0.99] transition-all duration-100 active:shadow-none
+    @apply bg-gray-200/50
+  }
+
+  .gray-btn:active {
+    @apply transition-all duration-100 scale-[0.99] shadow-none
+  }
+
+  .gray-btn:disabled {
+    @apply transition-none scale-[1] shadow-none bg-gray-200/80 cursor-pointer
   }
 
   .option-container {
@@ -133,7 +165,7 @@
     @apply bg-gray-200/50 w-[430px] p-2 rounded-md outline-none pl-[35px] text-gray-600 focus:border-white focus:bg-white focus:placeholder-transparent
   }
 
-  .label-milestone-pannel {
+  .label-milestone-panel {
     @apply flex-1 px-[2rem] py-1 h-[44px] shadow-sm whitespace-nowrap text-sm text-gray-700 border border-gray-300/60
   }
 
@@ -198,11 +230,65 @@
   }
 
   .issue-table-row {
-    @apply flex bg-white px-5 py-5 w-full border border-gray-300/60 justify-start items-center
+    @apply flex bg-white px-5 py-5 w-full border border-gray-300/60 items-center
   }
 
   .issue-table-row:last-child {
     @apply rounded-b-2xl
+  }
+
+  /* 자식 요소 중 .label-form-edit-container가 없는 경우에만 호버 효과 적용 */
+  .issue-table-row:not(:has(.label-form-edit-container)):hover {
+    @apply transition-all duration-100 bg-gray-100/70;
+  }
+
+  .label-row {
+    @apply flex w-full items-center
+  }
+
+  .label-preview-container {
+    @apply min-w-[170px] ml-4 mr-[6rem] my-1
+  }
+
+  .label-description {
+    @apply mx-4 my-1 min-w-[250px] text-gray-800 truncate
+  }
+
+  .label-btn-container {
+    @apply ml-auto flex gap-2 mx-4 my-1 items-center text-sm whitespace-nowrap
+  }
+
+  /* 여기서부터 레이블 입력 / 수정 폼 */
+  .label-form-container {
+    @apply w-full min-w-[1020px] bg-white p-6 border border-gray-300/60 rounded-2xl
+  }
+
+  .label-form-edit-container {
+    @apply w-full flex flex-col gap-2 justify-between
+  }
+
+  .label-form-header {
+    @apply text-lg font-bold text-gray-800 m-2
+  }
+
+  .label-form-preview-container {
+    @apply flex m-2 border border-neutral-200 rounded-xl bg-white justify-center items-center w-[360px] min-w-[360px] min-h-[180px]
+  }
+
+  .label-form-input-container {
+    @apply flex gap-2 w-full flex-col mx-4 justify-between
+  }
+
+  .label-form-input-box {
+    @apply w-full rounded-e-md relative
+  }
+
+  .label-form-input-box-bg {
+    @apply flex gap-4
+  }
+
+  .label-form-select-box {
+    @apply flex gap-2 text-[14px] justify-between items-center whitespace-nowrap
   }
 
   .checkbox {

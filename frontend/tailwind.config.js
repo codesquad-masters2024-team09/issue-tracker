@@ -11,7 +11,12 @@ export default {
     linecolor: '#f8f8f8' // 그레이 구분선 색상
   },
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: ['Pretendard-Regular'],
+        pretendard: ['Pretendard-Regular'],
+      }
+    },
   },
   plugins: [],
 }
