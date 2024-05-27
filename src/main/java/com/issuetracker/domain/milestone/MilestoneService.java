@@ -25,7 +25,7 @@ public class MilestoneService {
 
     @Transactional(readOnly = true)
     public MilestoneListResponse getMilestones(boolean openStatus) {
-        List<Milestone> milestones =  milestoneRepository.findMilestonesByIsOpen(openStatus);
+        List<Milestone> milestones =  milestoneRepository.findMilestonesByIsOpenOrderByCreatedAtDesc(openStatus);
         return MilestoneListResponse.of(milestones);
     }
 
@@ -44,7 +44,6 @@ public class MilestoneService {
     public Long count(boolean openStatus) {
         return milestoneRepository.countByIsOpen(openStatus);
     }
-
 
     public void updateStatus(String milestoneId, boolean desiredState) {
         milestoneRepository.updateOpenStatus(milestoneId, desiredState);
