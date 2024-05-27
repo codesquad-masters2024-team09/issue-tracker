@@ -1,6 +1,6 @@
 <script>
   import {hexToRgb, rgbToHsl} from "../../utils/color.js";
-  import {labels} from '../../store/label.js'
+  import {labels} from '../../stores/label.js'
   import {labelValidate} from "../../utils/validates.js";
 
   const defaultBgColor = "#004DE3";
