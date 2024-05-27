@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @NoArgsConstructor
@@ -18,7 +18,7 @@ public class MilestoneCreateRequest {
     @Size(max = 30)
     private String id;
 
-    private LocalDateTime dueDate;
+    private LocalDate dueDate;
 
     @Size(max = 50)
     private String description;
