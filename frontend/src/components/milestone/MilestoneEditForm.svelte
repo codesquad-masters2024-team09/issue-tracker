@@ -5,6 +5,12 @@
     export let milestone;
     let originData = {...milestone}
 
+    const parseDate = (str) => {
+        return str ? new Date(str) : null;
+    }
+
+    $: milestone.dueDate = parseDate(milestone.dueDate)
+
     const onCloseEditModeMilestone = () => {
         milestone = {...originData}
         milestones.closeEditModeMilestone()
@@ -13,9 +19,9 @@
     const onUpdateMilestone = () => {
         const changes = diff(originData, milestone);
         if(Object.keys(changes).length > 0) {
-            // if(changes.id !== null && changes.id !== '') {
+            if(changes.id !== null && changes.id !== '') {
                 milestones.updateMilestone(originData.id, changes);
-            // }
+            }
         }
     }
 

@@ -12,7 +12,7 @@ import org.springframework.data.domain.Persistable;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Getter
 @Builder
@@ -28,7 +28,7 @@ public class Milestone extends BaseDateTime implements Persistable<String> {
 
     @Builder.Default
     private boolean isOpen = true;
-    private Date dueDate;
+    private LocalDate dueDate;
     private String description;
 
     @Transient

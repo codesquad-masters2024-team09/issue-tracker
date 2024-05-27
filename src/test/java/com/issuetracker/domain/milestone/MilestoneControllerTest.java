@@ -16,9 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.sql.Date;
-import java.time.Instant;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
@@ -49,7 +47,8 @@ class MilestoneControllerTest {
         // given
         String url = urlPrefix + "/milestones";
 
-        MilestoneCreateRequest request = new MilestoneCreateRequest("testName", Date.from(Instant.now()), "testDescription");
+        MilestoneCreateRequest request = new MilestoneCreateRequest(
+                "testName", LocalDate.of(2024, 5, 24), "testDescription");
         String requestJson = objectMapper.writeValueAsString(request);
         MilestoneResponse response = MilestoneResponse.of(request.toEntity());
         String responseJson = objectMapper.writeValueAsString(response);
@@ -73,7 +72,7 @@ class MilestoneControllerTest {
         final String url = urlPrefix + "/milestones";
         final String name = "n";
         final String description = "d";
-        final java.util.Date dueDate = Date.from(Instant.now());
+        final LocalDate dueDate = LocalDate.of(2024, 5, 24);
 
         given(milestoneService.create(any(MilestoneCreateRequest.class))).willReturn(MilestoneResponse.builder()
                 .id(name)

@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -25,7 +25,7 @@ class MilestoneTest {
         // given
         Milestone milestone = Milestone.builder()
                 .id("this is a test")
-                .dueDate(new Date(20240523))
+                .dueDate(LocalDate.of(2024, 5, 24))
                 .description("testDescription")
                 .build();
 
@@ -64,7 +64,7 @@ class MilestoneTest {
     void create_without_name_fail() {
         // given
         Milestone milestone = Milestone.builder()
-                .dueDate(new Date(20240523))
+                .dueDate(LocalDate.of(2024, 5, 24))
                 .description("testDescription")
                 .build();
 
