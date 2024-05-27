@@ -1,6 +1,6 @@
 <script>
   import {hexToRgb, rgbToHsl} from "../../utils/color.js";
-  import {labels} from "../../store/label.js";
+  import {labels} from "../../stores/label.js";
 
   const lightColor = "#FFFFFF";
   const darkColor = "#000000";
