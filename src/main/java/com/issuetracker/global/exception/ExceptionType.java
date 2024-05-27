@@ -33,6 +33,7 @@ public enum ExceptionType {
     INVALID_LOGIN_DATA(2000, "아이디 또는 비밀번호가 일치하지 않습니다.", InvalidLoginDataException.class),
     INVALID_TOKEN(2001, "유효하지 않은 JWT 토큰입니다.", InvalidTokenException.class),
     TOKEN_EXPIRED(2002, "만료된 JWT 토큰입니다.", TokenExpiredException.class),
+    TOKEN_NOT_EXISTS(2003, "인증이 필요한 요청입니다.", TokenNotExistException.class),
 
     /**
      * Member (25XX)

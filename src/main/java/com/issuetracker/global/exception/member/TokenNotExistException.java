@@ -1,6 +1,6 @@
 package com.issuetracker.global.exception.member;
 
-import com.issuetracker.global.exception.common.BadRequestException;
+import com.issuetracker.global.exception.common.UnauthorizedException;
 
-public class TokenNotExistException extends BadRequestException {
+public class TokenNotExistException extends UnauthorizedException {
 }
