@@ -4,6 +4,7 @@ import com.issuetracker.global.exception.comment.CommentNotFoundException;
 import com.issuetracker.global.exception.issue.IssueNotFoundException;
 import com.issuetracker.global.exception.label.LabelDuplicateException;
 import com.issuetracker.global.exception.label.LabelNotFoundException;
+import com.issuetracker.global.exception.member.InvalidLoginDataException;
 import com.issuetracker.global.exception.member.MemberDuplicateException;
 import com.issuetracker.global.exception.member.MemberNotFoundException;
 import com.issuetracker.global.exception.milestone.MilestoneDuplicateException;
@@ -31,6 +32,7 @@ public enum ExceptionType {
     /**
      * Auth (2XXX)
      */
+    INVALID_LOGIN_DATA(2000, "아이디 또는 비밀번호가 일치하지 않습니다.", InvalidLoginDataException.class),
 
     /**
      * Member (25XX)

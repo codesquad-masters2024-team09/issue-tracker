@@ -37,4 +37,8 @@ public class Member extends BaseDateTime implements Persistable<String> {
     public void updateRefreshToken(String token) {
         this.refreshToken = token;
     }
+
+    public void expireRefreshToken() {
+        updateRefreshToken(null);
+    }
 }

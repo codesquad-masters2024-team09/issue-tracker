@@ -1,12 +1,11 @@
 package com.issuetracker.domain.auth;
 
 import com.issuetracker.domain.auth.request.IdDuplicateCheckRequest;
+import com.issuetracker.domain.auth.request.LoginRequest;
+import com.issuetracker.domain.auth.request.LogoutRequest;
 import com.issuetracker.domain.auth.request.SignUpRequest;
 import com.issuetracker.domain.auth.response.AuthResponse;
 import com.issuetracker.domain.auth.response.DuplicateCheckResponse;
-import com.issuetracker.domain.member.Member;
-import com.issuetracker.global.security.JwtTokenProvider;
-import com.issuetracker.global.security.PasswordEncoder;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthService authService;
-    private final JwtTokenProvider jwtTokenProvider;
-    private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/id/duplicate")
     public ResponseEntity<DuplicateCheckResponse> idDuplicateCheck(@Valid @RequestBody IdDuplicateCheckRequest request) {
@@ -33,30 +30,17 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<AuthResponse> signup(@Valid @RequestBody SignUpRequest request) {
-        Member member = request.toEntity(passwordEncoder.encode(request.getPassword()));
-
-        String accessToken = jwtTokenProvider.createAccessToken(member.getId(), null);
-        String refreshToken = jwtTokenProvider.createRefreshToken(member.getId(), null);
-
-        member.updateRefreshToken(refreshToken);
-
-        String memberId = authService.signup(member);
-        AuthResponse authResponse = AuthResponse.builder()
-                .memberId(memberId)
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .build();
-
-        return ResponseEntity.ok(authResponse);
+        return ResponseEntity.ok(authService.signup(request));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login() {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
+        return ResponseEntity.ok(authService.login(request));
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout() {
+    public ResponseEntity<Void> logout(@Valid @RequestBody LogoutRequest request) {
+        authService.logout(request);
         return ResponseEntity.ok().build();
     }
 }
