@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.issuetracker.domain.issue.IssueViewMapper">
+
+    <!-- CommentResultMap -->
+    <resultMap id="CommentResultMap" type="com.issuetracker.domain.comment.Comment">
+        <id property="id" column="COMMENT_ID" />
+        <result property="memberId" column="COMMENT_MEMBER_ID" />
+        <result property="issueId" column="COMMENT_ISSUE_ID" />
+        <result property="content" column="COMMENT_CONTENT" />
+        <result property="createdAt" column="COMMENT_CREATED_AT" />
+        <result property="modifiedAt" column="COMMENT_MODIFIED_AT" />
+    </resultMap>
+
+    <!-- LabelResultMap -->
+    <resultMap id="LabelResultMap" type="com.issuetracker.domain.label.Label">
+        <id property="id" column="LABEL_ID" />
+        <result property="description" column="DESCRIPTION" />
+        <result property="textColor" column="TEXT_COLOR" />
+        <result property="colorCode" column="COLOR_CODE" />
+    </resultMap>
+
+    <!-- IssueDetailsResultMap -->
+    <resultMap id="IssueDetailsResultMap" type="com.issuetracker.domain.issue.IssueDetails">
+        <id property="id" column="ISSUE_ID" />
+        <result property="memberId" column="ISSUE_MEMBER_ID" />
+        <result property="title" column="TITLE" />
+        <result property="content" column="ISSUE_CONTENT" />
+        <result property="isOpen" column="IS_OPEN" />
+        <result property="milestoneId" column="MILESTONE_ID" typeHandler="com.issuetracker.domain.issue.AggregateReferenceTypeHandler"/>
+        <result property="createdAt" column="ISSUE_CREATED_AT" />
+        <result property="modifiedAt" column="ISSUE_MODIFIED_AT" />
+        <collection property="comments" ofType="com.issuetracker.domain.comment.Comment" resultMap="CommentResultMap" javaType="java.util.List" />
+        <collection property="labels" ofType="com.issuetracker.domain.label.Label" resultMap="LabelResultMap" javaType="java.util.Set" />
+    </resultMap>
+
+    <select id="findById" resultMap="IssueDetailsResultMap">
+        SELECT
+            I.ISSUE_ID,
+            I.MEMBER_ID AS ISSUE_MEMBER_ID,
+            I.TITLE,
+            I.CONTENT AS ISSUE_CONTENT,
+            I.IS_OPEN,
+            I.MILESTONE_ID,
+            I.CREATED_AT AS ISSUE_CREATED_AT,
+            I.MODIFIED_AT AS ISSUE_MODIFIED_AT,
+            C.COMMENT_ID,
+            C.MEMBER_ID AS COMMENT_MEMBER_ID,
+            C.ISSUE_ID AS COMMENT_ISSUE_ID,
+            C.CONTENT AS COMMENT_CONTENT,
+            C.CREATED_AT AS COMMENT_CREATED_AT,
+            C.MODIFIED_AT AS COMMENT_MODIFIED_AT,
+            L.LABEL_ID,
+            L.DESCRIPTION,
+            L.TEXT_COLOR,
+            L.COLOR_CODE
+        FROM ISSUE I
+                 LEFT JOIN
+             COMMENT C ON I.ISSUE_ID = C.ISSUE_ID
+                 LEFT JOIN
+             ISSUE_LABEL IL ON I.ISSUE_ID = IL.ISSUE_ID
+                 LEFT JOIN
+             LABEL L ON IL.LABEL_ID = L.LABEL_ID
+        WHERE
+            I.ISSUE_ID = #{issueId}
+    </select>
+
+</mapper>

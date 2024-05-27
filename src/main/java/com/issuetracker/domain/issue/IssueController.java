@@ -5,7 +5,7 @@ import com.issuetracker.domain.issue.request.IssueSearchCondition;
 import com.issuetracker.domain.issue.request.LabelAddRequest;
 import com.issuetracker.domain.issue.request.MilestoneAssignRequest;
 import com.issuetracker.domain.issue.request.IssueUpdateRequest;
-import com.issuetracker.domain.issue.response.IssueDetailResponse;
+import com.issuetracker.domain.issue.response.IssueDetailsResponse;
 import com.issuetracker.domain.issue.response.IssueListResponse;
 import com.issuetracker.domain.issue.response.IssueResponse;
 import jakarta.validation.Valid;
@@ -47,7 +47,7 @@ public class IssueController {
     }
 
     @GetMapping("/{issueId}")
-    public ResponseEntity<IssueDetailResponse> getDetail(@PathVariable("issueId") Long issueId) {
+    public ResponseEntity<IssueDetailsResponse> getDetail(@PathVariable("issueId") Long issueId) {
         return ResponseEntity
                 .ok(issueService.getDetail(issueId));
     }
