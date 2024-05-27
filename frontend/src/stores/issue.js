@@ -1,5 +1,5 @@
 import { get, writable, derived } from "svelte/store";
-import { getApi, postApi, putApi, delApi } from "../service/api.js";
+import { getApi, postApi, putApi, delApi, patchApi } from "../service/api.js";
 import { router } from "tinro";
 import { urlPrefix, MOCK_USER_ID, MOCK_USER_PWD } from "../utils/constants.js";
 
@@ -7,7 +7,10 @@ function setIssues() {
     let initValues = {
         memberId: MOCK_USER_ID,
         issueList: [],
-        editMode: '', // 게시글 중 수정모드로 전환 시 게시글의 식별자 저장하는 필드
+        editTitlePopup: '',
+        editContentPopup: '',
+        editModeTitle: '', // 게시글 중 수정모드로 전환 시 게시글의 식별자 저장하는 필드
+        editModeContent: '', // 게시글 중 수정모드로 전환 시 게시글의 식별자 저장하는 필드
     }
 
     const { subscribe, update, set } = writable({...initValues});
@@ -30,16 +33,12 @@ function setIssues() {
             update(datas => {
 
                 // TODO: paging 처리 시 첫 페이지냐 아니냐에 따라 분기 처리 필요
-                const newIssues = [...datas.issueList, ...newData.issueList] // 현재까지 받은 데이터에 새로 받은 데이터를 뒤에 더하기
+                const newIssues = [...newData.issueList, ...datas.issueList] // 현재까지 받은 데이터에 새로 받은 데이터를 뒤에 더하기
                 datas.issueList = newIssues
                 console.log('fetch issue list: ', datas.issueList)
 
                 return datas
             })
-
-            subscribe(state => {
-                console.log('Current state:', state);
-            });
 
             loadingIssue.turnOffLoading()
         }
@@ -66,7 +65,7 @@ function setIssues() {
         }
     }
 
-    const createIssues = async (form) => { // 이슈 단건을 생성하는 역할
+    const createIssue = async (form) => { // 이슈 단건을 생성하는 역할
         try {
             const options = {
                 path: urlPrefix + "/issues",
@@ -74,7 +73,7 @@ function setIssues() {
                     memberId: form.memberId,
                     title: form.title,
                     content: form.content,
-                    lables: form.lables,
+                    labels: form.labels,
                     milestone: form.milestone,
                 },
             }
@@ -85,6 +84,38 @@ function setIssues() {
         catch (err) {
             console.log(err);
             alert("이슈 등록 중 에러가 발생했습니다. 다시 시도해 주세요!");
+        }
+    }
+
+    const updateIssue = async (issueId, form) => {
+
+        try {
+
+            const updateData = {
+                title: form.title !== null ? form.title : null,
+                content: form.content !== null ? form.content : null
+            }
+
+            const options = {
+                path: `${urlPrefix}/issues/${issueId}`,
+                data: updateData,
+            }
+
+            await patchApi(options)
+
+            if (form.title) {
+                closeEditModeIssueTitle()
+            }
+
+            if (form.content) {
+                closeEditModeIssueContent()
+            }
+
+            return true
+        }
+        catch(error) {
+            alert('수정 중 오류가 발생했습니다. 다시 시도해 주세요.')
+            throw error
         }
     }
 
@@ -105,6 +136,7 @@ function setIssues() {
         }
         catch(error) {
             alert('삭제 중 오류가 발생했습니다.')
+            throw error
         }
     }
 
@@ -113,17 +145,33 @@ function setIssues() {
         issuesPageLock.set(false)
     }
 
-    const openEditModeIssue = (issueId) => {
+    const openEditModeIssueTitle = (issueId) => {
         update(datas => {
-            datas.editMode = issueId
+            datas.editModeTitle = issueId
 
             return datas
         })
     }
 
-    const closeEditModeIssue = () => {
+    const openEditModeIssueContent = (issueId) => {
         update(datas => {
-            datas.editMode = ''
+            datas.editModeContent = issueId
+
+            return datas
+        })
+    }
+
+    const closeEditModeIssueTitle = () => {
+        update(datas => {
+            datas.editModeTitle = ''
+
+            return datas
+        })
+    }
+
+    const closeEditModeIssueContent = () => {
+        update(datas => {
+            datas.editModeContent = ''
 
             return datas
         })
@@ -133,11 +181,14 @@ function setIssues() {
         subscribe,
         fetchIssues,
         fetchIssueDetail,
-        createIssues,
+        createIssue,
+        updateIssue,
         deleteIssue,
         resetIssues,
-        openEditModeIssue,
-        closeEditModeIssue,
+        openEditModeIssueTitle,
+        openEditModeIssueContent,
+        closeEditModeIssueTitle,
+        closeEditModeIssueContent,
     }
 }
 

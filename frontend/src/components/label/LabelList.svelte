@@ -1,6 +1,6 @@
 <script>
   import LabelPreview from "./LabelPreview.svelte";
-  import {labels} from "../../store/label.js";
+  import {labels} from "../../stores/label.js";
 
 </script>
 

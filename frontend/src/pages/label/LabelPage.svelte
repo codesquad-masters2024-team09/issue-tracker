@@ -1,5 +1,5 @@
 <script>
-    import { labels } from "../../store/label.js";
+    import { labels } from "../../stores/label.js";
     import LabelList from "../../components/label/LabelList.svelte";
     import LabelAddForm from "../../components/label/LabelAddForm.svelte";
     import { onMount } from "svelte";
