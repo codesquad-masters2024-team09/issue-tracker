@@ -3,6 +3,7 @@ package com.issuetracker.domain.milestone;
 import com.issuetracker.domain.milestone.argumentresolver.MilestoneId;
 import com.issuetracker.domain.milestone.request.MilestoneCreateRequest;
 import com.issuetracker.domain.milestone.request.MilestoneUpdateRequest;
+import com.issuetracker.domain.milestone.response.MilestoneProcessResponse;
 import com.issuetracker.domain.milestone.response.MilestoneListResponse;
 import com.issuetracker.domain.milestone.response.MilestoneResponse;
 import jakarta.validation.Valid;
@@ -46,6 +47,12 @@ public class MilestoneController {
         return ResponseEntity
                 .ok()
                 .build();
+    }
+
+    @GetMapping("/{milestoneId}/issues")
+    public ResponseEntity<MilestoneProcessResponse> getMilestoneProcess(@PathVariable("milestoneId") @MilestoneId String milestoneId) {
+        return ResponseEntity
+                .ok(milestoneService.calculateMilestoneProcess(milestoneId));
     }
 
     @GetMapping("/count")
