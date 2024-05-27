@@ -14,9 +14,9 @@
             <span class="text-sm text-blue-700 pr-[6px]">
                 <i class="bi bi-exclamation-circle"></i>
             </span>
-                <a href="{issue.issueId}">{issue.title}</a>
+                <a href="/issues/{issue.issueId}">{issue.title}</a>
                 <!-- 레이블 뱃지 -->
-                {#each issue.labels as label}
+                {#each issue.labelNames as label}
                     <div class="label-badge-container">
                         <div class="label-badge border border-gray-200 bg-[{label.colorCode}] text-[{label.textColor}]">
                             {label.labelId}
@@ -35,12 +35,21 @@
                 이 이슈가 {issue.createdAt}, {issue.memberId}님에 의해 작성되었습니다.
             </div>
             <!-- 마일스톤 -->
-            <div>
+            {#if issue.milestoneName !== null}
+                <div>
+                    <span class="text-[16px]">
+                        <i class="bi bi-signpost"></i>
+                    </span>
+                    {issue.milestoneName}
+                </div>
+            {:else}
+            <div class="text-sm">
                 <span class="text-[16px]">
                     <i class="bi bi-signpost"></i>
                 </span>
-                {issue.memberId}
+                지정된 마일스톤이 없습니다.
             </div>
+            {/if}
         </div>
     </div>
 </div>
