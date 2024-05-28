@@ -28,7 +28,8 @@
         <result property="title" column="TITLE" />
         <result property="content" column="ISSUE_CONTENT" />
         <result property="isOpen" column="IS_OPEN" />
-        <result property="milestoneId" column="MILESTONE_ID" typeHandler="com.issuetracker.domain.issue.AggregateReferenceTypeHandler"/>
+        <result property="milestoneId" column="MILESTONE_ID" />
+        <result property="milestoneProgress" column="MILESTONE_PROGRESS" />
         <result property="createdAt" column="ISSUE_CREATED_AT" />
         <result property="modifiedAt" column="ISSUE_MODIFIED_AT" />
         <collection property="comments" ofType="com.issuetracker.domain.comment.Comment" resultMap="CommentResultMap" javaType="java.util.List" />
@@ -36,6 +37,16 @@
     </resultMap>
 
     <select id="findById" resultMap="IssueDetailsResultMap">
+        WITH MILESTONE_PROGRESS AS (
+            SELECT
+                M.MILESTONE_ID,
+                SUM(CASE WHEN I.IS_OPEN = FALSE THEN 1 ELSE 0 END) * 100.0 / COUNT(*) AS PROGRESS
+            FROM
+                MILESTONE M
+            LEFT JOIN ISSUE I ON M.MILESTONE_ID = I.MILESTONE_ID
+            GROUP BY
+                M.MILESTONE_ID
+        )
         SELECT
             I.ISSUE_ID,
             I.MEMBER_ID AS ISSUE_MEMBER_ID,
@@ -54,14 +65,13 @@
             L.LABEL_ID,
             L.DESCRIPTION,
             L.TEXT_COLOR,
-            L.COLOR_CODE
+            L.COLOR_CODE,
+            MP.PROGRESS AS MILESTONE_PROGRESS
         FROM ISSUE I
-                 LEFT JOIN
-             COMMENT C ON I.ISSUE_ID = C.ISSUE_ID
-                 LEFT JOIN
-             ISSUE_LABEL IL ON I.ISSUE_ID = IL.ISSUE_ID
-                 LEFT JOIN
-             LABEL L ON IL.LABEL_ID = L.LABEL_ID
+            LEFT JOIN COMMENT C ON I.ISSUE_ID = C.ISSUE_ID
+            LEFT JOIN ISSUE_LABEL IL ON I.ISSUE_ID = IL.ISSUE_ID
+            LEFT JOIN LABEL L ON IL.LABEL_ID = L.LABEL_ID
+            LEFT JOIN MILESTONE_PROGRESS MP ON I.MILESTONE_ID = MP.MILESTONE_ID
         WHERE
             I.ISSUE_ID = #{issueId}
     </select>
