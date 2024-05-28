@@ -19,7 +19,7 @@ class MemberTest {
         // given
         Member member = Member.builder()
                 .id("tester")
-                .password("1234")
+                .encodedPassword("1234")
                 .build();
 
         // when
