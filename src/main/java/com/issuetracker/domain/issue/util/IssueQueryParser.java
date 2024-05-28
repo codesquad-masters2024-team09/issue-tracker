@@ -6,18 +6,23 @@ import java.util.function.BiFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+@Getter
 @RequiredArgsConstructor
 public enum IssueQueryParser {
 
-    QUERY_STRING_PATTERN(Pattern.compile("(is:open|is:closed|label:[^\"]\\S+|label:\".*?\"|author:[^\"]\\S+|author:\".*?\"|milestone:[^\"]\\S+|milestone:\".*?\"|\\S+)")),
-    KEYWORD_PATTERN(Pattern.compile("\\b(?!is:open\\b|is:closed\\b|label:.+\\b|milestone:.+\\b|author:.+\\b|assignee:.+\\b)(\\S+)")),
+    QUERY_STRING_PATTERN(Pattern.compile("(no:milestone|no:assignee|is:open|is:closed|label:[^\"]\\S+|label:\".*?\"|author:[^\"]\\S+|author:\".*?\"|milestone:[^\"]\\S+|milestone:\".*?\"|\\S+)")),
+    KEYWORD_PATTERN(Pattern.compile("\\b(?!no:milestone\\b|no:assignee\\b|is:open\\b|is:closed\\b|label:.+\\b|milestone:.+\\b|author:.+\\b|assignee:.+\\b)(\\S+)")),
     AUTHOR_PATTERN(Pattern.compile("(?i)author:\"?([^\"]+)")),
     LABELS_PATTERN(Pattern.compile("(?i)label:\"?([^\"]+)")),
     MILESTONE_PATTERN(Pattern.compile("(?i)milestone:\"?([^\"]+)")),
     ASSIGNEE_PATTERN(Pattern.compile("(?i)assignee:\"?([^\"]+)")),
-    OPEN_STATUS_PATTERN(Pattern.compile("(?i)is:(open|closed)"));
+    OPEN_STATUS_PATTERN(Pattern.compile("(?i)is:(open|closed)")),
+    NO_MILESTONE_PATTERN(Pattern.compile("(?i)no:milestone")),
+    NO_ASSIGNEE_PATTERN(Pattern.compile("(?i)no:assignee"));
 
     private static final int MATCH_INDEX = 1;
     private static final String SPACE = " ";
@@ -76,6 +81,11 @@ public enum IssueQueryParser {
                 })
                 .findAny()
                 .orElse(null);
+    }
+
+    public static boolean parseNoXXX(List<String> queryString, Pattern pattern) {
+        return queryString.stream()
+                .anyMatch(str -> MATCHER_CONVERTER.apply(pattern, str).matches());
     }
 
     public static List<String> parseAssignees(List<String> queryString) {

@@ -50,6 +50,9 @@
                     #{labelId}
                 </foreach>
             </if>
+            <if test="noMilestone == true">
+                AND I.MILESTONE_ID IS NULL
+            </if>
             <if test="keyword != null and keyword != ''">
                 AND (I.TITLE LIKE CONCAT('%', #{keyword}, '%') OR I.CONTENT LIKE CONCAT('%', #{keyword}, '%'))
             </if>
@@ -85,6 +88,9 @@
                 <foreach item="labelId" index="index" collection="labelIds" open="(" separator="," close=")">
                     #{labelId}
                 </foreach>
+            </if>
+            <if test="noMilestone == true">
+                AND I.MILESTONE_ID IS NULL
             </if>
             <if test="keyword != null and keyword != ''">
                 AND ((I.TITLE LIKE CONCAT('%', #{keyword}, '%')) OR (I.CONTENT LIKE CONCAT('%', #{keyword}, '%')))

@@ -100,6 +100,9 @@ public class IssueService {
         conditionMap.put("milestoneId", condition.getMilestoneId());
         conditionMap.put("labelIds", condition.getLabelIds());
         conditionMap.put("keyword", condition.getKeyword());
+        conditionMap.put("assignees", condition.getAssignees());
+        conditionMap.put("noAssignee", condition.isNoAssignee());
+        conditionMap.put("noMilestone", condition.isNoMilestone());
 
         IssueCount issueCount = issueViewMapper.countByCondition(conditionMap);
         List<SimpleIssue> issues = issueViewMapper.findAllByCondition(conditionMap);
