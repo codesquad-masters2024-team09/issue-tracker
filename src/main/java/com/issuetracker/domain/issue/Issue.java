@@ -47,6 +47,11 @@ public class Issue extends BaseDateTime {
     @Column("MILESTONE_ID")
     private AggregateReference<Milestone, String> milestoneRef;
 
+    public Issue updateStatus(boolean status) {
+        this.isOpen = status;
+        return this;
+    }
+
     public void addComment(Comment comment) {
         comment.initBaseDateTime();
         this.comments.add(comment);
