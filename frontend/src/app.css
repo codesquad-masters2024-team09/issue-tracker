@@ -369,7 +369,7 @@
   }
 
   .centered-container {
-    @apply flex justify-center items-center min-h-[768px] mt-[10rem]
+    @apply flex justify-center items-center min-h-[480px] mt-[8rem]
   }
 
   .logo-container {
