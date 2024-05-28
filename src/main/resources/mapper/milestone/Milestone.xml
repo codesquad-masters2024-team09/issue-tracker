@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.issuetracker.domain.milestone.MilestoneViewMapper">
+
+    <!-- MilestoneDetailsResultMap -->
+    <resultMap id="MilestoneDetailsResultMap" type="com.issuetracker.domain.milestone.MilestoneDetails">
+        <id property="id" column="MILESTONE_ID" />
+        <result property="dueDate" column="DUE_DATE" />
+        <result property="description" column="DESCRIPTION" />
+        <result property="isOpen" column="IS_OPEN" />
+        <result property="openIssues" column="OPEN_ISSUES" />
+        <result property="totalIssues" column="TOTAL_ISSUES" />
+    </resultMap>
+
+    <select id="findAllByOpenStatus" resultMap="MilestoneDetailsResultMap">
+        SELECT
+            M.MILESTONE_ID,
+            M.DESCRIPTION,
+            M.DUE_DATE,
+            M.IS_OPEN,
+            COUNT(I.ISSUE_ID) AS TOTAL_ISSUES,
+            SUM(CASE WHEN I.IS_OPEN THEN 1 ELSE 0 END) AS OPEN_ISSUES
+        FROM
+            MILESTONE M
+                LEFT JOIN
+            ISSUE I ON M.MILESTONE_ID = I.MILESTONE_ID
+        WHERE
+            M.IS_OPEN = #{openStatus}
+        GROUP BY
+            M.MILESTONE_ID, M.DESCRIPTION, M.DUE_DATE, M.IS_OPEN, M.CREATED_AT
+        ORDER BY
+            M.CREATED_AT DESC
+    </select>
+</mapper>
