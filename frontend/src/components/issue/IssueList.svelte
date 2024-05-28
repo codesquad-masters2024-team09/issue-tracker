@@ -64,13 +64,13 @@
         <div class="checkbox">
             <input type="checkbox" class="parent-checkbox">
         </div>
-        <div class="issue-filter open on:click={() => optionsStore.toggleIsOpenOption('isOpen')}">
+        <div class="issue-filter open on:click={() => optionsStore.toggleIsOpenOption('open')}">
             <span class="pr-[3px]">
                 <i class="bi bi-exclamation-circle"></i>
             </span>
             열린 이슈(2)
         </div>
-        <div class="issue-filter closed on:click={() => optionsStore.toggleIsOpenOption('isClosed')}">
+        <div class="issue-filter closed on:click={() => optionsStore.toggleIsOpenOption('closed')}">
             <span class="pr-[3px]">
                 <i class="bi bi-archive"></i>
             </span>

@@ -14,6 +14,10 @@
             id: 3,
             name: 'htmlH3AD'
         },
+        {
+            id: 4,
+            name: '1111 H3AD 2222'
+        },
     ];
 
     let labelOptions = [
@@ -26,10 +30,19 @@
             id: 2,
             color: '#FF3232',
             name: 'bug'
+        },
+        {
+            id: 3,
+            color: '#FF1',
+            name: 'ex ex'
         }
     ];
 
     let milestoneOptions = [
+        {
+            id: 0,
+            name: '마일스톤 없는 이슈'
+        },
         {
             id: 1,
             name: 'v1.0'

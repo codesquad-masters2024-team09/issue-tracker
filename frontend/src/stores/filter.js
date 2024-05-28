@@ -2,7 +2,7 @@ import { writable, get } from 'svelte/store';
 
 const createOptionsStore = () => {
     const { subscribe, update } = writable({
-        isOpen: "isOpen",
+        isOpen: "open",
         assignees: "",
         labels: [],
         milestones: "",
@@ -36,6 +36,28 @@ const createOptionsStore = () => {
         });
     };
 
+    const generateQueryString = (state) => {
+        const queries = [];
+
+        const addQuery = (key, value, noValue) => {
+            if (value) {
+                queries.push(value === noValue ? `no:${key}` : `${key}:${value.includes(" ") ? `"${value}"` : value}`);
+            }
+        };
+
+        queries.push(`is:${state.isOpen}`);
+
+        addQuery("assignee", state.assignees, "담당자가 없는 이슈");
+        addQuery("milestone", state.milestones, "마일스톤 없는 이슈");
+        addQuery("writer", state.writers);
+
+        state.labels.forEach(label => {
+            queries.push(`label:${label.includes(" ") ? `"${label}"` : label}`);
+        });
+
+        return queries.join(" ");
+    }
+
     const logAllSelectedOptions = () => {
         subscribe(store => {
             console.log(store);
@@ -52,6 +74,7 @@ const createOptionsStore = () => {
         toggleLabelOption: (option) => updateOption('labels', option),
         toggleMilestoneOption: (option) => updateOption('milestones', option),
         toggleWriterOption: (option) => updateOption('writers', option),
+        generateQueryString
     };
 };
 
