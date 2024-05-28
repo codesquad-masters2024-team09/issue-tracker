@@ -1,34 +1,24 @@
 <script>
-  import LabelPreview from "./LabelPreview.svelte";
-  import {labels} from "../../stores/label.js";
+    import {labels} from "../../stores/label.js";
+    import LabelPreview from "./LabelPreview.svelte";
+    import NoLabel from "./NoLabel.svelte";
 
 </script>
 
-<div class="label-list-box">
-  <div class="label-list">
-    <h3>{$labels.labels.length}개의 레이블</h3>
-  </div>
-  <div class="label-element">
+<div class="flex flex-col w-full min-w-[1020px] items-center">
+    <div class="issue-table-header">
+        <div class="text-sm text-gray-600">
+            <span>{$labels.labels.length}개의 레이블</span>
+        </div>
+    </div>
+
     {#each $labels.labels as label}
-      <LabelPreview {label} />
+        <LabelPreview {label}/>
     {/each}
-  </div>
+
+    {#if $labels.labels.length === 0}
+        <NoLabel/>
+    {/if}
 </div>
 
-<style>
-  h3 {
-    font-size: 14px;
-    line-height: 24px;
-    margin: 0px;
-  }
-  .label-list-box {
-    border: 1px solid #d9dbe9;
-    border-radius: 16px;
-  }
-  .label-list {
-    border-color: transparent;
-    border-radius: 16px 16px 0 0;
-    padding: 16px;
-    background: #f7f7fc;
-  }
-</style>
+
