@@ -18,12 +18,12 @@ public class IssueSearchCondition {
     private String milestoneId;
     private boolean isOpen = true;
     private List<String> assignees;
-    private String title;
+    private String keyword;
 
     public static IssueSearchCondition of(String requestQueryString) {
         List<String> queryString = IssueQueryParser.parseQueryString(requestQueryString);
 
-        String issueTitle = IssueQueryParser.parseIssueTitle(queryString);
+        String keyword = IssueQueryParser.parseKeyword(queryString);
         String author = IssueQueryParser.parseAuthor(queryString);
         List<String> labelIds = IssueQueryParser.parseLabels(queryString);
         String milestone = IssueQueryParser.parseMilestone(queryString);
@@ -36,7 +36,7 @@ public class IssueSearchCondition {
                 .milestoneId(milestone)
                 .isOpen(isOpen)
                 .assignees(assignees)
-                .title(issueTitle)
+                .keyword(keyword)
                 .build();
     }
 }

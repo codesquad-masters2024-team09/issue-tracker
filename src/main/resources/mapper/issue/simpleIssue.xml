@@ -44,7 +44,7 @@
                 I.MEMBER_ID = #{author}
             </if>
             <if test="milestoneId != null and milestoneId != ''">
-                AND I.MILESTOND_ID = #{milestoneId}
+                AND I.MILESTONE_ID = #{milestoneId}
             </if>
             <if test="labelIds != null and labelIds.size() > 0">
                 AND IL.LABEL_ID IN
@@ -52,8 +52,8 @@
                     #{labelId}
                 </foreach>
             </if>
-            <if test="title != null and title != ''">
-                AND I.TITLE LIKE CONCAT('%', #{title}, '%')
+            <if test="keyword != null and keyword != ''">
+                AND ((I.TITLE LIKE CONCAT('%', #{keyword}, '%')) OR (I.CONTENT LIKE CONCAT('%', #{keyword}, '%')))
             </if>
             <if test="isOpen != null">
                 AND I.IS_OPEN = #{isOpen}

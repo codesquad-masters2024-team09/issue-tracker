@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.issuetracker.domain.comment.Comment;
 import com.issuetracker.domain.issue.request.IssueSearchCondition;
+import com.issuetracker.domain.issue.response.SimpleIssue;
 import com.issuetracker.domain.label.Label;
 import com.issuetracker.domain.label.LabelRepository;
 import com.issuetracker.domain.member.Member;
@@ -33,7 +34,7 @@ class IssueTest {
     private IssueRepository issueRepository;
 
     @Autowired
-    private IssueMapper issueMapper;
+    private IssueViewMapper issueViewMapper;
 
     @Autowired
     private LabelRepository labelRepository;
@@ -292,10 +293,10 @@ class IssueTest {
         conditionMap.put("isOpen", condition.isOpen());
         conditionMap.put("milestoneId", condition.getMilestoneId());
         conditionMap.put("labelIds", condition.getLabelIds());
-        conditionMap.put("title", condition.getTitle());
+        conditionMap.put("keyWord", condition.getKeyword());
 
         // when
-        List<Issue> issues = issueMapper.findByCondition(conditionMap);
+        List<SimpleIssue> issues = issueViewMapper.findAllByCondition(conditionMap);
 
         // then
         assertThat(issues).hasSize(1);

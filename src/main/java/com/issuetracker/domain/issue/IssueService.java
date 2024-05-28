@@ -98,7 +98,7 @@ public class IssueService {
         conditionMap.put("isOpen", condition.isOpen());
         conditionMap.put("milestoneId", condition.getMilestoneId());
         conditionMap.put("labelIds", condition.getLabelIds());
-        conditionMap.put("title", condition.getTitle()); // TODO: content 추가
+        conditionMap.put("keyword", condition.getKeyword());
 
         return issueViewMapper.findAllByCondition(conditionMap);
     }

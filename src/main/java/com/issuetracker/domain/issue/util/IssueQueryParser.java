@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 public enum IssueQueryParser {
 
     QUERY_STRING_PATTERN(Pattern.compile("(is:open|is:closed|label:[^\"]\\S+|label:\".*?\"|author:[^\"]\\S+|author:\".*?\"|milestone:[^\"]\\S+|milestone:\".*?\"|\\S+)")),
-    ISSUE_TITLE_PATTERN(Pattern.compile("\\b(?!is:open\\b|is:closed\\b|label:.+\\b|milestone:.+\\b|author:.+\\b|assignee:.+\\b)(\\S+)")),
+    KEYWORD_PATTERN(Pattern.compile("\\b(?!is:open\\b|is:closed\\b|label:.+\\b|milestone:.+\\b|author:.+\\b|assignee:.+\\b)(\\S+)")),
     AUTHOR_PATTERN(Pattern.compile("(?i)author:\"?([^\"]+)")),
     LABELS_PATTERN(Pattern.compile("(?i)label:\"?([^\"]+)")),
     MILESTONE_PATTERN(Pattern.compile("(?i)milestone:\"?([^\"]+)")),
@@ -36,11 +36,11 @@ public enum IssueQueryParser {
         return queryString;
     }
 
-    public static String parseIssueTitle(List<String> queryString) {
+    public static String parseKeyword(List<String> queryString) {
         return queryString.stream()
-                .filter(str -> MATCHER_CONVERTER.apply(ISSUE_TITLE_PATTERN.pattern, str).matches())
+                .filter(str -> MATCHER_CONVERTER.apply(KEYWORD_PATTERN.pattern, str).matches())
                 .map(str -> {
-                    Matcher matcher = MATCHER_CONVERTER.apply(ISSUE_TITLE_PATTERN.pattern, str);
+                    Matcher matcher = MATCHER_CONVERTER.apply(KEYWORD_PATTERN.pattern, str);
                     return matcher.find() ? matcher.group(MATCH_INDEX) : "";
                 })
                 .collect(Collectors.joining(SPACE));

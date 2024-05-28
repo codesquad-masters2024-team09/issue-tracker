@@ -30,7 +30,7 @@ class IssueQueryParserTest {
         List<String> parsedQueryString = IssueQueryParser.parseQueryString(QUERY_STRING);
 
         // when
-        String issueTitle = IssueQueryParser.parseIssueTitle(parsedQueryString);
+        String issueTitle = IssueQueryParser.parseKeyword(parsedQueryString);
 
         // then
         assertThat(issueTitle).isEqualTo("검색 기능");
