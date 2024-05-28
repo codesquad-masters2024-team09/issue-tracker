@@ -1,16 +1,13 @@
 import axios from "axios"
 
-const send = async ({method='', path='', data={}} = {}) => {
-	const commonUrl = 'http://localhost:8080'
+const send = async ({method='', path='', data={}, access_token=''} = {}) => {
+  const commonUrl = 'http://localhost:8080'
   const url = commonUrl + path
 
   const headers = {
-    // "Access-Control-Allow-Origin":commonUrl,
-    "Access-Control-Allow-Origin": "*", // 쿠키가 없을 경우는 *
-    "Access-Control-Allow-Credentials": true,
     "content-type": "application/json;charset=UTF-8",
     "accept": "application/json,",
-    "SameSite": "None",
+    'Authorization': access_token ? `Bearer ${access_token}` : ''
   };
 
   const options = {
@@ -18,6 +15,7 @@ const send = async ({method='', path='', data={}} = {}) => {
     url,
     headers,
     data,
+    withCredentials: true,
   }
 
   try {
@@ -29,24 +27,24 @@ const send = async ({method='', path='', data={}} = {}) => {
   }
 }
 
-const getApi = ({path=''} = {}) => {
-  return send({method: 'GET', path})
+const getApi = ({path='', access_token=''} = {}) => {
+  return send({method: 'GET', path, access_token})
 }
 
-const putApi = ({path='', data={}} = {}) => {
-  return send({method: 'PUT', path, data})
+const putApi = ({path='', data={}} = {}, access_token='') => {
+  return send({method: 'PUT', path, data, access_token})
 }
 
-const patchApi = ({path='', data={}} = {}) => {
-  return send({method: 'PATCH', path, data})
+const patchApi = ({path='', data={}} = {}, access_token='') => {
+  return send({method: 'PATCH', path, data, access_token})
 }
 
-const postApi = ({path='', data={}} = {}) => {
-  return send({method: 'POST', path, data})
+const postApi = ({path='', data={}} = {}, access_token='') => {
+  return send({method: 'POST', path, data, access_token})
 }
 
-const delApi = ({path='', data={}} = {}) => {
-  return send({method:'DELETE', path, data})
+const delApi = ({path='', data={}} = {}, access_token='') => {
+  return send({method:'DELETE', path, data, access_token})
 }
 
 export {
