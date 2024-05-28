@@ -7,10 +7,9 @@ import com.issuetracker.domain.issue.request.IssueUpdateRequest;
 import com.issuetracker.domain.issue.response.IssueDetailsResponse;
 import com.issuetracker.domain.issue.response.IssueListResponse;
 import com.issuetracker.domain.issue.response.IssueStatusResponse;
-import com.issuetracker.domain.issue.response.SimpleIssue;
+import com.issuetracker.domain.issue.request.*;
 import jakarta.validation.Valid;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -83,9 +82,7 @@ public class IssueController {
     @GetMapping
     public ResponseEntity<IssueListResponse> getIssuesByCondition(
             @RequestParam(required = false, defaultValue ="is:open", name = "q") String condition) {
-        List<SimpleIssue> issues = issueService.getIssuesByCondition(IssueSearchCondition.of(condition));
-
-        return ResponseEntity
-                .ok(IssueListResponse.from(issues));
+        return ResponseEntity.ok(
+                issueService.getIssuesByCondition(IssueSearchCondition.of(condition)));
     }
 }

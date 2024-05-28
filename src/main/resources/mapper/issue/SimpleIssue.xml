@@ -3,6 +3,13 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.issuetracker.domain.issue.IssueViewMapper">
 
+    <!-- IssueCountResultMap -->
+    <resultMap id="IssueCountResultMap" type="com.issuetracker.domain.issue.response.IssueCount">
+        <result property="openIssues" column="OPEN_ISSUES" />
+        <result property="closedIssues" column="CLOSED_ISSUES" />
+        <result property="totalIssues" column="TOTAL_ISSUES" />
+    </resultMap>
+
     <!-- LabelResultMap -->
     <resultMap id="LabelResultMap" type="com.issuetracker.domain.label.Label">
         <id property="id" column="LABEL_ID" />
@@ -21,6 +28,33 @@
         <result property="createdAt" column="ISSUE_CREATED_AT" />
         <collection property="labels" ofType="com.issuetracker.domain.label.Label" resultMap="LabelResultMap" javaType="java.util.Set" />
     </resultMap>
+
+    <select id="countByCondition" resultMap="IssueCountResultMap">
+        SELECT
+            COUNT(CASE WHEN I.IS_OPEN = TRUE THEN 1 END) AS OPEN_ISSUES,
+            COUNT(CASE WHEN I.IS_OPEN = FALSE THEN 1 END) AS CLOSED_ISSUES,
+            COUNT(*) AS TOTAL_ISSUES
+        FROM ISSUE I
+        LEFT JOIN ISSUE_LABEL IL ON I.ISSUE_ID = IL.ISSUE_ID
+        LEFT JOIN LABEL L ON IL.LABEL_ID = L.LABEL_ID
+        <where>
+            <if test="author != null and author != ''">
+                AND I.MEMBER_ID = #{author}
+            </if>
+            <if test="milestoneId != null and milestoneId != ''">
+                AND I.MILESTONE_ID = #{milestoneId}
+            </if>
+            <if test="labelIds != null and labelIds.size() > 0">
+                AND IL.LABEL_ID IN
+                <foreach item="labelId" index="index" collection="labelIds" open="(" separator="," close=")">
+                    #{labelId}
+                </foreach>
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND (I.TITLE LIKE CONCAT('%', #{keyword}, '%') OR I.CONTENT LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+    </select>
 
     <select id="findAllByCondition" resultMap="SimpleIssueResultMap">
         SELECT

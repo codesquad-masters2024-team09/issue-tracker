@@ -7,6 +7,8 @@ import java.util.HashMap;
 
 import com.issuetracker.domain.issue.response.IssueDetailsResponse;
 
+import com.issuetracker.domain.issue.response.IssueCount;
+import com.issuetracker.domain.issue.response.IssueListResponse;
 import com.issuetracker.domain.issue.response.SimpleIssue;
 import com.issuetracker.global.exception.issue.IssueNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +18,6 @@ import java.util.Map;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -91,7 +92,7 @@ public class IssueService {
     }
 
     @Transactional(readOnly = true)
-    public List<SimpleIssue> getIssuesByCondition(IssueSearchCondition condition) {
+    public IssueListResponse getIssuesByCondition(IssueSearchCondition condition) {
         Map<String, Object> conditionMap = new HashMap<>();
 
         conditionMap.put("author", condition.getAuthor());
@@ -100,6 +101,9 @@ public class IssueService {
         conditionMap.put("labelIds", condition.getLabelIds());
         conditionMap.put("keyword", condition.getKeyword());
 
-        return issueViewMapper.findAllByCondition(conditionMap);
+        IssueCount issueCount = issueViewMapper.countByCondition(conditionMap);
+        List<SimpleIssue> issues = issueViewMapper.findAllByCondition(conditionMap);
+
+        return IssueListResponse.from(issueCount, issues);
     }
 }
