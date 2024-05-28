@@ -6,8 +6,13 @@
     import IssueAdd from './pages/issue/IssueAddPage.svelte';
     import LabelPage from './pages/label/LabelPage.svelte';
     import MilestonePage from "./pages/milestone/MilestonePage.svelte";
+    import Header from "./components/common/Header.svelte";
+    import LoginPage from "./pages/auth/AuthPage.svelte";
 </script>
 
+<Route path="/login" firstmatch><LoginPage /></Route>
+
+<!--<Header />-->
 <Route path="/" redirect="/issues" />
 <Route path="/issues"><Issues /></Route>
 <Route path="/issues/*" firstmatch>
