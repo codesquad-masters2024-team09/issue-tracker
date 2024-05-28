@@ -43,8 +43,7 @@ public class LabelService {
     }
 
     public LabelResponse edit(String labelId, LabelUpdateRequest request) {
-        if (!Stream.of(request.getLabelId(), request.getDescription(), request.getTextColor(), request.getColorCode())
-                .allMatch(Objects::nonNull)) {
+        if (!request.validateNullOrBlank()) {
             throw new IllegalArgumentException();
         }
 

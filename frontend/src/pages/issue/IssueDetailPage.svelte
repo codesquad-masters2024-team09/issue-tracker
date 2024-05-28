@@ -144,7 +144,7 @@
             </div>
 
             <!-- 버튼 컨테이너 -->
-            <div class="edit-title-contianer">
+            <div class="edit-title-container">
                 <button type="button" class="edit-title-btn blue-border"
                         on:click={() => onToggleEditTitlePopup(issueId)}>
                 <span class="text-[12px] text-center pr-1">

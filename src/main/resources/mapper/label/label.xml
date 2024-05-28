@@ -6,16 +6,16 @@
     <update id="update" parameterType="map">
         UPDATE LABEL
         <set>
-            <if test="request.labelId != null">
+            <if test="request.labelId != null and request.labelId != ''">
                 LABEL_ID = #{request.labelId},
             </if>
-            <if test="request.description != null">
+            <if test="request.description != null and request.description != ''">
                 DESCRIPTION = #{request.description},
             </if>
-            <if test="request.textColor != null">
+            <if test="request.textColor != null and request.textColor != ''">
                 TEXT_COLOR = #{request.textColor},
             </if>
-            <if test="request.colorCode != null">
+            <if test="request.colorCode != null and request.colorCode != ''">
                 COLOR_CODE = #{request.colorCode}
             </if>
         </set>
