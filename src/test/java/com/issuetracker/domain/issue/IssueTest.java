@@ -48,7 +48,7 @@ class IssueTest {
     void setUp() {
         Member member = Member.builder()
                 .id("tester")
-                .password("123")
+                .encodedPassword("123")
                 .build();
 
         testMember = memberRepository.save(member);

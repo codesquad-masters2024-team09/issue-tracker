@@ -12,8 +12,6 @@ public interface IssueViewMapper {
 
     IssueDetails findById(Long issueId);
 
-    List<SimpleIssue> findAll();
-
     IssueCount countByCondition(Map<String, Object> conditionMap);
 
     List<SimpleIssue> findAllByCondition(Map<String, Object> conditionMap);

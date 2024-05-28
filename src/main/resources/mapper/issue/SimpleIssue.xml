@@ -10,14 +10,6 @@
         <result property="totalIssues" column="TOTAL_ISSUES" />
     </resultMap>
 
-    <!-- LabelResultMap -->
-    <resultMap id="LabelResultMap" type="com.issuetracker.domain.label.Label">
-        <id property="id" column="LABEL_ID" />
-        <result property="description" column="DESCRIPTION" />
-        <result property="textColor" column="TEXT_COLOR" />
-        <result property="colorCode" column="COLOR_CODE" />
-    </resultMap>
-
     <!-- SimpleIssueResultMap -->
     <resultMap id="SimpleIssueResultMap" type="com.issuetracker.domain.issue.response.SimpleIssue">
         <id property="issueId" column="ISSUE_ID" />

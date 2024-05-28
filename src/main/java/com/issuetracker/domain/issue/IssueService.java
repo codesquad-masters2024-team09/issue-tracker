@@ -12,7 +12,6 @@ import com.issuetracker.domain.issue.response.IssueListResponse;
 import com.issuetracker.domain.issue.response.SimpleIssue;
 import com.issuetracker.global.exception.issue.IssueNotFoundException;
 import lombok.RequiredArgsConstructor;
-import com.issuetracker.domain.issue.response.IssueDetailResponse;
 import org.springframework.stereotype.Service;
 import java.util.Map;
 import org.springframework.transaction.annotation.Transactional;
