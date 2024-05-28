@@ -5,6 +5,8 @@ import com.issuetracker.domain.milestone.request.MilestoneUpdateRequest;
 import com.issuetracker.domain.milestone.response.MilestoneListResponse;
 import com.issuetracker.global.exception.milestone.MilestoneDuplicateException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,24 +21,17 @@ public class MilestoneService {
     private final MilestoneViewMapper milestoneViewMapper;
 
     public String create(MilestoneCreateRequest request) {
-        if (milestoneRepository.existsById(request.getId())) {
-            throw new MilestoneDuplicateException();
-        }
-
         Milestone milestone = request.toEntity();
-        Milestone savedMilestone = milestoneRepository.save(milestone);
-        return savedMilestone.getId();
+        try {
+            Milestone savedMilestone = milestoneRepository.save(milestone);
+            return savedMilestone.getId();
+        } catch (DbActionExecutionException e) {
+            if (e.getCause() instanceof DuplicateKeyException) {
+                throw new MilestoneDuplicateException();
+            }
+            throw e;
+        }
     }
-
-//    public String create(MilestoneCreateRequest request) {
-//        Milestone milestone = request.toEntity();
-//        try {
-//            Milestone savedMilestone = milestoneRepository.save(milestone);
-//            return savedMilestone.getId();
-//        } catch (DbActionExecutionException ex) {
-//            throw new MilestoneDuplicateException();
-//        }
-//    }
 
     @Transactional(readOnly = true)
     public MilestoneListResponse getMilestones(boolean openStatus) {
