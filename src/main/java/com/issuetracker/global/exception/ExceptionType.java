@@ -4,8 +4,7 @@ import com.issuetracker.global.exception.comment.CommentNotFoundException;
 import com.issuetracker.global.exception.issue.IssueNotFoundException;
 import com.issuetracker.global.exception.label.LabelDuplicateException;
 import com.issuetracker.global.exception.label.LabelNotFoundException;
-import com.issuetracker.global.exception.member.MemberDuplicateException;
-import com.issuetracker.global.exception.member.MemberNotFoundException;
+import com.issuetracker.global.exception.member.*;
 import com.issuetracker.global.exception.milestone.MilestoneDuplicateException;
 import com.issuetracker.global.exception.milestone.MilestoneNotFoundException;
 import lombok.AccessLevel;
@@ -13,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -27,10 +27,15 @@ public enum ExceptionType {
      */
     UNHANDLED(1000, "알 수 없는 서버 에러가 발생했습니다.", null),
     METHOD_ARGUMENT_NOT_VALID(1001, "요청 데이터가 유효하지 않습니다.", MethodArgumentNotValidException.class),
+    NO_RESOURCE(1002, "해당 요청에 대한 리소스가 존재하지 않습니다.", NoResourceFoundException.class),
 
     /**
      * Auth (2XXX)
      */
+    INVALID_LOGIN_DATA(2000, "아이디 또는 비밀번호가 일치하지 않습니다.", InvalidLoginDataException.class),
+    INVALID_TOKEN(2001, "유효하지 않은 JWT 토큰입니다.", InvalidTokenException.class),
+    TOKEN_EXPIRED(2002, "만료된 JWT 토큰입니다.", TokenExpiredException.class),
+    TOKEN_NOT_EXISTS(2003, "인증이 필요한 요청입니다.", TokenNotExistException.class),
 
     /**
      * Member (25XX)
