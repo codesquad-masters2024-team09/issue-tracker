@@ -2,6 +2,7 @@ import { get, writable, derived } from "svelte/store";
 import { getApi, postApi, putApi, delApi, patchApi } from "../service/api.js";
 import { router } from "tinro";
 import { urlPrefix, MOCK_USER_ID, MOCK_USER_PWD } from "../utils/constants.js";
+import { optionsStore } from "./filter.js";
 
 function setIssues() {
     let initValues = {
@@ -15,15 +16,16 @@ function setIssues() {
 
     const { subscribe, update, set } = writable({...initValues});
 
-    const fetchIssues = async () => { // 이슈 목록을 서버로부터 받아오는 역할
+    const fetchIssues = async (queryString="") => { // 이슈 목록을 서버로부터 받아오는 역할
 
         loadingIssue.turnOnLoading() // 로딩 효과
 
         try {
             const options = {
-                path: `${urlPrefix}/issues?q=` // TODO: 기본 쿼리
+                path: `${urlPrefix}/issues?q=`+queryString
+                // TODO: 기본 쿼리
             }
-
+            console.log("URL: " + options.path);
             const getDatas = await getApi(options);
 
             const newData = {
@@ -176,6 +178,13 @@ function setIssues() {
             return datas
         })
     }
+
+    optionsStore.subscribe(state => {
+        const queryString = optionsStore.generateQueryString(state);
+        fetchIssues(queryString)
+            .then(res => console.log(res))
+            .catch(err => alert("이슈 로딩 중 에러가 발생했습니다! 다시 시도해 주세요"));
+    })
 
     return {
         subscribe,
