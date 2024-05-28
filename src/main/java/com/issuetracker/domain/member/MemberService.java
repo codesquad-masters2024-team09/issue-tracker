@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -35,7 +37,8 @@ public class MemberService {
 
         Member member = request.toEntity(passwordEncoder.encode(request.getPassword()));
 
-        String accessToken = jwtTokenProvider.createAccessToken(member.getId(), null);
+        String accessToken = jwtTokenProvider.createAccessToken(
+                member.getId(), Map.of("imgUrl", member.getProfileImgUrl()));
         String refreshToken = jwtTokenProvider.createRefreshToken(member.getId(), null);
         member.updateRefreshToken(refreshToken);
         memberRepository.save(member);
@@ -53,7 +56,8 @@ public class MemberService {
             throw new InvalidLoginDataException();
         }
 
-        String accessToken = jwtTokenProvider.createAccessToken(member.getId(), null);
+        String accessToken = jwtTokenProvider.createAccessToken(
+                member.getId(), Map.of("imgUrl", member.getProfileImgUrl()));
         String refreshToken = jwtTokenProvider.createRefreshToken(member.getId(), null);
         member.updateRefreshToken(refreshToken);
         memberRepository.updateRefreshToken(member.getId(), member.getRefreshToken());
@@ -81,7 +85,8 @@ public class MemberService {
             throw new InvalidTokenException();
         }
 
-        String accessToken = jwtTokenProvider.createAccessToken(memberId, null);
+        String accessToken = jwtTokenProvider.createAccessToken(
+                member.getId(), Map.of("imgUrl", member.getProfileImgUrl()));
         String refreshToken = member.getRefreshToken();
 
         if(!jwtTokenProvider.refreshTokenExpired(claims)){
