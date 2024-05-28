@@ -1,4 +1,12 @@
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
+
+@font-face {
+  font-family: 'Pretendard-Regular';
+  src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+}
+
 @tailwind base;
 @layer base {
   body {
@@ -16,6 +24,10 @@
   a:not(.no-hover-color-effect):hover {
     @apply text-blue-600 font-bold
   }
+
+  footer {
+    @apply flex flex-col justify-center items-center text-gray-600 text-[12px] fixed bottom-6
+  }
 }
 @tailwind components;
 @layer components {
@@ -27,7 +39,7 @@
     @apply p-3 w-full min-h-[200px] rounded-lg bg-white focus:outline-none
   }
 
-  .edit-title-contianer {
+  .edit-title-container {
     @apply flex mx-2 gap-2 px-1 min-w-[270px] justify-end items-center
   }
 
@@ -42,8 +54,16 @@
     @apply text-blue-600/90 border border-blue-500
   }
 
+  .edit-title-btn.blue-border:hover {
+    @apply bg-gray-50/50
+  }
+
   .edit-title-btn.apply {
-    @apply text-gray-100 bg-blue-600 cursor-pointer
+    @apply text-gray-100 bg-blue-500 cursor-pointer
+  }
+
+  .edit-title-btn.apply:hover {
+    @apply bg-blue-600 text-gray-100 cursor-pointer
   }
 
   .edit-title-btn.apply:disabled {
@@ -73,8 +93,24 @@
       @apply scale-[0.98] shadow-none
   }
 
+  .rotate-btn:hover {
+    @apply transition-colors duration-75 text-slate-600
+  }
+
+  .rotate-btn:active {
+    @apply transition-all duration-100 scale-[0.75] shadow-none
+  }
+
   .gray-btn:hover {
-    @apply hover:bg-gray-200/50 active:scale-[0.99] transition-all duration-100 active:shadow-none
+    @apply bg-gray-200/50
+  }
+
+  .gray-btn:active {
+    @apply transition-all duration-100 scale-[0.99] shadow-none
+  }
+
+  .gray-btn:disabled {
+    @apply transition-none scale-[1] shadow-none bg-gray-200/80 cursor-pointer
   }
 
   .option-container {
@@ -133,7 +169,7 @@
     @apply bg-gray-200/50 w-[430px] p-2 rounded-md outline-none pl-[35px] text-gray-600 focus:border-white focus:bg-white focus:placeholder-transparent
   }
 
-  .label-milestone-pannel {
+  .label-milestone-panel {
     @apply flex-1 px-[2rem] py-1 h-[44px] shadow-sm whitespace-nowrap text-sm text-gray-700 border border-gray-300/60
   }
 
@@ -198,11 +234,65 @@
   }
 
   .issue-table-row {
-    @apply flex bg-white px-5 py-5 w-full border border-gray-300/60 justify-start items-center
+    @apply flex bg-white px-5 py-5 w-full border border-gray-300/60 items-center
   }
 
   .issue-table-row:last-child {
     @apply rounded-b-2xl
+  }
+
+  /* 자식 요소 중 .label-form-edit-container가 없는 경우에만 호버 효과 적용 */
+  .issue-table-row:not(:has(.label-form-edit-container)):hover {
+    @apply transition-all duration-100 bg-gray-100/70;
+  }
+
+  .label-row {
+    @apply flex w-full items-center
+  }
+
+  .label-preview-container {
+    @apply min-w-[170px] ml-4 mr-[6rem] my-1
+  }
+
+  .label-description {
+    @apply mx-4 my-1 min-w-[250px] text-gray-800 truncate
+  }
+
+  .label-btn-container {
+    @apply ml-auto flex gap-2 mx-4 my-1 items-center text-sm whitespace-nowrap
+  }
+
+  /* 여기서부터 레이블 입력 / 수정 폼 */
+  .label-form-container {
+    @apply w-full min-w-[1020px] bg-white p-6 border border-gray-300/60 rounded-2xl
+  }
+
+  .label-form-edit-container {
+    @apply w-full flex flex-col gap-2 justify-between
+  }
+
+  .label-form-header {
+    @apply text-lg font-bold text-gray-800 m-2
+  }
+
+  .label-form-preview-container {
+    @apply flex m-2 border border-neutral-200 rounded-xl bg-white justify-center items-center w-[360px] min-w-[360px] min-h-[180px]
+  }
+
+  .label-form-input-container {
+    @apply flex gap-2 w-full flex-col mx-4 justify-between
+  }
+
+  .label-form-input-box {
+    @apply w-full rounded-e-md relative
+  }
+
+  .label-form-input-box-bg {
+    @apply flex gap-4
+  }
+
+  .label-form-select-box {
+    @apply flex gap-2 text-[14px] justify-between items-center whitespace-nowrap
   }
 
   .checkbox {
@@ -278,34 +368,113 @@
     @apply text-[12px] w-max h-6 px-[1rem] whitespace-nowrap
   }
 
-  /*
-  .comment-box {
-      background-color: #EFF0F6;
-      border-radius: 10px;
-      padding: 10px;
-      width: 100%;
-  } */
+  .centered-container {
+    @apply flex justify-center items-center min-h-[768px] mt-[10rem]
+  }
 
-  /* .content-box-header > img {
-      display: inline-block;
-  } */
+  .logo-container {
+    @apply w-[380px] h-[80px] select-none
+  }
 
-  /*
-  .comment-box textarea {
-      width: 100%; /* 너비를 부모 요소에 맞춤
-      height: 120px; /* 높이를 150px로 설정
-      border: none; /* 테두리를 없앰
-      padding: 15px; /* 내부 여백을 15px로 설정
-      font-size: 16px; /* 글자 크기를 16px로 설정
-      resize: none; /* 사용자가 텍스트 영역 크기를 조정할 수 없도록 함
-      box-sizing: border-box; /* 패딩과 테두리를 포함한 전체 너비와 높이를 설정
-      background-color: #EFF0F6; /* 배경색을 연한 회색으로 설정
-      margin-bottom: 10px; /* 아래쪽 여백 추가
-  }*/
-  /*
-  input:focus, textarea:focus {
-      outline: none; /* 포커스 시 나타나는 외곽선을 없앰
-  }*/
+  .gray-text-4rem-italic {
+    @apply text-gray-800 text-[4rem] italic relative whitespace-nowrap
+  }
+
+  .logo-container-rounded {
+    @apply size-[25px] rounded-full bg-[#F7F7FC] absolute inline-flex
+  }
+
+  .login-btn-github {
+    @apply my-3 w-[350px] px-[1rem] py-3 text-[15px] font-bold rounded-xl text-blue-500 border border-blue-400/80 shadow-sm
+  }
+
+  .login-btn-github:active {
+    @apply transition-all duration-75 scale-[0.98] shadow-none
+  }
+
+  .login-btn {
+    @apply mt-3 w-[350px] px-[1rem] py-3 text-[15px] font-bold rounded-xl hover:bg-blue-600 hover:border-blue-600 text-white bg-blue-500 border border-blue-500 shadow-sm
+  }
+
+  .login-btn:active {
+    @apply transition-all duration-75 scale-[0.98] shadow-none
+  }
+
+  .login-btn:disabled {
+    @apply bg-blue-600/40 border-blue-600/0 transition-none scale-100 shadow-none cursor-not-allowed
+  }
+
+  .go-signup-btn {
+    @apply mt-3 w-[350px] px-[1rem] py-3 text-[15px] font-bold rounded-xl text-blue-500 border border-blue-50/0
+  }
+
+  .go-signup-btn:hover {
+    @apply border border-blue-400/80
+  }
+
+  .go-signup-btn:active {
+    @apply transition-all duration-75 scale-[0.98] shadow-none
+  }
+
+  .signup-btn {
+    @apply mt-3 w-[350px] px-[1rem] py-3 text-[15px] font-bold rounded-xl hover:bg-blue-600 hover:border-blue-600 text-white bg-blue-500 border border-blue-500 shadow-sm
+  }
+
+  .signup-btn:active {
+    @apply transition-all duration-75 scale-[0.98] shadow-none
+  }
+
+  .signup-btn:disabled {
+    @apply bg-blue-600/40 border-blue-600/0 transition-none scale-100 shadow-none cursor-not-allowed
+  }
+
+  .back-btn {
+    @apply mt-3 w-[350px] px-[1rem] py-3 text-[15px] font-bold rounded-xl text-blue-500
+  }
+
+  .back-btn:hover {
+    @apply transition-all duration-75 scale-[0.98] shadow-none
+  }
+
+  .text-divider {
+    @apply w-[350px] border-t border-gray-200 my-4
+  }
+
+  .login-form-input-container {
+    @apply mt-3 text-[13px] relative
+  }
+
+  .login-form-label {
+    @apply absolute translate-y-2 ml-1 text-gray-500 left-[10px] top-[6px] pointer-events-none
+  }
+
+  .login-input-field {
+    @apply pl-[6rem] pt-3.5
+  }
+
+  .auth-form {
+    @apply flex-col items-center w-[350px] h-[280px]
+  }
+
+  .footer-divider {
+    @apply border-t my-3 border-gray-200 w-[350px]
+  }
+
+  .footer-container {
+    @apply flex gap-4 justify-center items-center
+  }
+
+  .tooltip {
+    @apply relative block
+  }
+
+  .tooltip .tooltiptext {
+    @apply invisible p-2 text-gray-600 text-[12px] text-center bg-[#F7F7FC] border border-gray-300 rounded-full z-10 absolute bottom-8 -left-[9px] whitespace-nowrap
+  }
+
+  .tooltip:hover .tooltiptext {
+    @apply visible
+  }
 }
 
 @tailwind utilities;
