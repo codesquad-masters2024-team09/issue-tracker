@@ -23,4 +23,10 @@ public class LabelUpdateRequest {
                 .colorCode(colorCode)
                 .build();
     }
+
+    public boolean validateNullOrBlank() {
+        return !((labelId == null || labelId.isBlank())
+                && (textColor == null || textColor.isBlank())
+                && (colorCode == null || colorCode.isBlank()));
+    }
 }
