@@ -36,9 +36,10 @@ public class MemberService {
         }
 
         Member member = request.toEntity(passwordEncoder.encode(request.getPassword()));
+        String profileImgUrl = member.getProfileImgUrl();
 
         String accessToken = jwtTokenProvider.createAccessToken(
-                member.getId(), Map.of("imgUrl", member.getProfileImgUrl()));
+                member.getId(), profileImgUrl != null ? Map.of("imgUrl", profileImgUrl) : null);
         String refreshToken = jwtTokenProvider.createRefreshToken(member.getId(), null);
         member.updateRefreshToken(refreshToken);
         memberRepository.save(member);
@@ -56,8 +57,9 @@ public class MemberService {
             throw new InvalidLoginDataException();
         }
 
+        String profileImgUrl = member.getProfileImgUrl();
         String accessToken = jwtTokenProvider.createAccessToken(
-                member.getId(), Map.of("imgUrl", member.getProfileImgUrl()));
+                member.getId(), profileImgUrl != null ? Map.of("imgUrl", profileImgUrl) : null);
         String refreshToken = jwtTokenProvider.createRefreshToken(member.getId(), null);
         member.updateRefreshToken(refreshToken);
         memberRepository.updateRefreshToken(member.getId(), member.getRefreshToken());
@@ -85,8 +87,9 @@ public class MemberService {
             throw new InvalidTokenException();
         }
 
+        String profileImgUrl = member.getProfileImgUrl();
         String accessToken = jwtTokenProvider.createAccessToken(
-                member.getId(), Map.of("imgUrl", member.getProfileImgUrl()));
+                member.getId(), profileImgUrl != null ? Map.of("imgUrl", profileImgUrl) : null);
         String refreshToken = member.getRefreshToken();
 
         if(!jwtTokenProvider.refreshTokenExpired(claims)){
