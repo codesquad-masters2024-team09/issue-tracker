@@ -35,7 +35,6 @@ public class LabelController {
     @PatchMapping("/{labelId}")
     public ResponseEntity<LabelResponse> edit(@PathVariable("labelId") String labelId,
                                               @Valid @RequestBody LabelUpdateRequest labelUpdateRequest) {
-        log.info(labelUpdateRequest.getLabelId(), labelUpdateRequest.getTextColor(), labelUpdateRequest.getColorCode());
         return ResponseEntity.ok(
                 labelService.edit(labelId, labelUpdateRequest)
         );
