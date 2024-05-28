@@ -3,10 +3,10 @@ import { writable, get } from 'svelte/store';
 const createOptionsStore = () => {
     const { subscribe, update } = writable({
         isOpen: "isOpen",
-        assignees: [],
+        assignees: "",
         labels: [],
-        milestones: [],
-        writers: []
+        milestones: "",
+        writers: ""
     });
 
     const updateOption = (category, option) => {
@@ -15,12 +15,22 @@ const createOptionsStore = () => {
                 store["isOpen"] = option;
                 return store;
             }
-
-            const index = store[category].indexOf(option);
-            if (index === -1) {
-                store[category].push(option); // 선택한 옵션을 리스트에 추가
-            } else {
-                store[category].splice(index, 1); // 선택한 옵션을 리스트에서 제거
+            // 라벨의 경우 다중선택 가능한 구조
+            if (category === "labels") {
+                const index = store[category].indexOf(option);
+                if (index === -1) {
+                    store[category].push(option);
+                } else {
+                    store[category].splice(index, 1);
+                }
+            }
+            // 라벨 외 옵션은 하나만 선택할 수 있도록 하는 구조
+            else {
+                if (store[category] === option) {
+                    store[category] = "";
+                } else {
+                    store[category] = option;
+                }
             }
             return store;
         });

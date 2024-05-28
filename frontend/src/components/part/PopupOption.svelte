@@ -17,6 +17,21 @@
 
     // 선택한 필터 조건을 상태에 업데이트
     const updateFilterOption = (option) => {
+        // 라벨이 아닌 경우 단일 선택만 가능, 라벨인 경우 다중 선택 가능
+        const isLabel = storeType === "labels";
+        if (!isLabel) {
+            options.forEach(opt => {
+                if (opt.name !== option) {
+                    const optionItem = document.querySelector(`.popup-filter-item[data-name="${opt.name}"]`);
+                    if(optionItem) {
+                        const optionItemCheckbox = optionItem.querySelector(".popup-filter-checkbox");
+                        if (optionItemCheckbox) {
+                            optionItemCheckbox.checked = false;
+                        }
+                    }
+                }
+            })
+        }
         const updateFunction = optionUpdateFunction[storeType];
         updateFunction(option);
     };
