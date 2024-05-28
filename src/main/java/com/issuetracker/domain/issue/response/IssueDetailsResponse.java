@@ -2,7 +2,6 @@ package com.issuetracker.domain.issue.response;
 
 import com.issuetracker.domain.comment.response.CommentResponse;
 import com.issuetracker.domain.common.LocalDateTimeToStringConverter;
-import com.issuetracker.domain.issue.Issue;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +27,8 @@ public class IssueDetailsResponse {
 
     @Builder.Default
     private List<LabelResponse> labels = new ArrayList<>();
+    private String milestoneId;
+    private Integer milestoneProgress;
     private String createdAt;
 
     public static IssueDetailsResponse of(IssueDetails issueDetails) {
@@ -38,6 +39,8 @@ public class IssueDetailsResponse {
                 .content(issueDetails.getContent())
                 .comments(issueDetails.getComments().stream().map(CommentResponse::of).toList())
                 .labels(issueDetails.getLabels().stream().map(LabelResponse::of).toList())
+                .milestoneId(issueDetails.getMilestoneId())
+                .milestoneProgress(issueDetails.getMilestoneProgress())
                 .createdAt(LocalDateTimeToStringConverter.convert(LocalDateTime.now(), issueDetails.getCreatedAt()))
                 .build();
     }

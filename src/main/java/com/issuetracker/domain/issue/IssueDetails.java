@@ -22,6 +22,7 @@ public class IssueDetails {
     private boolean isOpen;
     private Set<Label> labels;
     private String milestoneId;
+    private Integer milestoneProgress;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 }
