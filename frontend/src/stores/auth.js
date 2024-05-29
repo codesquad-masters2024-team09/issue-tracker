@@ -1,17 +1,16 @@
-import { writable } from "svelte/store";
+import {derived, writable} from "svelte/store";
 import { postApi } from "../service/api.js";
 import { router } from "tinro";
 import { urlPrefix } from "../utils/constants.js";
 
-// 초기화 값 설정
-const initValues = {
-    memberId: '',
-    profileImgUrl: '',
-    accessToken: ''
-};
-
 // 인증 관련 상태 설정
 function setAuth() {
+    const initValues = {
+        memberId: '',
+        profileImgUrl: '',
+        accessToken: ''
+    };
+
     const { subscribe, set, update } = writable({ ...initValues });
 
     // 공통 로직을 처리하는 함수
@@ -24,11 +23,6 @@ function setAuth() {
             accessToken: authResponse.accessToken
         }));
         isRefresh.set(true);
-    };
-
-    // 공통 에러 핸들링 함수
-    const handleError = (message) => {
-        alert(message);
     };
 
     // 토큰 갱신 함수
@@ -106,5 +100,10 @@ function setAuth() {
     };
 }
 
+function setIsLoggedIn() {
+    return derived(auth, $auth => !!$auth.accessToken);
+}
+
 export const auth = setAuth();
 export const isRefresh = writable(false);
+export const isLoggedIn = setIsLoggedIn();

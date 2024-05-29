@@ -1,7 +1,8 @@
-import { get, writable, derived } from "svelte/store";
-import { getApi, postApi, putApi, delApi, patchApi } from "../service/api.js";
-import { router } from "tinro";
-import { urlPrefix, MOCK_USER_ID, MOCK_USER_PWD } from "../utils/constants.js";
+import {get, writable} from "svelte/store";
+import {delApi, getApi, patchApi, postApi} from "../service/api.js";
+import {router} from "tinro";
+import {MOCK_USER_ID, urlPrefix} from "../utils/constants.js";
+import {auth} from "./auth.js";
 
 function setIssues() {
     let initValues = {
@@ -21,7 +22,8 @@ function setIssues() {
 
         try {
             const options = {
-                path: `${urlPrefix}/issues?q=` // TODO: 기본 쿼리
+                path: `${urlPrefix}/issues`,
+                access_token: get(auth).accessToken,
             }
 
             const getDatas = await getApi(options);
@@ -33,8 +35,8 @@ function setIssues() {
             update(datas => {
 
                 // TODO: paging 처리 시 첫 페이지냐 아니냐에 따라 분기 처리 필요
-                const newIssues = [...newData.issueList, ...datas.issueList] // 현재까지 받은 데이터에 새로 받은 데이터를 뒤에 더하기
-                datas.issueList = newIssues
+                 // 현재까지 받은 데이터에 새로 받은 데이터를 뒤에 더하기
+                datas.issueList = [...newData.issueList, ...datas.issueList]
                 console.log('fetch issue list: ', datas.issueList)
 
                 return datas
@@ -43,9 +45,9 @@ function setIssues() {
             loadingIssue.turnOffLoading()
         }
         catch(error) {
-            console.log('fetch issue list error:', error)
             loadingIssue.turnOffLoading()
-            throw error
+            alert(error.response.data.errorMessage);
+            throw error;
         }
     }
 
@@ -53,6 +55,7 @@ function setIssues() {
         try {
             const options = {
                 path: `${urlPrefix}/issues/${issueID}`,
+                access_token: get(auth).accessToken,
             }
             const responseData = await getApi(options);
             console.log('단건 조회: ', responseData)
@@ -76,6 +79,7 @@ function setIssues() {
                     labels: form.labels,
                     milestoneId: form.milestone,
                 },
+                access_token: get(auth).accessToken,
             }
 
             const savedId = await postApi(options);
@@ -99,6 +103,7 @@ function setIssues() {
             const options = {
                 path: `${urlPrefix}/issues/${issueId}`,
                 data: updateData,
+                access_token: get(auth).accessToken,
             }
 
             await patchApi(options)
@@ -123,13 +128,13 @@ function setIssues() {
         try {
             const options = {
                 path: `${urlPrefix}/issues/${issueId}`,
+                access_token: get(auth).accessToken,
             }
 
             await delApi(options)
 
             update(datas => {
-                const newIssueList = datas.issueList.filter(issue => issue.issueId !== issueId)
-                datas.issueList = newIssueList
+                datas.issueList = datas.issueList.filter(issue => issue.issueId !== issueId)
 
                 return datas
             })

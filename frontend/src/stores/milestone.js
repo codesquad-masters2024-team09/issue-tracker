@@ -1,5 +1,6 @@
-import {writable} from "svelte/store";
+import {get, writable} from "svelte/store";
 import {postApi, getApi, patchApi, delApi, putApi} from "../service/api.js";
+import {auth} from "./auth.js";
 
 const urlPrefix = '/api/v1';
 
@@ -16,6 +17,7 @@ function setMilestones() {
         try {
             const options = {
                 path: urlPrefix + '/milestones',
+                access_token: get(auth).accessToken,
             }
 
             const response = await getApi(options)
@@ -45,7 +47,8 @@ function setMilestones() {
                     id: milestone.id,
                     dueDate: milestone.dueDate,
                     description: milestone.description,
-                }
+                },
+                access_token: get(auth).accessToken,
             }
 
             await postApi(options)
@@ -80,7 +83,8 @@ function setMilestones() {
         try {
             const options = {
                 path: urlPrefix + `/milestones/${milestoneId}`,
-                data: {...changes}
+                data: {...changes},
+                access_token: get(auth).accessToken,
             }
 
             const editedMilestone = await putApi(options);
@@ -105,7 +109,8 @@ function setMilestones() {
     const deleteMilestone = async (id) => {
         try {
             const options = {
-                path: urlPrefix + `/milestones/${id}`
+                path: urlPrefix + `/milestones/${id}`,
+                access_token: get(auth).accessToken,
             }
 
             await delApi(options)
