@@ -3,31 +3,50 @@ import { postApi } from "../service/api.js";
 import { router } from "tinro";
 import { urlPrefix } from "../utils/constants.js";
 
+// 초기화 값 설정
+const initValues = {
+    memberId: '',
+    profileImgUrl: '',
+    accessToken: ''
+};
+
+// 인증 관련 상태 설정
 function setAuth() {
-    let initValues = {
-        memberId: '',
-        profileImgUrl: '',
-    }
+    const { subscribe, set, update } = writable({ ...initValues });
 
-    const { subscribe, set, update } = writable({...initValues})
+    // 공통 로직을 처리하는 함수
+    const handleAuthResponse = (authResponse) => {
+        const payload = JSON.parse(window.atob(authResponse.accessToken.split('.')[1]));
+        update(data => ({
+            ...data,
+            memberId: payload.memberId,
+            profileImgUrl: payload.imgUrl,
+            accessToken: authResponse.accessToken
+        }));
+        isRefresh.set(true);
+    };
 
+    // 공통 에러 핸들링 함수
+    const handleError = (message) => {
+        alert(message);
+    };
+
+    // 토큰 갱신 함수
     const refresh = async () => {
         try {
-            const authResponse = await postApi({path: urlPrefix + '/auth/refresh'})
-            
-            localStorage.setItem("accessToken", authResponse.accessToken)
-            localStorage.setItem("refreshToken", authResponse.refreshToken)
-            isRefresh.set(true)
+            const authResponse = await postApi({ path: urlPrefix + '/auth/refresh' });
+            handleAuthResponse(authResponse);
+        } catch (err) {
+            resetUserInfo();
+            isRefresh.set(false);
         }
-        catch(err) {
-            auth.resetUserInfo()
-            isRefresh.set(false)
-        }
-    }
+    };
 
-    const resetUserInfo = () => set({...initValues})
+    // 사용자 정보 초기화
+    const resetUserInfo = () => set({ ...initValues });
 
-    const login = async(data) => {
+    // 로그인 함수
+    const login = async (data) => {
         try {
             const options = {
                 path: urlPrefix + '/auth/login',
@@ -35,49 +54,29 @@ function setAuth() {
                     memberId: data.memberId,
                     password: data.password,
                 }
-            }
+            };
 
-            const authResponse = await postApi(options)
-            update(data => {
-                const payload = JSON.parse(window.atob(authResponse.accessToken.split('.')[1]));
-                data.memberId = payload.memberId;
-                data.profileImgUrl = payload.imgUrl;
-                return data;
-            })
-            
-            localStorage.setItem("accessToken", authResponse.accessToken)
-            localStorage.setItem("refreshToken", authResponse.refreshToken)
-            
-            isRefresh.set(true)
-            router.goto('/')
+            const authResponse = await postApi(options);
+            handleAuthResponse(authResponse);
+            router.goto('/');
+        } catch (error) {
+            handleError('오류가 발생했습니다. 다시 로그인해 주세요.');
         }
-        catch(error) {
-            alert('오류가 발생했습니다. 다시 로그인해 주세요.')
-        }
-    }
+    };
 
+    // 로그아웃 함수
     const logout = async () => {
         try {
-            const options = {
-                path: urlPrefix + '/auth/logout',
-            }
-
-            await postApi(options);
-
+            await postApi({ path: urlPrefix + '/auth/logout' });
             resetUserInfo();
-
-            localStorage.removeItem("accessToken");
-            localStorage.removeItem("refreshToken");
-
-            isRefresh.set(false)
-            
-            router.goto("/login")
+            isRefresh.set(false);
+            router.goto("/login");
+        } catch (error) {
+            handleError('오류가 발생했습니다. 다시 시도해 주세요.');
         }
-        catch(error) {
-            alert('오류가 발생했습니다. 다시시도해 주세요')
-        }
-    }
+    };
 
+    // 회원가입 함수
     const register = async (data) => {
         try {
             const options = {
@@ -86,27 +85,16 @@ function setAuth() {
                     memberId: data.memberId,
                     password: data.password,
                 }
-            }
+            };
 
-            const authResponse = await postApi(options)
-            update(data => {
-                const payload = JSON.parse(window.atob(authResponse.accessToken.split('.')[1]));
-                data.memberId = payload.memberId;
-                data.profileImgUrl = payload.imgUrl;
-                return data;
-            })
-
-            localStorage.setItem("accessToken", authResponse.accessToken)
-            localStorage.setItem("refreshToken", authResponse.refreshToken)
-
-            isRefresh.set(true)
-            alert('가입이 완료되었습니다.')
-            router.goto('/')
+            const authResponse = await postApi(options);
+            handleAuthResponse(authResponse);
+            alert('가입이 완료되었습니다.');
+            router.goto('/');
+        } catch (error) {
+            handleError('오류가 발생했습니다. 다시 시도해 주세요.');
         }
-        catch(error) {
-            alert('오류가 발생했습니다. 다시 시도해 주세요.')
-        }
-    }
+    };
 
     return {
         subscribe,
@@ -115,8 +103,8 @@ function setAuth() {
         logout,
         resetUserInfo,
         register,
-    }
+    };
 }
 
 export const auth = setAuth();
-export const isRefresh = writable(false)
+export const isRefresh = writable(false);
