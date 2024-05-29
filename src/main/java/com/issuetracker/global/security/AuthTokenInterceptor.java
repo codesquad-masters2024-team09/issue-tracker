@@ -18,6 +18,10 @@ public class AuthTokenInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
                              @NonNull Object handler) throws Exception {
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            return true;
+        }
+
         String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         String token = jwtTokenProvider.getToken(authorizationHeader);
         Claims claims = jwtTokenProvider.validateToken(token);
