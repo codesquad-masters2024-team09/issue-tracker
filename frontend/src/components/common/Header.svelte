@@ -21,6 +21,7 @@
 
     const onWithdraw = () => {
         isProfileClick = !isProfileClick;
+        auth.withdraw()
     }
 
 </script>

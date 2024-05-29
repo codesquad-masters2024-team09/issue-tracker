@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -77,6 +78,13 @@ public class MemberService {
         memberRepository.updateRefreshToken(member.getId(), member.getRefreshToken());
     }
 
+    public void withdraw(String token) {
+        Claims claims =jwtTokenProvider.validateToken(token);
+        String memberId = claims.getSubject();
+        Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+        memberRepository.deleteById(member.getId());
+    }
+
     public Auth refresh (String token) {
         Claims claims = jwtTokenProvider.validateToken(token);
         String memberId = claims.getSubject();
@@ -102,5 +110,9 @@ public class MemberService {
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
+    }
+
+    public List<Member> getMembers() {
+        return memberRepository.findAll();
     }
 }

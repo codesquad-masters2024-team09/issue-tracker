@@ -22,12 +22,8 @@
     }
 
     const onLogin  = async () => {
-        try {
-            await auth.login(data)
-            resetData()
-        } catch (e) {
-            alert("오류가 발생했습니다. 다시 시도해 주세요.")
-        }
+        await auth.login(data)
+        resetData()
     }
 </script>
 

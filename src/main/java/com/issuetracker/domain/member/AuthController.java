@@ -47,14 +47,19 @@ public class AuthController {
     public ResponseEntity<Void> logout(@CookieValue(value = "refreshToken", required = false) String refreshToken) {
         memberService.logout(refreshToken);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.SET_COOKIE, String.format(
-                "%s=%s; Path=%s; Max-Age=%d; HttpOnly; Secure; SameSite=None",  // TODO: SameSite 설정 변경
-                "refreshToken", null, "/", 0));
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .headers(expireRefreshToken())
+                .build();
+    }
+
+    @DeleteMapping("/withdraw")
+    public ResponseEntity<Void> withdraw(@CookieValue(value = "refreshToken", required = false) String refreshToken) {
+        memberService.withdraw(refreshToken);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .headers(headers)
+                .headers(expireRefreshToken())
                 .build();
     }
 
@@ -74,5 +79,14 @@ public class AuthController {
                 .status(HttpStatus.OK)
                 .headers(headers)
                 .body(Collections.singletonMap("accessToken", auth.getAccessToken()));
+    }
+
+    private HttpHeaders expireRefreshToken() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.SET_COOKIE, String.format(
+                "%s=%s; Path=%s; Max-Age=%d; HttpOnly; Secure; SameSite=None",  // TODO: SameSite 설정 변경
+                "refreshToken", null, "/", 0));
+
+        return headers;
     }
 }
