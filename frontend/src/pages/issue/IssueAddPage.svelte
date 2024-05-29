@@ -1,29 +1,42 @@
 <script>
-    import { issues } from "../../stores/issue";
     import { router } from "tinro";
+    import { issues } from "../../stores/issue";
+    import { tags } from "../../stores/tags";
+    import {onDestroy, onMount} from "svelte";
+    import SideBar from "../../components/common/SideBar.svelte";
 
-    let issueFormValues = {
+    const issueFormValues = {
         memberId: 'testUser',
         title: '',
         content: '',
         labels: [],
-        milestone: '',
+        milestoneId: '',
     }
 
     const onCreateIssue = async () => {
-        try {
-            await issues.createIssue(issueFormValues);
-        }
-        catch (err) {
-            alert(err);
-        }
+        issueFormValues.labels = $tags.selectedLabels.map(label => label.labelId)
+        issueFormValues.milestone = $tags.selectedMilestone
+        await issues.createIssue(issueFormValues);
     }
 
     const onCancelCreateIssue = () => {
-        issueFormValues.title = '';
-        issueFormValues.content = '';
         router.goto("/");
     }
+
+    function reset() {
+        issueFormValues.title = '';
+        issueFormValues.content = '';
+        tags.resetCheckedState()
+        tags.resetSelectedItems()
+    }
+
+    onMount(async () => {
+        reset();
+    })
+
+    onDestroy(async () => {
+        reset();
+    })
 
     let isSubmitLocked = true;
     $: {
@@ -65,38 +78,19 @@
             </div>
 
             <!-- 우측 패널 -->
-            <div id="additional-info-area" class="option-parent">
-                <div class="option-item">
-                    <div class="option-item-container">
-                        <span>담당자</span>
-                        <button type="button" class="add-button">+</button>
-                    </div>
-                </div>
-                <div class="option-item">
-                    <div class="option-item-container">
-                        <span>레이블</span>
-                        <button type="button" class="add-button">+</button>
-                    </div>
-                </div>
-                <div class="option-item">
-                    <div class="option-item-container">
-                        <span>마일스톤</span>
-                        <button type="button" class="add-button">+</button>
-                    </div>
-                </div>
-            </div>
+            <SideBar />
         </div>
     </div>
 
     <hr class="mt-9 mb-3">
 
     <!-- 작성 취소 / 완료 버튼 -->
-    <div class="flex justify-end action-buttons">
-        <button type="button" class="btn issue cancel"
-                on:click={onCancelCreateIssue}>✕ 작성 취소</button>
-        <button type="button" class="btn issue create"
-                disabled={isSubmitLocked}
-                on:click={onCreateIssue}>완료</button>
+    <div class="flex justify-end mr-7">
+        <button type="button" class="btn issue cancel flex items-center gap-2" on:click={onCancelCreateIssue}>
+            <span><i class="bi bi-x-lg"></i></span>
+            작성 취소
+        </button>
+        <button type="button" class="btn issue create" disabled={isSubmitLocked} on:click={onCreateIssue}>완료</button>
     </div>
 
 </div>
