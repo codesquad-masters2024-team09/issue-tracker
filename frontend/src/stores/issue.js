@@ -74,7 +74,7 @@ function setIssues() {
                     title: form.title,
                     content: form.content,
                     labels: form.labels,
-                    milestone: form.milestone,
+                    milestoneId: form.milestone,
                 },
             }
 
