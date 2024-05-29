@@ -7,7 +7,6 @@
     import Header from "../../components/common/Header.svelte";
 
     const issueFormValues = {
-        memberId: 'testUser',
         title: '',
         content: '',
         labels: [],

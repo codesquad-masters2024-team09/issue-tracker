@@ -1,12 +1,12 @@
 import {get, writable} from "svelte/store";
 import {delApi, getApi, patchApi, postApi} from "../service/api.js";
 import {router} from "tinro";
-import {MOCK_USER_ID, urlPrefix} from "../utils/constants.js";
+import {urlPrefix} from "../utils/constants.js";
 import {auth} from "./auth.js";
 
 function setIssues() {
     let initValues = {
-        memberId: MOCK_USER_ID,
+        memberId: get(auth).memberId,
         issueList: [],
         editTitlePopup: '',
         editContentPopup: '',
@@ -46,7 +46,6 @@ function setIssues() {
         }
         catch(error) {
             loadingIssue.turnOffLoading()
-            alert(error.response.data.errorMessage);
             throw error;
         }
     }
@@ -73,13 +72,13 @@ function setIssues() {
             const options = {
                 path: urlPrefix + "/issues",
                 data: {
-                    memberId: form.memberId,
+                    memberId: get(auth).memberId,
                     title: form.title,
                     content: form.content,
                     labels: form.labels,
-                    milestoneId: form.milestone,
+                    milestoneId: form.milestone
                 },
-                access_token: get(auth).accessToken,
+                access_token: get(auth).accessToken
             }
 
             const savedId = await postApi(options);
