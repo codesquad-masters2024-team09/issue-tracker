@@ -34,6 +34,10 @@ public class IssueService {
 
     @Transactional(readOnly = true)
     public IssueDetailsResponse getDetail(Long issueId) {
+        if (!issueRepository.existsById(issueId)) {
+            throw new IssueNotFoundException();
+        }
+
         IssueDetails issueDetails = issueViewMapper.findById(issueId);
         return IssueDetailsResponse.of(issueDetails);
     }
