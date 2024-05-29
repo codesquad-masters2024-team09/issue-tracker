@@ -24,17 +24,17 @@
     const resetData = () => {
         data.memberId = ''
         data.password = ''
+        password_first = ''
+        password_second = ''
     }
 
     const onRegister = async () => {
-        try {
-            if(password_first === password_second){
-                data.password = password_first
-                await auth.register(data)
-            }
+        if(password_first !== password_second){
+            alert("비밀번호가 일치하지 않습니다. 다시 입력해 주세요!")
+        } else{
+            data.password = password_first
+            await auth.register(data)
             resetData()
-        } catch (e) {
-            alert("오류가 발생했습니다. 다시 시도해 주세요.")
         }
     }
 
