@@ -2,7 +2,7 @@ package com.issuetracker.domain.issue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.issuetracker.domain.issue.request.IssueCreateRequest;
-import com.issuetracker.domain.issue.request.LabelAddRequest;
+import com.issuetracker.domain.issue.request.LabelAssignRequest;
 import com.issuetracker.domain.issue.request.MilestoneAssignRequest;
 import com.issuetracker.domain.issue.request.IssueUpdateRequest;
 import java.util.Set;
@@ -79,7 +79,7 @@ class IssueControllerTest {
         Long issueId = 1L;
         String url = urlPrefix + "/issues/" + issueId + "/label";
 
-        LabelAddRequest request = new LabelAddRequest("bug");
+        LabelAssignRequest request = new LabelAssignRequest("bug");
         String requestJson = objectMapper.writeValueAsString(request);
         willDoNothing().given(issueService).addLabel(anyLong(), any(String.class));
 

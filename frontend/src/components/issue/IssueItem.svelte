@@ -18,7 +18,8 @@
                 <!-- 레이블 뱃지 -->
                 {#each issue.labelNames as label}
                     <div class="label-badge-container">
-                        <div class="label-badge border border-gray-200 bg-[{label.colorCode}] text-[{label.textColor}]">
+                        <div class="label-badge border border-gray-200"
+                            style="background-color: {label.colorCode}; color: {label.textColor};">
                             {label.labelId}
                         </div>
                     </div>
