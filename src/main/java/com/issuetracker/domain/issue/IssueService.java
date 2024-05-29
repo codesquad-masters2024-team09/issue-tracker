@@ -1,19 +1,22 @@
 package com.issuetracker.domain.issue;
 
 import com.issuetracker.domain.issue.request.IssueSearchCondition;
+
+import java.util.Arrays;
 import java.util.HashMap;
 
 import com.issuetracker.domain.issue.response.IssueDetailsResponse;
+
+import com.issuetracker.domain.issue.response.IssueCount;
+import com.issuetracker.domain.issue.response.IssueListResponse;
+import com.issuetracker.domain.issue.response.SimpleIssue;
 import com.issuetracker.global.exception.issue.IssueNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.Map;
-import com.issuetracker.domain.issue.response.IssueListResponse;
-import com.issuetracker.domain.issue.response.IssueResponse;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +32,6 @@ public class IssueService {
         return savedIssue.getId();
     }
 
-
     @Transactional(readOnly = true)
     public IssueDetailsResponse getDetail(Long issueId) {
         IssueDetails issueDetails = issueViewMapper.findById(issueId);
@@ -44,16 +46,16 @@ public class IssueService {
         issueMapper.update(form);
     }
 
-    @Transactional(readOnly = true)
-    public IssueListResponse getIssues() {
-        List<Issue> issues = issueRepository.findAll();
-        return IssueListResponse.of(
-                issues.stream().map(IssueResponse::of).collect(Collectors.toList())
-        );
+    public void updateStatus(String issueIdString, boolean openStatus) {
+        List<Long> issueIds = Arrays.stream(issueIdString.split(","))
+                .map(String::trim)
+                .map(Long::parseLong)
+                .toList();
+
+        issueRepository.updateOpenStatus(issueIds, openStatus);
     }
 
     public void addLabel(Long issueId, String labelId) {
-        // TODO: 레이블이 존재하는지 확인하는 로직 넣어야 함
         Issue issue = issueRepository.findById(issueId).orElseThrow(IssueNotFoundException::new);
         issue.addLabel(labelId);
 
@@ -88,15 +90,22 @@ public class IssueService {
         return issueRepository.save(issue);
     }
 
-    public List<Issue> getIssueByCondition(IssueSearchCondition condition) {
+    @Transactional(readOnly = true)
+    public IssueListResponse getIssuesByCondition(IssueSearchCondition condition) {
         Map<String, Object> conditionMap = new HashMap<>();
 
         conditionMap.put("author", condition.getAuthor());
         conditionMap.put("isOpen", condition.isOpen());
         conditionMap.put("milestoneId", condition.getMilestoneId());
         conditionMap.put("labelIds", condition.getLabelIds());
-        conditionMap.put("title", condition.getTitle());
+        conditionMap.put("keyword", condition.getKeyword());
+        conditionMap.put("assignees", condition.getAssignees());
+        conditionMap.put("noAssignee", condition.isNoAssignee());
+        conditionMap.put("noMilestone", condition.isNoMilestone());
 
-        return issueMapper.findByCondition(conditionMap);
+        IssueCount issueCount = issueViewMapper.countByCondition(conditionMap);
+        List<SimpleIssue> issues = issueViewMapper.findAllByCondition(conditionMap);
+
+        return IssueListResponse.from(issueCount, issues);
     }
 }
