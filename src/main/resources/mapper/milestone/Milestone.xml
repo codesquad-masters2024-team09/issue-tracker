@@ -4,7 +4,7 @@
 <mapper namespace="com.issuetracker.domain.milestone.MilestoneViewMapper">
 
     <!-- MilestoneDetailsResultMap -->
-    <resultMap id="MilestoneDetailsResultMap" type="com.issuetracker.domain.milestone.MilestoneDetails">
+    <resultMap id="MilestoneDetailsResultMap" type="com.issuetracker.domain.milestone.response.MilestoneDetails">
         <id property="id" column="MILESTONE_ID" />
         <result property="dueDate" column="DUE_DATE" />
         <result property="description" column="DESCRIPTION" />

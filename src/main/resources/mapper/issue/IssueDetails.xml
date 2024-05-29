@@ -22,7 +22,7 @@
     </resultMap>
 
     <!-- IssueDetailsResultMap -->
-    <resultMap id="IssueDetailsResultMap" type="com.issuetracker.domain.issue.IssueDetails">
+    <resultMap id="IssueDetailsResultMap" type="com.issuetracker.domain.issue.response.IssueDetails">
         <id property="id" column="ISSUE_ID" />
         <result property="memberId" column="ISSUE_MEMBER_ID" />
         <result property="title" column="TITLE" />

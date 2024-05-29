@@ -1,4 +1,4 @@
-package com.issuetracker.domain.issue;
+package com.issuetracker.domain.issue.response;
 
 import com.issuetracker.domain.comment.Comment;
 import com.issuetracker.domain.label.Label;

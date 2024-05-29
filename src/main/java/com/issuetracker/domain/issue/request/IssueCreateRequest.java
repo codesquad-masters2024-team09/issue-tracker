@@ -24,6 +24,8 @@ public class IssueCreateRequest {
     @Size(max = 2000)
     private String content;
 
+    private Set<String> assignees;
+
     private Set<String> labels;
 
     private String milestoneId;
@@ -34,6 +36,10 @@ public class IssueCreateRequest {
                 .title(title)
                 .content(content)
                 .build();
+
+        if (assignees != null && !assignees.isEmpty()) {
+            assignees.forEach(issue::addAssignee);
+        }
 
         if (labels != null && !labels.isEmpty()) {
             labels.forEach(issue::addLabel);

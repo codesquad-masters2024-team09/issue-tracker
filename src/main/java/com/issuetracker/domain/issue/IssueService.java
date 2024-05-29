@@ -5,11 +5,8 @@ import com.issuetracker.domain.issue.request.IssueSearchCondition;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import com.issuetracker.domain.issue.response.IssueDetailsResponse;
+import com.issuetracker.domain.issue.response.*;
 
-import com.issuetracker.domain.issue.response.IssueCount;
-import com.issuetracker.domain.issue.response.IssueListResponse;
-import com.issuetracker.domain.issue.response.SimpleIssue;
 import com.issuetracker.global.exception.issue.IssueNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -59,6 +56,27 @@ public class IssueService {
         issueRepository.updateOpenStatus(issueIds, openStatus);
     }
 
+    public void addAssignee(Long issueId, String memberId) {
+        Issue issue = issueRepository.findById(issueId).orElseThrow(IssueNotFoundException::new);
+        issue.addAssignee(memberId);
+
+        issueRepository.save(issue);
+    }
+
+    public void addAssignees(Long issueId, List<String> memberIds) {
+        Issue issue = issueRepository.findById(issueId).orElseThrow(IssueNotFoundException::new);
+        issue.addAssignees(memberIds);
+
+        issueRepository.save(issue);
+    }
+
+    public void deleteAssignee(Long issueId, String memberId) {
+        Issue issue = issueRepository.findById(issueId).orElseThrow(IssueNotFoundException::new);
+        issue.deleteAssignee(memberId);
+
+        issueRepository.save(issue);
+    }
+
     public void addLabel(Long issueId, String labelId) {
         Issue issue = issueRepository.findById(issueId).orElseThrow(IssueNotFoundException::new);
         issue.addLabel(labelId);
@@ -66,18 +84,18 @@ public class IssueService {
         issueRepository.save(issue);
     }
 
-    public Issue addLabels(Long issueId, List<String> labelIds) {
+    public void addLabels(Long issueId, List<String> labelIds) {
         Issue issue = issueRepository.findById(issueId).orElseThrow(IssueNotFoundException::new);
         issue.addLabels(labelIds);
 
-        return issueRepository.save(issue);
+        issueRepository.save(issue);
     }
 
-    public Issue deleteLabel(Long issueId, String labelId) {
+    public void deleteLabel(Long issueId, String labelId) {
         Issue issue = issueRepository.findById(issueId).orElseThrow(IssueNotFoundException::new);
         issue.deleteLabel(labelId);
 
-        return issueRepository.save(issue);
+        issueRepository.save(issue);
     }
 
     public void assignMilestone(Long issueId, String milestoneId) {

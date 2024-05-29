@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.issuetracker.domain.issue.IssueDetails;
 import com.issuetracker.domain.label.response.LabelResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

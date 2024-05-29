@@ -3,6 +3,7 @@ package com.issuetracker.domain.milestone;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.issuetracker.domain.milestone.request.MilestoneCreateRequest;
 import com.issuetracker.domain.milestone.request.MilestoneUpdateRequest;
+import com.issuetracker.domain.milestone.response.MilestoneDetails;
 import com.issuetracker.domain.milestone.response.MilestoneListResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
