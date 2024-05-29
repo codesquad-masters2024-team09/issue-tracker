@@ -18,7 +18,7 @@ function setAuth() {
         const payload = JSON.parse(window.atob(authResponse.accessToken.split('.')[1]));
         update(data => ({
             ...data,
-            memberId: payload.memberId,
+            memberId: payload.sub,
             profileImgUrl: payload.imgUrl,
             accessToken: authResponse.accessToken
         }));
@@ -41,54 +41,50 @@ function setAuth() {
 
     // 로그인 함수
     const login = async (data) => {
-        try {
-            const options = {
-                path: urlPrefix + '/auth/login',
-                data: {
-                    memberId: data.memberId,
-                    password: data.password,
-                }
-            };
+        const options = {
+            path: urlPrefix + '/auth/login',
+            data: {
+                memberId: data.memberId,
+                password: data.password,
+            }
+        };
 
-            const authResponse = await postApi(options);
-            handleAuthResponse(authResponse);
-            router.goto('/');
-        } catch (error) {
-            handleError('오류가 발생했습니다. 다시 로그인해 주세요.');
-        }
+        const authResponse = await postApi(options);
+        handleAuthResponse(authResponse);
+        router.goto('/');
     };
 
     // 로그아웃 함수
     const logout = async () => {
-        try {
-            await postApi({ path: urlPrefix + '/auth/logout' });
-            resetUserInfo();
-            isRefresh.set(false);
-            router.goto("/login");
-        } catch (error) {
-            handleError('오류가 발생했습니다. 다시 시도해 주세요.');
-        }
+        await postApi({ path: urlPrefix + '/auth/logout' });
+        resetUserInfo();
+        isRefresh.set(false);
+        router.goto("/login");
     };
 
     // 회원가입 함수
     const register = async (data) => {
-        try {
-            const options = {
-                path: urlPrefix + '/auth/signup',
-                data: {
-                    memberId: data.memberId,
-                    password: data.password,
-                }
-            };
+        const options = {
+            path: urlPrefix + '/auth/signup',
+            data: {
+                memberId: data.memberId,
+                password: data.password,
+            }
+        };
 
-            const authResponse = await postApi(options);
-            handleAuthResponse(authResponse);
-            alert('가입이 완료되었습니다.');
-            router.goto('/');
-        } catch (error) {
-            handleError('오류가 발생했습니다. 다시 시도해 주세요.');
-        }
+        const authResponse = await postApi(options);
+        handleAuthResponse(authResponse);
+        alert('가입이 완료되었습니다.');
+        router.goto('/');
     };
+
+    // 회원탈퇴 함수
+    const withdraw = async () => {
+        await delApi({ path: urlPrefix + '/auth/withdraw' });
+        resetUserInfo();
+        isRefresh.set(false);
+        router.goto("/login");
+    }
 
     return {
         subscribe,
@@ -97,6 +93,7 @@ function setAuth() {
         logout,
         resetUserInfo,
         register,
+        withdraw
     };
 }
 
