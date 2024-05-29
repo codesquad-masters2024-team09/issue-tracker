@@ -2,7 +2,7 @@ package com.issuetracker.domain.issue;
 
 import com.issuetracker.domain.issue.request.IssueCreateRequest;
 import com.issuetracker.domain.issue.request.IssueSearchCondition;
-import com.issuetracker.domain.issue.request.LabelAddRequest;
+import com.issuetracker.domain.issue.request.LabelAssignRequest;
 import com.issuetracker.domain.issue.request.MilestoneAssignRequest;
 import com.issuetracker.domain.issue.request.IssueUpdateRequest;
 import com.issuetracker.domain.issue.response.IssueDetailsResponse;
@@ -34,8 +34,16 @@ public class IssueController {
 
     @PostMapping("/{issueId}/label")
     public ResponseEntity<Void> addLabel(@PathVariable("issueId") Long issueId,
-                                         @Valid @RequestBody LabelAddRequest labelAddRequest) {
-        issueService.addLabel(issueId, labelAddRequest.getLabelId());
+                                         @Valid @RequestBody LabelAssignRequest labelAssignRequest) {
+        issueService.addLabel(issueId, labelAssignRequest.getLabelId());
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{issueId}/label")
+    public ResponseEntity<?> deleteLabel(@PathVariable("issueId") Long issueId,
+                                         @Valid @RequestBody LabelAssignRequest LabelAssignRequest) {
+        issueService.deleteLabel(issueId, LabelAssignRequest.getLabelId());
+
         return ResponseEntity.ok().build();
     }
 
@@ -43,6 +51,13 @@ public class IssueController {
     public ResponseEntity<Void> assignMilestone(@PathVariable("issueId") Long issueId,
                                                 @Valid @RequestBody MilestoneAssignRequest milestoneAssignRequest) {
         issueService.assignMilestone(issueId, milestoneAssignRequest.getMilestoneId());
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{issueId}/milestone")
+    public ResponseEntity<?> deleteMilestone(@PathVariable("issueId") Long issueId) {
+        issueService.deleteMilestone(issueId);
+
         return ResponseEntity.ok().build();
     }
 
