@@ -3,6 +3,7 @@
     import MilestoneAddForm from "../../components/milestone/MilestoneAddForm.svelte";
     import MilestoneList from "../../components/milestone/MilestoneList.svelte";
     import { onMount } from "svelte";
+    import Header from "../../components/common/Header.svelte";
 
     onMount(() => {
         milestones.fetchMilestones();
@@ -13,6 +14,7 @@
     }
 </script>
 
+<Header />
 <div class="milestone-page">
     <h1>마일스톤</h1>
     <button on:click={toggleAddMode} class:addMode={$milestones.addMode}>

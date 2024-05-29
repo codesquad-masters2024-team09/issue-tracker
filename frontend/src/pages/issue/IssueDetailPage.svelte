@@ -7,6 +7,7 @@
     import IssueEditTitleForm from '../../components/issue/IssueEditTitleForm.svelte';
     import IssueEditContentForm from "../../components/issue/IssueEditContentForm.svelte";
     import SideBar from "../../components/common/SideBar.svelte";
+    import Header from "../../components/common/Header.svelte";
 
     const route = meta();
     const issueId = Number(route.params.issueId);
@@ -139,6 +140,7 @@
     }
 </script>
 
+<Header />
 <div class="flex flex-col w-full">
     <div class="w-full">
         <!-- 이슈 제목 컴포넌트 -->
