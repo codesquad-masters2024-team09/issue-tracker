@@ -1,6 +1,7 @@
-import { writable } from "svelte/store";
+import {get, writable} from "svelte/store";
 import { delApi, getApi, postApi } from "../service/api.js";
 import { urlPrefix } from "../utils/constants.js";
+import { auth } from "./auth.js";
 
 function setTags() {
     let initValues = {
@@ -21,7 +22,8 @@ function setTags() {
 
     const fetchMembers = async () => {
         const options = {
-            path: `${urlPrefix}/members`
+            path: `${urlPrefix}/members`,
+            access_token: get(auth).accessToken,
         }
 
         try {
@@ -43,7 +45,8 @@ function setTags() {
 
     const fetchLabels = async () => {
         const options = {
-            path: `${urlPrefix}/labels`
+            path: `${urlPrefix}/labels`,
+            access_token: get(auth).accessToken,
         }
 
         try {
@@ -65,7 +68,8 @@ function setTags() {
 
     const fetchMilestones = async () => {
         const options = {
-            path: `${urlPrefix}/milestones`
+            path: `${urlPrefix}/milestones`,
+            access_token: get(auth).accessToken,
         }
 
         try {
@@ -94,7 +98,8 @@ function setTags() {
 
             const options = {
                 path: `${urlPrefix}/issues/${issueId}/label`,
-                data: data
+                data: data,
+                access_token: get(auth).accessToken,
             }
 
             console.log(`${issueId}에 레이블 등록:${labelId}`)
@@ -116,7 +121,8 @@ function setTags() {
 
             const options = {
                 path: `${urlPrefix}/issues/${issueId}/label`,
-                data: deleteData
+                data: deleteData,
+                access_token: get(auth).accessToken,
             }
 
             await delApi(options)
@@ -154,7 +160,8 @@ function setTags() {
 
             const options = {
                 path: `${urlPrefix}/issues/${issueId}/milestone`,
-                data: data
+                data: data,
+                access_token: get(auth).accessToken,
             }
 
             console.log(`${issueId}에 milestone 등록:${milestoneId}`)
@@ -173,6 +180,7 @@ function setTags() {
 
             const options = {
                 path: `${urlPrefix}/issues/${issueId}/milestone`,
+                access_token: get(auth).accessToken,
             }
 
             await delApi(options)
