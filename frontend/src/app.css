@@ -71,8 +71,9 @@
   }
 
   .btn {
-      @apply m-1 px-7 py-2 text-sm rounded-xl whitespace-nowrap
+      @apply m-1 px-4 py-2 text-sm rounded-xl whitespace-nowrap min-w-[105px]
   }
+
   .btn.create {
       @apply bg-blue-500 shadow-sm text-white transition-all duration-75
   }
@@ -81,7 +82,11 @@
     @apply text-gray-800 transition-all duration-75
 }
 
-  .btn.issue.create:hover {
+  .btn:disabled {
+    @apply cursor-not-allowed transition-none scale-[1] bg-blue-500/40 shadow-none text-white
+  }
+
+  .btn.issue.create:not(:disabled):hover {
       @apply bg-blue-600 text-gray-100 cursor-pointer
   }
 
@@ -89,7 +94,8 @@
     @apply bg-red-400 text-gray-100
   }
 
-  .btn.issue:active {
+
+  .btn.issue:not(:disabled):active {
       @apply scale-[0.98] shadow-none
   }
 
@@ -113,20 +119,88 @@
     @apply transition-none scale-[1] shadow-none bg-gray-200/80 cursor-pointer
   }
 
-  .option-container {
-    /* 여기에 사용자 정의 스타일을 추가할 수 있습니다. */
+  .sidebar-container {
+    @apply flex flex-col -ml-6 -mb-16 items-center w-[350px] min-w-[300px] text-[15px] h-[400px] min-h-[300px]
   }
 
-  .option-parent {
-    @apply flex flex-col justify-between my-3 p-4 option-container w-[350px] min-w-[300px] bg-white border border-gray-300 rounded-2xl h-[400px] min-h-[300px] }
-
-  .option-item-container {
-    @apply flex justify-between
+  .sidebar-group-box {
+    @apply flex flex-col relative bg-white border-2 border-gray-300/60 whitespace-nowrap
   }
 
-  .option-item {
-    border-bottom: 1px dashed #D1D5DB; /* Adjust the color as needed */
-    @apply m-3 cursor-pointer
+  .sidebar-group-box:first-child {
+    @apply mt-3 rounded-2xl border-b-0 rounded-b-none
+  }
+
+  .sidebar-group-box:last-child {
+    @apply rounded-2xl border-t-0 rounded-t-none
+  }
+
+  .sidebar-btn {
+    @apply flex flex-col px-8 py-10 bg-white w-[290px] min-w-[290px]
+  }
+
+  .sidebar-btn:first-child {
+    @apply mt-3 rounded-2xl border-b-0 rounded-b-none
+  }
+
+  .sidebar-btn:last-child {
+    @apply rounded-2xl border-t-0 rounded-t-none
+  }
+
+  .sidebar-btn:hover {
+    @apply bg-gray-100/20
+  }
+
+  .sidebar-popup-container {
+    @apply absolute z-[99] top-7 right-0 w-[287px] bg-white shadow-md rounded-xl animate-slidein
+  }
+
+  .sidebar-popup-header {
+    @apply px-4 py-2 border border-slate-300/80 rounded-xl rounded-b-none text-[13px] text-slate-500 bg-[#F7F7FC]
+  }
+
+  .sidebar-popup-item {
+    @apply px-4 py-2 border border-t-0 border-slate-300/80 text-[13px] text-slate-500
+  }
+
+  .sidebar-popup-item:last-child {
+    @apply rounded-xl rounded-t-none
+  }
+
+  .sidebar-popup-item:hover {
+    @apply bg-gray-100/50
+  }
+
+  .sidebar-popup-item[aria-checked="true"] {
+    @apply bg-gray-200
+  }
+
+  .sidebar-popup-item-detail {
+    @apply flex justify-between items-center cursor-pointer
+  }
+
+  .sidebar-popup-label {
+    @apply ml-[10px]
+  }
+
+  .sidebar-popup-label-circle {
+    @apply inline-flex size-3 -mr-1 rounded-full border border-gray-200/80
+  }
+
+  .selected-items-list {
+    @apply flex flex-col justify-between items-center gap-2 -mt-4 mb-4
+  }
+
+  .selected-items-container {
+    @apply flex ml-6 self-start items-center gap-4
+  }
+
+  .selected-items-label {
+    @apply flex ml-2 gap-1 items-center rounded-full
+  }
+
+  .selected-items-cancel {
+    @apply text-[11px] text-gray-800 -translate-x-1
   }
 
   .parent-container {
@@ -304,7 +378,11 @@
   }
 
   .label-badge {
-    @apply flex w-max h-6 px-[1rem] rounded-2xl text-[12px] text-center justify-center items-center whitespace-nowrap
+    @apply flex w-full h-6 px-[1rem] rounded-2xl text-[12px] text-center justify-center items-center whitespace-nowrap
+  }
+
+  .milestone-badge {
+    @apply flex p-3 max-w-[200px] h-6 px-[1rem] border border-gray-200 rounded-2xl text-[12px] text-wrap items-center
   }
 
   .issue-content-container {
@@ -324,7 +402,7 @@
   }
 
   .writer-badge {
-    @apply label-badge text-gray-500 border border-neutral-300 bg-slate-200/50
+    @apply label-badge w-[60px] text-gray-500 border border-neutral-300 bg-slate-200/50
   }
 
   .issue-edit-container {

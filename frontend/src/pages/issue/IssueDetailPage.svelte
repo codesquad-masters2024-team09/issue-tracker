@@ -6,26 +6,32 @@
     import {MOCK_USER_ID, urlPrefix} from "../../utils/constants.js";
     import IssueEditTitleForm from '../../components/issue/IssueEditTitleForm.svelte';
     import IssueEditContentForm from "../../components/issue/IssueEditContentForm.svelte";
+    import SideBar from "../../components/common/SideBar.svelte";
 
     const route = meta();
     const issueId = Number(route.params.issueId);
 
     let issueData = {
-        issueId: issueId,
-        memberId: MOCK_USER_ID,
+        id: issueId,
+        memberId: '',
         title: '',
         content: '',
         comments: [],
         labels: [],
+        milestoneId: '',
+        milestoneProgress: '',
         createdAt: '',
     }
+
+    let isFullMount = issueData.id !== null
+    $: isFullMount
 
     onMount(async () => {
         const responseData = await issues.fetchIssueDetail(issueId);
         if (responseData) {
             issueData = {...responseData}
+            console.log('로딩된 issueData:', issueData)
         }
-        console.log('responseData:', issueData)
     });
 
     /* 댓글 입력 제어 */
@@ -170,14 +176,21 @@
         </div>
         {/if}
 
-        <div class="flex gap-1 m-4 justify-start items-center">
+        <div class="flex gap-1 m-4 justify-start items-center translate-y-3">
             <div class="flex m-1 p-1 justify-center items-center bg-blue-500 text-white text-[11px] w-[80px] min-w-[80px] rounded-2xl">
                 <span class="pr-[3px]">
                     <i class="bi bi-exclamation-circle"></i>
                     열린 이슈
                 </span>
             </div>
-            <p class="detail-info inline-block whitespace-nowrap">이 이슈는 {issueData.createdAt}에 {issueData.memberId}에 의해 열렸습니다</p>
+            <p class="inline-block whitespace-nowrap">이 이슈는 {issueData.createdAt}에 {issueData.memberId}에 의해 열렸습니다</p>
+            <!-- 이슈 삭제 버튼 -->
+            <div class="mr-2 ml-auto translate-x-2">
+                <button type="submit" class="text-sm text-red-500" on:click={onDeleteIssue}>
+                    <span class="text-red-500 pr-[3px]"><i class="bi bi-trash"></i></span>
+                    이슈 삭제
+                </button>
+            </div>
         </div>
     </div>
 
@@ -186,7 +199,7 @@
     </div>
 
     <div class="main-area">
-        <div id="content-area" class="flex flex-col w-full items-start">
+        <div id="content-area" class="flex flex-col w-full">
             <div class="flex gap-4 w-full">
 
                 <!-- 이슈와 댓글 -->
@@ -306,37 +319,10 @@
                 </div>
 
                 <!-- 우측 패널 -->
-                <div class="flex-1">
+                <div class="flex flex-col items-end relative">
                     <!-- 담당자 & 레이블 & 마일스턴 지정 패널 -->
-                    <div id="additional-info-area" class="option-parent">
-                        <div class="option-item">
-                            <div class="option-item-container">
-                                <span>담당자</span>
-                                <button class="add-button">+</button>
-                            </div>
-                        </div>
-                        <div class="option-item">
-                            <div class="option-item-container">
-                                <span>레이블</span>
-                                <button class="add-button">+</button>
-                            </div>
-                        </div>
-                        <div class="option-item">
-                            <div class="option-item-container">
-                                <span>마일스톤</span>
-                                <button class="add-button">+</button>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- 이슈 삭제 버튼 -->
-                    <div class="flex mr-4 justify-end">
-                        <span class="text-red-500 pr-[3px]">
-                            <i class="bi bi-trash"></i>
-                        </span>
-                        <button type="submit" class="text-sm text-red-500" on:click={onDeleteIssue}>이슈 삭제</button>
-                    </div>
+                    <SideBar />
                 </div>
-
             </div>
         </div>
     </div>
