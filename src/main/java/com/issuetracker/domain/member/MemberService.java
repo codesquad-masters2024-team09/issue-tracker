@@ -1,7 +1,6 @@
 package com.issuetracker.domain.member;
 
-import com.issuetracker.domain.member.request.LoginRequest;
-import com.issuetracker.domain.member.request.LogoutRequest;
+import com.issuetracker.domain.member.request.LogInRequest;
 import com.issuetracker.domain.member.request.SignUpRequest;
 import com.issuetracker.domain.member.response.Auth;
 import com.issuetracker.global.exception.member.InvalidLoginDataException;
@@ -50,7 +49,7 @@ public class MemberService {
                 .build();
     }
 
-    public Auth login(LoginRequest request) {
+    public Auth login(LogInRequest request) {
         Member member = memberRepository.findById(request.getMemberId()).orElseThrow(InvalidLoginDataException::new);
 
         if (!passwordEncoder.matches(request.getPassword(), member.getEncodedPassword())) {
@@ -70,14 +69,15 @@ public class MemberService {
                 .build();
     }
 
-    public void logout(LogoutRequest request) {
-        Member member = memberRepository.findById(request.getMemberId()).orElseThrow(MemberNotFoundException::new);
+    public void logout(String token) {
+        Claims claims = jwtTokenProvider.validateToken(token);
+        String memberId = claims.getSubject();
+        Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
         member.expireRefreshToken();
         memberRepository.updateRefreshToken(member.getId(), member.getRefreshToken());
     }
 
-    public Auth refresh (String bearerToken) {
-        String token = jwtTokenProvider.getToken(bearerToken);
+    public Auth refresh (String token) {
         Claims claims = jwtTokenProvider.validateToken(token);
         String memberId = claims.getSubject();
 

@@ -1,7 +1,7 @@
 package com.issuetracker.domain.member;
 
 import com.issuetracker.domain.member.request.IdDuplicateCheckRequest;
-import com.issuetracker.domain.member.request.LoginRequest;
+import com.issuetracker.domain.member.request.LogInRequest;
 import com.issuetracker.domain.member.request.SignUpRequest;
 import com.issuetracker.domain.member.response.Auth;
 import com.issuetracker.domain.member.response.DuplicateCheckResponse;
@@ -38,13 +38,28 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@Valid @RequestBody LoginRequest request) {
+    public ResponseEntity<Map<String, String>> login(@Valid @RequestBody LogInRequest request) {
         Auth login = memberService.login(request);
         return createAuthResponse(login);
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(@CookieValue(value = "refreshToken", required = false) String refreshToken) {
+        memberService.logout(refreshToken);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.SET_COOKIE, String.format(
+                "%s=%s; Path=%s; Max-Age=%d; HttpOnly; Secure; SameSite=None",  // TODO: SameSite 설정 변경
+                "refreshToken", null, "/", 0));
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .headers(headers)
+                .build();
+    }
+
     @PostMapping("/refresh")
-    public ResponseEntity<Map<String, String>> refresh(@RequestHeader(name = HttpHeaders.AUTHORIZATION) String refreshToken) {
+    public ResponseEntity<Map<String, String>> refresh(@CookieValue(value = "refreshToken", required = false) String refreshToken) {
         Auth refresh = memberService.refresh(refreshToken);
         return createAuthResponse(refresh);
     }
