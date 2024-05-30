@@ -45,7 +45,7 @@
         <!--    카테고리: 레이블/마일스톤 이동버튼 패널   -->
         <div class="flex justify-between items-center">
             <LabelMilestoneNavTab />
-            <button type="button" class="btn issue create max-h-[44px] h-lvh" on:click={() => router.goto("/issues/add")}>
+            <button type="button" class="btn issue create min-w-[165px] max-h-[44px] h-lvh" on:click={() => router.goto("/issues/add")}>
                 <span>
                     <i class="bi bi-plus-lg"></i>
                 </span>

@@ -252,7 +252,7 @@
   }
 
   .issue-filter.open {
-    @apply pl-[2rem]
+    @apply pl-[1rem]
   }
 
   .issue-filter.closed {
@@ -329,7 +329,7 @@
   }
 
   .label-description {
-    @apply mx-4 my-1 min-w-[250px] text-gray-800 truncate
+    @apply mx-4 my-1 text-[14px] min-w-[250px] text-gray-500 truncate
   }
 
   .label-btn-container {

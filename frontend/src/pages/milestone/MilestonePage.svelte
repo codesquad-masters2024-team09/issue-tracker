@@ -3,6 +3,7 @@
     import MilestoneAddForm from "../../components/milestone/MilestoneAddForm.svelte";
     import MilestoneList from "../../components/milestone/MilestoneList.svelte";
     import { onMount } from "svelte";
+    import LabelMilestoneNavTab from "../../components/common/LabelMilestoneNavtab.svelte";
 
     onMount(() => {
         milestones.fetchMilestones();
@@ -13,40 +14,20 @@
     }
 </script>
 
-<div class="milestone-page">
-    <h1>마일스톤</h1>
-    <button on:click={toggleAddMode} class:addMode={$milestones.addMode}>
+<div class="flex my-[3rem] justify-between items-center w-full min-w-[1020px]">
+    <LabelMilestoneNavTab />
+    <button on:click={toggleAddMode} class="btn issue create max-h-[44px] h-lvh" class:addMode={$milestones.addMode}>
+        <span>
+            <i class="bi bi-plus-lg"></i>
+        </span>
         마일스톤 추가
     </button>
+</div>
 
+<div class="mb-[3rem]">
     {#if $milestones.addMode}
         <MilestoneAddForm />
     {/if}
-
-    <MilestoneList />
 </div>
 
-<style>
-    .milestone-page {
-        padding: 20px;
-    }
-
-    button {
-        margin: 10px 0;
-        padding: 10px 20px;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: opacity 0.3s;
-    }
-
-    button:hover {
-        background-color: #0056b3;
-    }
-
-    button.addMode {
-        opacity: 0.5;
-    }
-</style>
+<MilestoneList />
