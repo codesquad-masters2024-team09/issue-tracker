@@ -117,7 +117,7 @@
                 </div>
             </div>
         {/each}
-        {#if !$tags.members}
+        {#if $tags.members.length === 0}
             <div class="sidebar-popup-item">
                 담당자가 존재하지 않습니다.
             </div>
@@ -148,7 +148,7 @@
                 </div>
             </div>
         {/each}
-        {#if !$tags.labels}
+        {#if $tags.labels.length === 0}
             <div class="sidebar-popup-item">
                 레이블이 존재하지 않습니다.
             </div>
@@ -174,7 +174,7 @@
                 </div>
             </div>
         {/each}
-        {#if !$tags.milestones}
+        {#if $tags.milestones.length === 0}
             <div class="sidebar-popup-item">
                 마일스톤이 존재하지 않습니다.
             </div>
