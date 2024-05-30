@@ -1,7 +1,6 @@
 <script>
     import { milestones } from '../../stores/milestone.js'
     import { milestoneValidate } from "../../utils/validates.js";
-    import { DateInput } from 'date-picker-svelte'
 
     let milestone = {
         id: null,
@@ -9,11 +8,15 @@
         description: null,
     }
 
-    //TODO: 레이블과 마일스톤 모두 $: 반응형으로 바라보고 있는 데이터와 Input 태그 바인딩 연결을 끊어야함
     $: isSubmitLocked = milestone.id === null ? true : milestone.id.trim() === ''
+
+    const parseDate = (str) => {
+        return str ? new Date(str) : null;
+    }
 
     const onAddMilestone = async () => {
         try {
+            milestone.dueDate = parseDate(milestone.dueDate)
             await milestoneValidate.validate(milestone, {abortEarly: true})
             await milestones.registerMilestone(milestone)
             onCancelAddMilestone()
@@ -51,8 +54,7 @@
                             <span class="absolute translate-y-2 ml-1 text-[14px] text-gray-500 left-[10px] top-[6px] pointer-events-none">
                                 완료일(선택)
                             </span>
-                            <input id="labelId" class="px-[6rem]" type="text" bind:value={milestone.dueDate} placeholder="YYYY.MM.DD" maxlength="30" />
-                            <DateInput class="w-full border-none" bind:value={milestone.dueDate} format="yyyy.MM.dd" placeholder="YYYY.MM.DD"/>
+                            <input id="labelId" class="px-[6rem]" type="text" bind:value={milestone.dueDate} placeholder="YYYY-MM-DD" maxlength="30" />
                         </div>
                     </div>
 
