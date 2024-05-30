@@ -1,6 +1,6 @@
 <script>
-    import { milestones } from "../../stores/milestone.js";
-    import { DateInput } from "date-picker-svelte";
+    import {milestones} from "../../stores/milestone.js";
+    import {DateInput} from "date-picker-svelte";
 
     export let milestone;
 
@@ -22,22 +22,7 @@
     }
 
     const onUpdateMilestone = () => {
-        const changes = diff(milestone, updateData);
-        if(Object.keys(changes).length > 0) {
-            if(changes.id !== null && changes.id !== '') {
-                milestones.updateMilestone(milestone.id, changes);
-            }
-        }
-    }
-
-    function diff(oldData, newData) {
-        const changes = {};
-        for (const key in newData) {
-            if (oldData[key] !== newData[key]) {
-                changes[key] = newData[key];
-            }
-        }
-        return changes;
+        milestones.updateMilestone(milestone.id, updateData);
     }
 </script>
 
@@ -57,8 +42,10 @@
                 <span class="absolute translate-y-2 ml-1 text-[14px] text-gray-500 left-[10px] top-[6px] pointer-events-none">
                     완료일(선택)
                 </span>
-                <input id="labelId" class="px-[6rem]" type="text" bind:value={updateData.dueDate} placeholder="YYYY.MM.DD" maxlength="30" />
-                <DateInput class="w-full border-none" bind:value={updateData.dueDate} format="yyyy.MM.dd" placeholder="YYYY.MM.DD"/>
+                <input id="labelId" class="px-[6rem]" type="text" bind:value={updateData.dueDate}
+                       placeholder="YYYY.MM.DD" maxlength="30"/>
+                <DateInput class="w-full border-none" bind:value={updateData.dueDate} format="yyyy.MM.dd"
+                           placeholder="YYYY.MM.DD"/>
             </div>
 
             <div class="label-form-input-box">
