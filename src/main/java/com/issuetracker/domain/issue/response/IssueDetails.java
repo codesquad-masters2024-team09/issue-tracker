@@ -2,6 +2,7 @@ package com.issuetracker.domain.issue.response;
 
 import com.issuetracker.domain.comment.Comment;
 import com.issuetracker.domain.label.Label;
+import com.issuetracker.domain.member.response.SimpleMember;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -20,6 +21,7 @@ public class IssueDetails {
     private String content;
     private List<Comment> comments;
     private boolean isOpen;
+    private Set<SimpleMember> assignees;
     private Set<Label> labels;
     private String milestoneId;
     private Integer milestoneProgress;
