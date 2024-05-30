@@ -7,6 +7,8 @@ import {auth} from "./auth.js";
 function setIssues() {
     let initValues = {
         memberId: get(auth).memberId,
+        openIssues: 0,
+        closedIssues: 0,
         issueList: [],
         editTitlePopup: '',
         editContentPopup: '',
@@ -18,13 +20,14 @@ function setIssues() {
 
     const { subscribe, update, set } = writable({...initValues});
 
-    const fetchIssues = async () => { // 이슈 목록을 서버로부터 받아오는 역할
+    const fetchIssues = async (filters = []) => { // 이슈 목록을 서버로부터 받아오는 역할
 
         loadingIssue.turnOnLoading() // 로딩 효과
 
         try {
+            const queryString = filters.length > 0 ? `?q=${filters.join(' ')}` : `?q=`
             const options = {
-                path: `${urlPrefix}/issues`,
+                path: `${urlPrefix}/issues${queryString}`,
                 access_token: get(auth).accessToken,
             }
 
@@ -39,6 +42,50 @@ function setIssues() {
                 // TODO: paging 처리 시 첫 페이지냐 아니냐에 따라 분기 처리 필요
                  // 현재까지 받은 데이터에 새로 받은 데이터를 뒤에 더하기
                 datas.issueList = [...newData.issueList, ...datas.issueList]
+                datas.openIssues = getDatas.openIssues
+                datas.closedIssues = getDatas.closedIssues
+
+                console.log('fetch issue list: ', datas.issueList)
+
+                return datas
+            })
+
+            loadingIssue.turnOffLoading()
+        }
+        catch(error) {
+            loadingIssue.turnOffLoading()
+            throw error;
+        }
+    }
+
+    const fetchIssuesByUserInput = async (query = '') => { // 이슈 목록을 서버로부터 받아오는 역할
+
+        loadingIssue.turnOnLoading() // 로딩 효과
+
+        try {
+            const queryString = query.length > 0 ? `?q=${query}` : `?q=`
+
+            const options = {
+                path: `${urlPrefix}/issues${queryString}`,
+                access_token: get(auth).accessToken,
+            }
+
+            console.log("URL: " + options.path);
+
+            const getDatas = await getApi(options);
+
+            const newData = {
+                issueList: getDatas.issues,
+            }
+
+            update(datas => {
+
+                // TODO: paging 처리 시 첫 페이지냐 아니냐에 따라 분기 처리 필요
+                // 현재까지 받은 데이터에 새로 받은 데이터를 뒤에 더하기
+                datas.issueList = [...newData.issueList, ...datas.issueList]
+                datas.openIssues = getDatas.openIssues
+                datas.closedIssues = getDatas.closedIssues
+
                 console.log('fetch issue list: ', datas.issueList)
 
                 return datas
@@ -214,6 +261,7 @@ function setIssues() {
     return {
         subscribe,
         fetchIssues,
+        fetchIssuesByUserInput,
         fetchIssueDetail,
         createIssue,
         updateIssue,
