@@ -203,6 +203,42 @@
     @apply text-[11px] text-gray-800 -translate-x-1
   }
 
+  .profile-popup-container {
+    @apply absolute z-[99] top-[70px] right-[60px] w-[150px] bg-white shadow-md rounded-xl animate-slidein
+  }
+
+  .profile-popup-header {
+    @apply px-4 py-2 border border-slate-300/80 rounded-xl rounded-b-none text-[13px] text-center text-slate-600 bg-[#F7F7FC]
+  }
+
+  .profile-popup-btn {
+    @apply px-4 py-2 flex w-full items-center border border-t-0 border-slate-300/80 text-[13px] text-slate-600
+  }
+
+  .profile-popup-btn.error {
+    @apply text-red-500
+  }
+
+  .profile-popup-btn.error:hover {
+    @apply text-white bg-red-600/85
+  }
+
+  .profile-popup-btn:last-child {
+    @apply rounded-xl rounded-t-none
+  }
+
+  .profile-popup-btn:not(.error):hover {
+    @apply bg-gray-100
+  }
+
+  .profile-popup-btn-icon {
+    @apply mr-3 text-center whitespace-nowrap
+  }
+
+  .profile-popup-btn-label {
+    @apply ml-4 text-center whitespace-nowrap
+  }
+
   .parent-container {
     @apply flex-col my-3 w-full
   }
