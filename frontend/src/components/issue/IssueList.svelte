@@ -48,7 +48,7 @@
         }
 
         filters.changeViewMode();
-        await filters.searchIssueByCondition()
+        await filters.searchIssueByFilterCondition()
         isOpenIssueView = true
     }
 
@@ -58,7 +58,7 @@
         }
 
         filters.changeViewMode();
-        await filters.searchIssueByCondition()
+        await filters.searchIssueByFilterCondition()
         isOpenIssueView = false
     }
 
@@ -131,6 +131,10 @@
     </div>
 
     <!-- 이슈 리스트 생성 -->
+    {#if $loadingIssue }
+        <IssueLoading />
+    {/if}
+
     {#if isOpenIssueView}
         {#each openIssues as issue, index}
             <Issue {issue} />
@@ -149,7 +153,4 @@
         {/if}
     {/if}
 
-    {#if $loadingIssue }
-        <IssueLoading />
-    {/if}
 </div>

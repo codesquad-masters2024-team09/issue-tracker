@@ -10,6 +10,7 @@
     import Header from "../../components/common/Header.svelte";
     import {get} from "svelte/store";
     import {auth} from "../../stores/auth.js";
+    import Skeleton from "../../components/common/Skeleton.svelte";
 
     const route = meta();
     const issueId = Number(route.params.issueId);
@@ -28,8 +29,7 @@
         createdAt: '',
     }
 
-    let isFullMount = issueData.id !== null
-    $: isFullMount
+    $: isFullLoaded = issueData.title !== null || issueData.title.length !== 0
 
     onMount(async () => {
         const responseData = await issues.fetchIssueDetail(issueId);
@@ -158,8 +158,12 @@
         {#if !($issues.editModeTitle === issueId.toString())}
             <div class="flex w-full justify-between items-center">
                 <div class="flex gap-3 mx-2 p-2 justify-start items-center">
-                    <span id="title-text" class="inline-block w-full text-4xl whitespace-nowrap">{defaultTitle}</span>
-                    <span class="inline-block text-2xl w-full text-gray-400">#{issueId}</span>
+                    {#if isFullLoaded}
+                        <span id="title-text" class="inline-block w-full text-4xl whitespace-nowrap">{defaultTitle}</span>
+                        <span class="inline-block text-2xl w-full text-gray-400">#{issueId}</span>
+                    {:else}
+                        <Skeleton size={'lg'} />
+                    {/if}
                 </div>
 
                 <!-- 버튼 컨테이너 -->
@@ -192,31 +196,36 @@
         {/if}
 
         <div class="flex gap-1 m-4 justify-start items-center translate-y-3">
-            {#if issueState}
-                <div class="flex m-1 p-1 justify-center items-center bg-blue-500 text-white text-[11px] w-[80px] min-w-[80px] rounded-2xl">
+            {#if isFullLoaded}
+                {#if issueState}
+                    <div class="flex m-1 p-1 justify-center items-center bg-blue-500 text-white text-[11px] w-[80px] min-w-[80px] rounded-2xl">
                     <span class="pr-[3px]">
                         <i class="bi bi-exclamation-circle"></i>
                     </span>
-                    열린 이슈
-                </div>
+                        열린 이슈
+                    </div>
+                {:else}
+                    <div class="flex m-1 p-1 justify-center items-center bg-purple-700 text-white text-[11px] w-[80px] min-w-[80px] rounded-2xl">
+                    <span class="pr-[3px]">
+                        <i class="bi bi-exclamation-circle"></i>
+                    </span>
+                        닫힌 이슈
+                    </div>
+                {/if}
+                <p class="inline-block whitespace-nowrap">이 이슈는 {issueData.createdAt}에 {issueData.memberId}에 의해 열렸습니다</p>
+                <!-- 이슈 삭제 버튼 -->
+                {#if issueData.memberId === get(auth).memberId}
+                    <div class="mr-2 ml-auto translate-x-2">
+                        <button type="submit" class="text-sm text-red-500" on:click={onDeleteIssue}>
+                            <span class="text-red-500 pr-[3px]"><i class="bi bi-trash"></i></span>
+                            이슈 삭제
+                        </button>
+                    </div>
+                {/if}
             {:else}
-                <div class="flex m-1 p-1 justify-center items-center bg-purple-700 text-white text-[11px] w-[80px] min-w-[80px] rounded-2xl">
-                    <span class="pr-[3px]">
-                        <i class="bi bi-exclamation-circle"></i>
-                    </span>
-                    닫힌 이슈
-                </div>
+                <Skeleton size={'md'} />
             {/if}
-            <p class="inline-block whitespace-nowrap">이 이슈는 {issueData.createdAt}에 {issueData.memberId}에 의해 열렸습니다</p>
-            <!-- 이슈 삭제 버튼 -->
-            {#if issueData.memberId === get(auth).memberId}
-                <div class="mr-2 ml-auto translate-x-2">
-                    <button type="submit" class="text-sm text-red-500" on:click={onDeleteIssue}>
-                        <span class="text-red-500 pr-[3px]"><i class="bi bi-trash"></i></span>
-                        이슈 삭제
-                    </button>
-                </div>
-            {/if}
+
         </div>
     </div>
 
@@ -236,19 +245,24 @@
                         <div class="size-9">
                             <img src="/assets/profile_icon.svg" alt="Profile Icon" class="profile-icon">
                         </div>
-                        <!-- 작성자 -->
-                        <div class="grow">{issueData.memberId}</div>
-                        <!-- 작성자 뱃지 -->
-                        <div class="writer-badge">작성자</div>
-                        <!-- 편집 버튼 -->
-                        <div class="issue-edit-container">
-                            {#if issueData.memberId === get(auth).memberId}
-                                <span class="pr-[3px]">
-                                    <i class="bi bi-pencil-square"></i>
-                                </span>
-                                <button type="button" on:click={() => onToggleEditContentPopup(issueId)}>편집</button>
-                            {/if}
-                        </div>
+
+                        {#if isFullLoaded}
+                            <!-- 작성자 -->
+                            <div class="grow">{issueData.memberId}</div>
+                            <!-- 작성자 뱃지 -->
+                            <div class="writer-badge">작성자</div>
+                            <!-- 편집 버튼 -->
+                            <div class="issue-edit-container">
+                                {#if issueData.memberId === get(auth).memberId}
+                                    <span class="pr-[3px]">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </span>
+                                    <button type="button" on:click={() => onToggleEditContentPopup(issueId)}>편집</button>
+                                {/if}
+                            </div>
+                        {:else}
+                            <Skeleton size={'sm'} />
+                        {/if}
                     </div>
 
                     <!-- 이슈 내용 -->
