@@ -8,4 +8,5 @@ import java.util.List;
 public interface MilestoneViewMapper {
 
     List<MilestoneDetails> findAllByOpenStatus(boolean openStatus);
+    List<MilestoneDetails> findAll();
 }

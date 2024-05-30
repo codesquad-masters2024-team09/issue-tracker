@@ -90,9 +90,9 @@
         <div class="label-form-input-container">
             <div class="flex flex-col gap-3" role="group">
                 <div class="label-form-input-box">
-                        <span class="absolute translate-y-2 ml-1 text-[14px] text-gray-500 left-[10px] top-[6px] pointer-events-none">
-                            이름
-                        </span>
+                    <span class="absolute translate-y-2 ml-1 text-[14px] text-gray-500 left-[10px] top-[6px] pointer-events-none">
+                        이름
+                    </span>
                     <input id="labelId" class="px-[6rem]" type="text" bind:value={label.labelId}
                            placeholder="레이블의 이름을 입력하세요" maxlength="20"/>
                 </div>
