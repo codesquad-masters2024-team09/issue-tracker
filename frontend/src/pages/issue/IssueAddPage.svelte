@@ -9,6 +9,7 @@
     const issueFormValues = {
         title: '',
         content: '',
+        assignees: [],
         labels: [],
         milestoneId: '',
     }

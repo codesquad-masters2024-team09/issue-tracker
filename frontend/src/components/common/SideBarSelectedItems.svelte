@@ -22,21 +22,26 @@
         if (!currentUrl.endsWith('add')) {
             issueId = currentUrl.substring(currentUrl.lastIndexOf('/') + 1);
             issueData = await issues.fetchIssueDetail(issueId);
+            tags.initAssigneeCheckedState($tags.members, issueData.assignees)
             tags.initLabelCheckedState($tags.labels, issueData.labels)
             tags.initMilestoneCheckedState($tags.milestones, issueData.milestoneId)
-            console.log($tags.checkedStates.milestone)
         }
     })
 
-    const onClickAssigneeName = (selectedAssignee) => {
+    const onClickAssigneeName = async (selectedAssignee) => {
         if (currentUrl.endsWith('add')) {
-
-        }
-        else {
             if ($tags.checkedStates.assignees[selectedAssignee.memberId] === true) {
-                tags.deleteAssignee(selectedAssignee.memberId);
+                await tags.deleteAssignee(selectedAssignee)
             } else {
-                tags.selectAssignee(selectedAssignee.memberId);
+                await tags.selectAssignee(selectedAssignee)
+            }
+        } else {
+            if ($tags.checkedStates.assignees[selectedAssignee.memberId] === true) {
+                await tags.deleteAssignee(selectedAssignee.memberId)
+                await tags.deleteAssigneeOnIssue(issueId, selectedAssignee.memberId)
+            } else {
+                await tags.selectAssignee(selectedAssignee.memberId)
+                await tags.addAssigneeOnIssue(issueId, selectedAssignee.memberId)
             }
         }
     }

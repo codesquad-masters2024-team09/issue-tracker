@@ -133,6 +133,70 @@ function setTags() {
         }
     }
 
+    const addAssigneeOnIssue = async (issueId, memberId) => {
+        try {
+            console.log('add issueId assignee ===> ', memberId)
+            const data = {
+                memberId: memberId,
+            }
+
+            const options = {
+                path: `${urlPrefix}/issues/${issueId}/assignee`,
+                data: data,
+                access_token: get(auth).accessToken,
+            }
+
+            console.log(`${issueId}에 담당자 등록:${memberId}`)
+
+            await postApi(options);
+            return true
+        } catch (err) {
+            alert('담당자를 할당하는 중 오류가 발생했습니다. 다시 시도해 주세요.')
+            throw err
+        }
+    }
+
+    const deleteAssigneeOnIssue = async (issueId, memberId) => {
+        try {
+            console.log('del issueId assignee ===> ', memberId)
+            const deleteData = {
+                memberId: memberId
+            }
+
+            const options = {
+                path: `${urlPrefix}/issues/${issueId}/assignee`,
+                data: deleteData,
+                access_token: get(auth).accessToken,
+            }
+
+            console.log(`${issueId}에 담당자 해제:${memberId}`)
+
+            await delApi(options)
+            return true
+        } catch (err) {
+            alert('담당자를 할당 해제하는데 문제가 있습니다. 다시 시도해주세요.')
+            throw err
+        }
+    }
+    
+    const selectAssignee = async (selectedAssignee) => {
+        update(data => {
+            if(!data.selectedMembers.find(member => member.memberId === selectedAssignee.memberId)) {
+                data.selectedMembers.push(selectedAssignee)
+                data.checkedStates.assignees[selectedAssignee.memberId] = !data.checkedStates.assignees[selectedAssignee.memberId]
+            }
+            return data
+        })
+    }
+
+    const deleteAssignee = async (selectedAssignee) => {
+        update(data => {
+            data.selectedAssignee = data.selectedAssignee.filter(member => member.memberId !== selectedAssignee.memberId)
+            data.checkedStates.assignees[selectedAssignee.memberId] = !data.checkedStates.assignees[selectedAssignee.memberId]
+            return data
+        })
+    }
+
     const selectLabel = async (selectedLabel) => {
         update(data => {
             if (!data.selectedLabels.find(label => label.labelId === selectedLabel.labelId)) {
@@ -266,6 +330,10 @@ function setTags() {
         fetchMembers,
         fetchLabels,
         fetchMilestones,
+        selectAssignee,
+        deleteAssignee,
+        addAssigneeOnIssue,
+        deleteAssigneeOnIssue,
         selectLabel,
         addLabelOnIssue,
         deleteLabel,

@@ -18,6 +18,7 @@
         title: '',
         content: '',
         comments: [],
+        assignees: [],
         labels: [],
         milestoneId: '',
         milestoneProgress: '',
