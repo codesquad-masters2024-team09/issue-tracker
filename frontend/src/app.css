@@ -152,7 +152,7 @@
   }
 
   .sidebar-popup-container {
-    @apply absolute z-[99] top-7 right-0 w-[287px] bg-white shadow-md rounded-xl animate-slidein
+    @apply absolute z-[98] top-7 right-0 w-[287px] bg-white shadow-md rounded-xl animate-slidein
   }
 
   .sidebar-popup-header {
@@ -588,6 +588,10 @@
 
   .tooltip:hover .tooltiptext {
     @apply visible
+  }
+
+  .overlay {
+    @apply fixed top-0 left-0 w-full h-full z-[97];
   }
 }
 
