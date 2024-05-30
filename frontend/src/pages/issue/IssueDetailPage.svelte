@@ -3,13 +3,14 @@
     import {issues} from '../../stores/issue';
     import {postApi} from "../../service/api.js";
     import {meta, router} from "tinro";
-    import {urlPrefix} from "../../utils/constants.js";
+    import {MAX_FILE_SIZE, urlPrefix} from "../../utils/constants.js";
     import IssueEditTitleForm from '../../components/issue/IssueEditTitleForm.svelte';
     import IssueEditContentForm from "../../components/issue/IssueEditContentForm.svelte";
     import SideBar from "../../components/common/SideBar.svelte";
     import Header from "../../components/common/Header.svelte";
     import {get} from "svelte/store";
     import {auth} from "../../stores/auth.js";
+    import axios from "axios";
 
     const route = meta();
     const issueId = Number(route.params.issueId);
@@ -134,8 +135,27 @@
     function handleFileUpload(event) {
         const files = event.target.files;
         if (files.length > 0) {
-            selectedFile = files[0];
-            console.log('Selected file:', selectedFile);
+            const selectedFile = files[0];
+            if (selectedFile.size <= MAX_FILE_SIZE) {
+                const reader = new FileReader();
+                reader.readAsDataURL(selectedFile);
+                reader.onload = function(e) {
+                    const base64ImageContent = e.target.result;
+                    const fileType = selectedFile.type.split('/')[1];
+                    const data = {
+                        name: selectedFile.name,
+                        content: base64ImageContent,
+                        type: fileType,
+                    };
+                    axios.post(import.meta.env.API_GATE_WAY_END_POINT, data)
+                        .then(res => {
+                            commentInput += '\n' + `[${selectedFile.name}](${res.data.url})`;
+                        })
+                        .catch(err => alert("에러!" + err));
+                }
+            } else {
+                alert("10MB 이하의 파일만 업로드 가능합니다");
+            }
         }
     }
 
