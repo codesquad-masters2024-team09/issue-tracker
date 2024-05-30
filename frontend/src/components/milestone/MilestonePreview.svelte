@@ -30,11 +30,20 @@
             milestones.deleteMilestone(id)
         }
     }
+
+    const handleUpdate = (event) => {
+        const updatedMilestone = event.detail.milestone;
+
+        milestone.id = updatedMilestone.id;
+        milestone.dueDate = updatedMilestone.dueDate;
+        milestone.description = updatedMilestone.description;
+        milestones.closeEditModeMilestone();
+    }
 </script>
 
 <div class="issue-table-row">
     {#if $milestones.editMode === milestone.id}
-        <MilestoneEditForm {milestone} />
+        <MilestoneEditForm {milestone} on:update={handleUpdate} />
     {:else}
         <div class="flex flex-col items-start">
             <div class="flex justify-start items-center min-w-[170px]">
@@ -99,7 +108,7 @@
                     <span>{milestone.progress}%</span>
                     <div class="flex gap-1">
                         <span>열린 이슈 {milestone.openIssues}</span>
-                        <span>닫힌 이슈 {milestone.closeIssues}</span>
+                        <span>닫힌 이슈 {milestone.closedIssues}</span>
                     </div>
                 </div>
             </div>

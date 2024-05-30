@@ -4,9 +4,9 @@
 
 <div class="issue-table-row">
     <!-- 체크 박스 -->
-    <div class="checkbox">
-        <input type="checkbox" class="child-checkbox">
-    </div>
+<!--    <div class="checkbox">-->
+<!--        <input type="checkbox" class="child-checkbox">-->
+<!--    </div>-->
     <!-- 제목 + 이슈 번호 + 작성자 + 마일스톤 정보 -->
     <div class="issue-content-container">
         <!-- 이슈 제목 -->

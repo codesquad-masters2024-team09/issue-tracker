@@ -110,9 +110,9 @@
 
     <!-- 테이블 헤더 -->
     <div class="issue-table-header">
-        <div class="checkbox">
-            <input type="checkbox" class="parent-checkbox">
-        </div>
+<!--        <div class="checkbox">-->
+<!--            <input type="checkbox" class="parent-checkbox">-->
+<!--        </div>-->
         <button class="openCloseTab" on:click={onOpenIssueView}>
             <span class="pr-[3px]">
                 <i class="bi bi-exclamation-circle"></i>
