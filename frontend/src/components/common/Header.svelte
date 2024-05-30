@@ -15,6 +15,10 @@
     const onProfileClick = () => {
         isProfileClick = !isProfileClick;
     }
+
+    const closePopup = () => {
+        isProfileClick = false;
+    }
 </script>
 
 <header class="flex mb-[5rem] justify-between items-center">
@@ -25,6 +29,7 @@
         <img src={onProfileImg()} alt="User Profile Icon" class="user-profile-icon"/>
     </button>
     {#if isProfileClick}
+        <div class="overlay" on:click={closePopup}></div>
         <ProfilePopup bind:isProfileClick={isProfileClick} />
     {/if}
 </header>
