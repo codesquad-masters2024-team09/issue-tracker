@@ -21,10 +21,16 @@ public class MilestoneController {
     private final MilestoneService milestoneService;
 
     @GetMapping
-    public ResponseEntity<MilestoneListResponse> getMilestones(
+    public ResponseEntity<MilestoneListResponse> getMilestones() {
+        return ResponseEntity
+                .ok(milestoneService.getMilestones());
+    }
+
+    @GetMapping(params = "isOpen")
+    public ResponseEntity<MilestoneListResponse> getMilestonesByOpenCondition(
             @RequestParam(value = "isOpen", defaultValue = "true") boolean openStatus) {
         return ResponseEntity
-                .ok(milestoneService.getMilestones(openStatus));
+                .ok(milestoneService.getMilestonesByOpenCondition(openStatus));
     }
 
     @PostMapping
@@ -51,10 +57,17 @@ public class MilestoneController {
     }
 
     @GetMapping("/count")
-    public ResponseEntity<?> getMilestoneCount(@RequestParam(value = "isOpen", defaultValue = "true") boolean openStatus) {
+    public ResponseEntity<?> getMilestoneCount() {
         return ResponseEntity
                 .ok()
-                .body(Collections.singletonMap("countResult", milestoneService.count(openStatus)));
+                .body(Collections.singletonMap("countResult", milestoneService.count()));
+    }
+
+    @GetMapping(value = "/count", params = "isOpen")
+    public ResponseEntity<?> getMilestoneCountByOpenCondition(@RequestParam(value = "isOpen", defaultValue = "true") boolean openStatus) {
+        return ResponseEntity
+                .ok()
+                .body(Collections.singletonMap("countResult", milestoneService.countByOpenCondition(openStatus)));
     }
 
     @PatchMapping("/status")
