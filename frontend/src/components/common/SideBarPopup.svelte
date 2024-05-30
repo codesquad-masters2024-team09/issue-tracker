@@ -16,21 +16,17 @@
         if (!currentUrl.endsWith('add')) {
             const issueId = currentUrl.substring(currentUrl.lastIndexOf('/') + 1)
             issueData = await issues.fetchIssueDetail(issueId);
-            console.log('새로 로딩된 issueData:', issueData)
 
             if (headerText.startsWith('담당자')) {
                 tags.initAssigneeCheckedState($tags.members, issueData.assignees);
-                console.log('체크 상태 초기화 :', $tags.checkedStates)
             }
 
             if (headerText.startsWith('레이블')) {
                 tags.initLabelCheckedState($tags.labels, issueData.labels)
-                console.log('체크 상태 초기화 :', $tags.checkedStates)
             }
 
             if (headerText.startsWith('마일스톤')) {
                 tags.initMilestoneCheckedState($tags.milestones, issueData.milestoneId)
-                console.log('체크 상태 초기화 :', $tags.checkedStates)
             }
         }
     })
@@ -38,16 +34,16 @@
     const onClickAssigneeName = async (selectedAssignee) => {
         if (currentUrl.endsWith('add')) {
             if ($tags.checkedStates.assignees[selectedAssignee.memberId] === true) {
-                await tags.deleteAssignee(selectedAssignee.memberId);
+                await tags.deleteAssignee(selectedAssignee);
             } else {
-                await tags.selectAssignee(selectedAssignee.memberId);
+                await tags.selectAssignee(selectedAssignee);
             }
         } else {
             if ($tags.checkedStates.assignees[selectedAssignee.memberId] === true) {
-                await tags.deleteAssignee(selectedAssignee.memberId);
+                await tags.deleteAssignee(selectedAssignee);
                 await tags.deleteAssigneeOnIssue(issueData.id, selectedAssignee.memberId);
             } else {
-                await tags.selectAssignee(selectedAssignee.memberId);
+                await tags.selectAssignee(selectedAssignee);
                 await tags.addAssigneeOnIssue(issueData.id, selectedAssignee.memberId);
             }
         }
