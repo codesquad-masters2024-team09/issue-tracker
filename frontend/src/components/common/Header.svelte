@@ -1,5 +1,7 @@
 <script>
     import { auth } from "../../stores/auth.js";
+    import ProfilePopup from "./ProfilePopup.svelte";
+
     export let member;
 
     let isProfileClick = false;
@@ -13,17 +15,6 @@
     const onProfileClick = () => {
         isProfileClick = !isProfileClick;
     }
-
-    const onLogout = () => {
-        isProfileClick = !isProfileClick;
-        auth.logout()
-    }
-
-    const onWithdraw = () => {
-        isProfileClick = !isProfileClick;
-        auth.withdraw()
-    }
-
 </script>
 
 <header class="flex mb-[5rem] justify-between items-center">
@@ -34,9 +25,6 @@
         <img src={onProfileImg()} alt="User Profile Icon" class="user-profile-icon"/>
     </button>
     {#if isProfileClick}
-        <div>
-            <button on:click={onLogout}>로그아웃</button>
-            <button on:click={onWithdraw}>회원 탈퇴</button>
-        </div>
+        <ProfilePopup bind:isProfileClick={isProfileClick} />
     {/if}
 </header>

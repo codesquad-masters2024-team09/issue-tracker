@@ -1,5 +1,5 @@
 import {derived, writable} from "svelte/store";
-import { postApi } from "../service/api.js";
+import {delApi, postApi} from "../service/api.js";
 import { router } from "tinro";
 import { urlPrefix } from "../utils/constants.js";
 
