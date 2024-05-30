@@ -1,8 +1,10 @@
 <script>
     import {milestones} from "../../stores/milestone.js";
-    import {DateInput} from "date-picker-svelte";
+    import { createEventDispatcher } from 'svelte';
 
     export let milestone;
+
+    const dispatch = createEventDispatcher();
 
     // 원본으로부터 생성
     let updateData = {...milestone}
@@ -14,15 +16,15 @@
         return str ? new Date(str) : null;
     }
 
-    $: updateData.dueDate = parseDate(updateData.dueDate)
-
     const onCloseEditModeMilestone = () => {
         updateData = {...milestone} // 원본으로부터 원복
         milestones.closeEditModeMilestone()
     }
 
     const onUpdateMilestone = () => {
+        updateData.dueDate = parseDate(updateData.dueDate)
         milestones.updateMilestone(milestone.id, updateData);
+        dispatch('update', { milestone: updateData });
     }
 </script>
 
@@ -43,9 +45,7 @@
                     완료일(선택)
                 </span>
                 <input id="labelId" class="px-[6rem]" type="text" bind:value={updateData.dueDate}
-                       placeholder="YYYY.MM.DD" maxlength="30"/>
-                <DateInput class="w-full border-none" bind:value={updateData.dueDate} format="yyyy.MM.dd"
-                           placeholder="YYYY.MM.DD"/>
+                       placeholder="YYYY-MM-DD" maxlength="30"/>
             </div>
 
             <div class="label-form-input-box">
