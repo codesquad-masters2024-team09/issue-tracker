@@ -22,6 +22,7 @@
         comments: [],
         assignees: [],
         labels: [],
+        open: true,
         milestoneId: '',
         milestoneProgress: '',
         createdAt: '',
@@ -114,7 +115,13 @@
             issues.closeEditModeIssueContent()
             return
         }
-        issues.openEditModeIssueContent(issueId.toString())
+    }
+
+    $: issueState = issueData.open;
+
+    const onUpdateIssueState = (issueId) => {
+        issueState = !issueState
+        issues.updateIssueState(issueId.toString(), issueState);
     }
 
     const onDeleteIssue = () => {
@@ -149,54 +156,67 @@
     <div class="w-full">
         <!-- 이슈 제목 컴포넌트 -->
         {#if !($issues.editModeTitle === issueId.toString())}
-        <div class="flex w-full justify-between items-center">
-            <div class="flex gap-3 mx-2 p-2 justify-start items-center">
-                <span id="title-text" class="inline-block w-full text-4xl whitespace-nowrap">{defaultTitle}</span>
-                <span class="inline-block text-2xl w-full text-gray-400">#{issueId}</span>
-            </div>
+            <div class="flex w-full justify-between items-center">
+                <div class="flex gap-3 mx-2 p-2 justify-start items-center">
+                    <span id="title-text" class="inline-block w-full text-4xl whitespace-nowrap">{defaultTitle}</span>
+                    <span class="inline-block text-2xl w-full text-gray-400">#{issueId}</span>
+                </div>
 
-            <!-- 버튼 컨테이너 -->
-            <div class="edit-title-container">
-                <button type="button" class="edit-title-btn blue-border"
-                        on:click={() => onToggleEditTitlePopup(issueId)}>
-                <span class="text-[12px] text-center pr-1">
-                    <i class="bi bi-archive"></i>
-                </span>
-                    제목 편집
-                </button>
-                <button type="button" id="close-issue" class="edit-title-btn blue-border"
-                        on:click={() => onToggleEditTitlePopup(issueId)}>
-                <span class="text-[12px] text-center pr-1">
-                    <i class="bi bi-x-lg"></i>
-                </span>
-                    이슈 닫기
-                </button>
+                <!-- 버튼 컨테이너 -->
+                <div class="edit-title-container">
+                    {#if issueData.memberId === get(auth).memberId}
+                        <button type="button" class="edit-title-btn blue-border"
+                                on:click={() => onToggleEditTitlePopup(issueId)}>
+                        <span class="text-[12px] text-center pr-1">
+                            <i class="bi bi-archive"></i>
+                        </span>
+                            제목 편집
+                        </button>
+                        <button type="button" id="close-issue" class="edit-title-btn blue-border"
+                                on:click={() => onUpdateIssueState(issueId)}>
+                            <span class="text-[12px] text-center pr-1">
+                                <i class="bi bi-x-lg"></i>
+                            </span>
+                            {issueState ? "이슈 닫기" : "이슈 열기"}
+                        </button>
+                    {/if}
+                </div>
             </div>
-        </div>
         {/if}
 
         <!-- 제목 편집 폼 -->
         {#if $issues.editModeTitle === issueId.toString()}
-        <div class="flex justify-between items-center" class:block={isViewEditModeTitle}>
-            <IssueEditTitleForm {issueId} {defaultTitle} on:updateIssueTitle={e => updateIssueTitle(e.detail)} />
-        </div>
+            <div class="flex justify-between items-center" class:block={isViewEditModeTitle}>
+                <IssueEditTitleForm {issueId} {defaultTitle} on:updateIssueTitle={e => updateIssueTitle(e.detail)} />
+            </div>
         {/if}
 
         <div class="flex gap-1 m-4 justify-start items-center translate-y-3">
-            <div class="flex m-1 p-1 justify-center items-center bg-blue-500 text-white text-[11px] w-[80px] min-w-[80px] rounded-2xl">
-                <span class="pr-[3px]">
-                    <i class="bi bi-exclamation-circle"></i>
+            {#if issueState}
+                <div class="flex m-1 p-1 justify-center items-center bg-blue-500 text-white text-[11px] w-[80px] min-w-[80px] rounded-2xl">
+                    <span class="pr-[3px]">
+                        <i class="bi bi-exclamation-circle"></i>
+                    </span>
                     열린 이슈
-                </span>
-            </div>
+                </div>
+            {:else}
+                <div class="flex m-1 p-1 justify-center items-center bg-purple-700 text-white text-[11px] w-[80px] min-w-[80px] rounded-2xl">
+                    <span class="pr-[3px]">
+                        <i class="bi bi-exclamation-circle"></i>
+                    </span>
+                    닫힌 이슈
+                </div>
+            {/if}
             <p class="inline-block whitespace-nowrap">이 이슈는 {issueData.createdAt}에 {issueData.memberId}에 의해 열렸습니다</p>
             <!-- 이슈 삭제 버튼 -->
-            <div class="mr-2 ml-auto translate-x-2">
-                <button type="submit" class="text-sm text-red-500" on:click={onDeleteIssue}>
-                    <span class="text-red-500 pr-[3px]"><i class="bi bi-trash"></i></span>
-                    이슈 삭제
-                </button>
-            </div>
+            {#if issueData.memberId === get(auth).memberId}
+                <div class="mr-2 ml-auto translate-x-2">
+                    <button type="submit" class="text-sm text-red-500" on:click={onDeleteIssue}>
+                        <span class="text-red-500 pr-[3px]"><i class="bi bi-trash"></i></span>
+                        이슈 삭제
+                    </button>
+                </div>
+            {/if}
         </div>
     </div>
 
@@ -222,24 +242,26 @@
                         <div class="writer-badge">작성자</div>
                         <!-- 편집 버튼 -->
                         <div class="issue-edit-container">
-                            <span class="pr-[3px]">
-                                <i class="bi bi-pencil-square"></i>
-                            </span>
-                            <button type="button" on:click={() => onToggleEditContentPopup(issueId)}>편집</button>
+                            {#if issueData.memberId === get(auth).memberId}
+                                <span class="pr-[3px]">
+                                    <i class="bi bi-pencil-square"></i>
+                                </span>
+                                <button type="button" on:click={() => onToggleEditContentPopup(issueId)}>편집</button>
+                            {/if}
                         </div>
                     </div>
 
                     <!-- 이슈 내용 -->
                     {#if !($issues.editModeContent === issueId.toString())}
-                    <div class="content-box main">
-                        <p>{defaultContent}</p>
-                    </div>
+                        <div class="content-box main">
+                            <p>{defaultContent}</p>
+                        </div>
 
-                    <!--이슈 내용 편집 폼 -->
+                        <!--이슈 내용 편집 폼 -->
                     {:else if $issues.editModeContent === issueId.toString()}
-                    <div class:block={isViewEditModeContent}>
-                        <IssueEditContentForm {issueId} {defaultContent} bind:isFocused={isFocused} on:updateIssueContent={e => updateIssueContent(e.detail)} />
-                    </div>
+                        <div class:block={isViewEditModeContent}>
+                            <IssueEditContentForm {issueId} {defaultContent} bind:isFocused={isFocused} on:updateIssueContent={e => updateIssueContent(e.detail)} />
+                        </div>
                     {/if}
 
                     <!-- 댓글 돌이 -->
@@ -271,11 +293,13 @@
                             {/if}
                             <!-- 편집 버튼 -->
                             <div class="issue-edit-container">
-                            <span class="pr-[3px]">
-                                <i class="bi bi-pencil-square"></i>
-                            </span>
-                                <button type="button" on:click={onUpdateComment} data-comment-id={comment.id}>편집
-                                </button>
+                                {#if comment.memberId === get(auth).memberId}
+                                    <span class="pr-[3px]">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </span>
+                                    <button type="button" on:click={onUpdateComment} data-comment-id={comment.id}>편집
+                                    </button>
+                                {/if}
                             </div>
                         </div>
 
