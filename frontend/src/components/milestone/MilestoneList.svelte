@@ -1,33 +1,50 @@
 <script>
     import {milestones} from "../../stores/milestone.js";
     import MilestonePreview from "./MilestonePreview.svelte";
+    import NoMilestone from "./NoMilestone.svelte";
+
+    $: openMilestones = $milestones.milestones.filter(milestone => milestone.open === true)
+    $: closedMilestones = $milestones.milestones.filter(milestone => milestone.open === false)
+
+    $: isOpenMilestoneView = true
+
+    const onOpenMilestonesView = () => {
+        isOpenMilestoneView = true
+    }
+
+    const onClosedMilestonesView = () => {
+        isOpenMilestoneView = false
+    }
 </script>
 
-<div class="milestone-list-box">
-    <div class="milestone-list">
-        <h3>{$milestones.milestones.length}개의 마일스톤</h3>
+<div class="flex flex-col w-full min-w-[1020px] items-center">
+    <div class="issue-table-header">
+        <button class="issue-filter open" on:click={onOpenMilestonesView}>
+            <span class="pr-[3px]">
+                <i class="bi bi-exclamation-circle"></i>
+            </span>
+            <span class={isOpenMilestoneView ? 'font-bold text-black' : ''}>열린 마일스톤({openMilestones.length})</span>
+        </button>
+        <button class="issue-filter closed" on:click={onClosedMilestonesView}>
+            <span class="pr-[3px]">
+                <i class="bi bi-archive"></i>
+            </span>
+            <span class={!isOpenMilestoneView ? 'font-bold text-black' : ''}>닫힌 마일스톤({closedMilestones.length})</span>
+        </button>
     </div>
-    <div class="label-element">
-        {#each $milestones.milestones as milestone}
+    {#if isOpenMilestoneView}
+        {#each openMilestones as milestone}
             <MilestonePreview {milestone} />
         {/each}
-    </div>
+        {#if openMilestones.length === 0}
+            <NoMilestone isOpen={true} />
+        {/if}
+    {:else}
+        {#each closedMilestones as milestone}
+            <MilestonePreview {milestone} />
+        {/each}
+        {#if closedMilestones.length === 0}
+            <NoMilestone isOpen={false} />
+        {/if}
+    {/if}
 </div>
-
-<style>
-    h3 {
-        font-size: 14px;
-        line-height: 24px;
-        margin: 0px;
-    }
-    .milestone-list-box {
-        border: 1px solid #d9dbe9;
-        border-radius: 16px;
-    }
-    .milestone-list {
-        border-color: transparent;
-        border-radius: 16px 16px 0 0;
-        padding: 16px;
-        background: #f7f7fc;
-    }
-</style>

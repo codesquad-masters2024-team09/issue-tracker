@@ -35,8 +35,14 @@ public class MilestoneService {
     }
 
     @Transactional(readOnly = true)
-    public MilestoneListResponse getMilestones(boolean openStatus) {
+    public MilestoneListResponse getMilestonesByOpenCondition(boolean openStatus) {
         List<MilestoneDetails> milestones = milestoneViewMapper.findAllByOpenStatus(openStatus);
+        return MilestoneListResponse.of(milestones);
+    }
+
+    @Transactional(readOnly = true)
+    public MilestoneListResponse getMilestones() {
+        List<MilestoneDetails> milestones = milestoneViewMapper.findAll();
         return MilestoneListResponse.of(milestones);
     }
 
@@ -52,7 +58,12 @@ public class MilestoneService {
     }
 
     @Transactional(readOnly = true)
-    public Long count(boolean openStatus) {
+    public Long count() {
+        return milestoneRepository.count();
+    }
+
+    @Transactional(readOnly = true)
+    public Long countByOpenCondition(boolean openStatus) {
         return milestoneRepository.countByIsOpen(openStatus);
     }
 
