@@ -8,18 +8,18 @@
     let isMilestoneDisabled = false;
     let milestoneCounts = 0
 
-    $: labelCounts = $labels.labels.length
-    $: milestoneCounts = $milestones.milestones.length
+    $: labelCounts = $labels.labelCnt
+    $: milestoneCounts = $milestones.milestoneCnt
 
     onMount(async () => {
         isLabelDisabled = window.location.pathname === '/labels';
         if (!isLabelDisabled) {
-            await labels.fetchLabels();
+            await labels.countLabels();
         }
 
         isMilestoneDisabled = window.location.pathname === '/milestones';
         if (!isMilestoneDisabled) {
-            await milestones.fetchMilestones();
+            await milestones.countMilestones();
         }
     });
 </script>

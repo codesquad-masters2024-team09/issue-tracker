@@ -15,7 +15,18 @@ function setAuth() {
 
     // 공통 로직을 처리하는 함수
     const handleAuthResponse = (authResponse) => {
-        const payload = JSON.parse(window.atob(authResponse.accessToken.split('.')[1]));
+        const token = authResponse.accessToken;
+        const base64Payload = token.split('.')[1];
+        const base64 = base64Payload.replace(/-/g, '+').replace(/_/g, '/');
+        const payload = JSON.parse(
+            decodeURIComponent(
+                window.atob(base64).split('')
+                    .map(function (c) {
+                        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                    })
+                    .join('')
+            )
+        );
         update(data => ({
             ...data,
             memberId: payload.sub,
