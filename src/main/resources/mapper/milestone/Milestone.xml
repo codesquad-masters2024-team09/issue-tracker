@@ -32,4 +32,18 @@
         ORDER BY
             M.CREATED_AT DESC
     </select>
+
+    <select id="findAll" resultMap="MilestoneDetailsResultMap">
+        SELECT M.MILESTONE_ID,
+               M.DESCRIPTION,
+               M.DUE_DATE,
+               M.IS_OPEN,
+               COUNT(I.ISSUE_ID)        AS TOTAL_ISSUES,
+               SUM(IF(I.IS_OPEN, 1, 0)) AS OPEN_ISSUES
+        FROM MILESTONE M
+                 LEFT JOIN
+             ISSUE I ON M.MILESTONE_ID = I.MILESTONE_ID
+        GROUP BY M.MILESTONE_ID, M.DESCRIPTION, M.DUE_DATE, M.IS_OPEN, M.CREATED_AT
+        ORDER BY M.CREATED_AT DESC
+    </select>
 </mapper>
