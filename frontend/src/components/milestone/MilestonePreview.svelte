@@ -1,5 +1,5 @@
 <script>
-    import {milestones} from "../../stores/milestone.js";
+    import { milestones } from "../../stores/milestone.js";
     import MilestoneEditForm from "./MilestoneEditForm.svelte";
 
     export let milestone;
@@ -12,7 +12,14 @@
         return `${year}-${month}-${day}`;
     }
 
-    $: milestone.dueDate = milestone.dueDate ? formatDateStr(milestone.dueDate) : milestone.dueDate;
+    $: formatDueDate = milestone.dueDate ? formatDateStr(milestone.dueDate) : milestone.dueDate;
+
+    const onCloseMilestone = (id) => {
+        if(confirm('이 마일스톤을 닫겠습니까?')) {
+            const isOpen = false
+            milestones.patchMilestone(id, isOpen)
+        }
+    }
 
     const onEditModeMilestone = (id) => {
         milestones.openEditModeMilestone(id)
@@ -25,56 +32,77 @@
     }
 </script>
 
-<div class="milestone-item">
+<div class="issue-table-row">
     {#if $milestones.editMode === milestone.id}
         <MilestoneEditForm {milestone} />
     {:else}
-        <div>{milestone.id}</div>
-        <div>
-            {#if milestone.dueDate}
-                <p>{milestone.dueDate}</p>
-            {:else}
-                <p>No due date<p>
-            {/if}
-        </div>
-        <div>
-            {#if milestone.description}
-                <div class="milestone-description">
-                    {milestone.description}
+        <div class="flex flex-col items-start">
+            <div class="flex justify-start items-center min-w-[170px]">
+                <div class="flex items-center mx-4 text-[14px] font-bold text-gray-800">
+                <span class="text-[16px] mr-1">
+                    <i class="bi bi-signpost"></i>
+                </span>
+                    {milestone.id}
                 </div>
-            {/if}
+                <div>
+                    <div class="flex gap-2 items-center text-[12px] text-gray-500">
+                        {#if formatDueDate}
+                        <span>
+                            <i class="bi bi-calendar2"></i>
+                        </span>
+                            {formatDueDate}
+                        {:else}
+                        <span>
+                            <i class="bi bi-calendar2"></i>
+                        </span>
+                            지정된 완료일이 없습니다.
+                        {/if}
+                    </div>
+                </div>
+            </div>
+            <div class="ml-4 mt-2 text-[14px] text-gray-500">
+                {#if milestone.description}
+                    {milestone.description}
+                {:else}
+                    마일스톤에 대한 설명이 없습니다.
+                {/if}
+            </div>
         </div>
-        <div class="label-actions">
-            <button class="edit-btn" on:click={() => onEditModeMilestone(milestone.id)}>편집</button>
-            <button class="delete-btn" on:click={() => onDeleteMilestone(milestone.id)}>삭제</button>
+
+        <div class="flex flex-col gap-2 ml-auto justify-between items-center">
+            <!--      편집 버튼      -->
+            <div class="label-btn-container ml-auto flex gap-5 mx-4 my-1 items-center text-sm whitespace-nowrap">
+                <button class="text-gray-800" on:click={() => onCloseMilestone(milestone.id)}>
+                    <span>
+                        <i class="bi bi-archive"></i>
+                    </span>
+                    닫기
+                </button>
+                <button class="text-gray-800" on:click={() => onEditModeMilestone(milestone.id)}>
+                    <span>
+                        <i class="bi bi-pencil-square"></i>
+                    </span>
+                    편집
+                </button>
+                <button class="text-red-500" on:click={() => onDeleteMilestone(milestone.id)}>
+                    <span>
+                        <i class="bi bi-trash"></i>
+                    </span>
+                    삭제
+                </button>
+            </div>
+            <div class="flex flex-col text-[12px]">
+                <div class="flex w-[220px] h-2 bg-gray-300/80 rounded-full overflow-hidden " role="progressbar" aria-valuenow={milestone.progress} aria-valuemin="0" aria-valuemax="100">
+                    <div class="flex flex-col justify-center rounded-full overflow-hidden bg-gray-800/70 text-xs text-white text-center whitespace-nowrap transition duration-500" style="width: {milestone.progress}%"></div>
+                </div>
+                <div class="flex mt-2 justify-between items-center text-gray-600/90">
+                    <span>{milestone.progress}%</span>
+                    <div class="flex gap-1">
+                        <span>열린 이슈 {milestone.openIssues}</span>
+                        <span>닫힌 이슈 {milestone.closeIssues}</span>
+                    </div>
+                </div>
+            </div>
         </div>
     {/if}
 </div>
-
-<style>
-    .milestone-item {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 16px;
-        border-top: 1px solid #d9dbe9;
-        background-color: #fefefe;
-    }
-    .milestone-description {
-        flex: 1;
-        padding-left: 10px;
-        font-size: 14px;
-    }
-    .edit-btn,
-    .delete-btn {
-        background: none;
-        border: none;
-        cursor: pointer;
-    }
-    .edit-btn {
-        color: #007bff;
-    }
-    .delete-btn {
-        color: #dc3545;
-    }
-</style>

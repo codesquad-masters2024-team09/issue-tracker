@@ -149,8 +149,8 @@ class MilestoneControllerTest {
         String responseJsonOfOpened = objectMapper.writeValueAsString(openMilestones);
         String responseJsonOfClosed = objectMapper.writeValueAsString(closedMilestones);
 
-        given(milestoneService.getMilestones(true)).willReturn(openMilestones);
-        given(milestoneService.getMilestones(false)).willReturn(closedMilestones);
+        given(milestoneService.getMilestonesByOpenCondition(true)).willReturn(openMilestones);
+        given(milestoneService.getMilestonesByOpenCondition(false)).willReturn(closedMilestones);
 
         // when & then
         performRequestAndVerify(urlForOpened, responseJsonOfOpened);
@@ -209,12 +209,12 @@ class MilestoneControllerTest {
 
     @Test
     @DisplayName("열린 마일스톤 수를 조회할 수 있다")
-    void getMilestoneCount() throws Exception {
+    void getMilestoneCountByOpenCondition() throws Exception {
         // given
         boolean openStatus = true;
         Long countResult = 5L;
         String url = urlPrefix + "/milestones/count?isOpen=" + openStatus;
-        given(milestoneService.count(openStatus)).willReturn(countResult);
+        given(milestoneService.countByOpenCondition(openStatus)).willReturn(countResult);
 
         // when
         ResultActions result = mockMvc.perform(

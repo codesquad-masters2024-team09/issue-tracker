@@ -38,7 +38,7 @@
             </div>
 
             <!--      레이블 편집 버튼      -->
-            <div class="label-btn-container ml-auto flex gap-2 mx-4 my-1 items-center text-sm whitespace-nowrap">
+            <div class="label-btn-container ml-auto flex gap-4 mx-4 my-1 items-center text-sm whitespace-nowrap">
                 <button class="text-gray-800" on:click={() => onEditModeLabel(label.labelId)}>
                     <span>
                         <i class="bi bi-pencil-square"></i>

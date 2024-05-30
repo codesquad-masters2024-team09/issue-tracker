@@ -16,7 +16,7 @@
             </span>
                 <a href="/issues/{issue.issueId}">{issue.title}</a>
                 <!-- 레이블 뱃지 -->
-                {#each issue.labelNames as label}
+                {#each issue.labels as label}
                     <div class="label-badge-container">
                         <div class="label-badge border border-gray-200"
                             style="background-color: {label.colorCode}; color: {label.textColor};">
@@ -36,12 +36,12 @@
                 이 이슈가 {issue.createdAt}, {issue.memberId}님에 의해 작성되었습니다.
             </div>
             <!-- 마일스톤 -->
-            {#if issue.milestoneName !== null}
+            {#if issue.milestoneId !== null}
                 <div>
                     <span class="text-[16px]">
                         <i class="bi bi-signpost"></i>
                     </span>
-                    {issue.milestoneName}
+                    {issue.milestoneId}
                 </div>
             {:else}
             <div class="text-sm">
