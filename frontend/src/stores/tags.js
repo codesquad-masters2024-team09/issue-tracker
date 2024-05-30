@@ -8,7 +8,7 @@ function setTags() {
         members: [],
         labels: [],
         milestones: [],
-        selectedMembers: [],
+        selectedAssignees: [],
         selectedLabels: [],
         selectedMilestone: '',
         checkedStates: {
@@ -181,8 +181,8 @@ function setTags() {
     
     const selectAssignee = async (selectedAssignee) => {
         update(data => {
-            if(!data.selectedMembers.find(member => member.memberId === selectedAssignee.memberId)) {
-                data.selectedMembers.push(selectedAssignee)
+            if(!data.selectedAssignees.find(assignee => assignee.memberId === selectedAssignee.memberId)) {
+                data.selectedAssignees.push(selectedAssignee)
                 data.checkedStates.assignees[selectedAssignee.memberId] = !data.checkedStates.assignees[selectedAssignee.memberId]
             }
             return data
@@ -191,7 +191,8 @@ function setTags() {
 
     const deleteAssignee = async (selectedAssignee) => {
         update(data => {
-            data.selectedAssignee = data.selectedAssignee.filter(member => member.memberId !== selectedAssignee.memberId)
+            console.log('ya!===================================', data.selectedAssignees)
+            data.selectedAssignees = data.selectedAssignees.filter(assignee => assignee.memberId !== selectedAssignee.memberId)
             data.checkedStates.assignees[selectedAssignee.memberId] = !data.checkedStates.assignees[selectedAssignee.memberId]
             return data
         })
@@ -275,11 +276,12 @@ function setTags() {
     }
 
     const initAssigneeCheckedState = (options, assignedMembers) => {
+        const assignedMemberIds = assignedMembers.map(member => member.memberId)
         update(data => {
             options.forEach(assignee => {
-                data.checkedStates.assignees[`${assignee.memberId}`] = !!assignedMembers.includes(assignee.memberId);
+                data.checkedStates.assignees[`${assignee.memberId}`] = !!assignedMemberIds.includes(assignee.memberId);
             })
-            data.selectedMembers = assignedMembers
+            data.selectedAssignees = assignedMembers
             return data
         })
     }
@@ -318,7 +320,7 @@ function setTags() {
 
     const resetSelectedItems = () => {
         update(data => {
-            data.selectedMembers = []
+            data.selectedAssignees = []
             data.selectedLabels = []
             data.selectedMilestone = ''
             return data
