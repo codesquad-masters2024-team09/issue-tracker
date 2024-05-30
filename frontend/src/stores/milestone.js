@@ -1,7 +1,6 @@
 import {writable} from "svelte/store";
-import {postApi, getApi, patchApi, delApi, putApi} from "../service/api.js";
-
-const urlPrefix = '/api/v1';
+import {delApi, getApi, patchApi, postApi, putApi} from "../service/api.js";
+import {urlPrefix} from "../utils/constants.js";
 
 function setMilestones() {
     let initValues = {
@@ -76,6 +75,30 @@ function setMilestones() {
         })
     }
 
+    const patchMilestone = async (milestoneId, isOpen) => {
+        try {
+            const options = {
+                path: urlPrefix + `/milestones/status?milestoneId=${milestoneId}&isOpen=${isOpen}`,
+            }
+
+            await patchApi(options);
+
+            update(data => {
+                data.milestones = data.milestones.map(milestone => {
+                    if(milestone.id === milestoneId) {
+                        milestone.open = isOpen
+                    }
+                    return milestone;
+                });
+                return data;
+            })
+
+            alert('마일스톤을 닫았습니다.')
+        } catch (err) {
+            alert('마일스톤을 닫는 중 오류가 발생했습니다. 다시 시도해 주세요.')
+        }
+    }
+
     const updateMilestone = async (milestoneId, changes) => {
         try {
             const options = {
@@ -128,8 +151,32 @@ function setMilestones() {
         openEditModeMilestone,
         closeEditModeMilestone,
         updateMilestone,
-        deleteMilestone
+        deleteMilestone,
+        patchMilestone,
     }
 }
+
+// function getStatistic() {
+//     const getMilestoneCount = async () => {
+//
+//         try {
+//             const options = {
+//                 path: urlPrefix + '/milestones/count',
+//             }
+//
+//             const response = await getApi(options)
+//
+//             console.log('fetchCount:', response.countResult)
+//
+//             return response.countResult
+//         } catch (err) {
+//             throw err
+//         }
+//     }
+//
+//     return {
+//         getMilestoneCount,
+//     }
+// }
 
 export const milestones = setMilestones()
