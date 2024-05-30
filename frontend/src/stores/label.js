@@ -1,5 +1,6 @@
-import {writable} from "svelte/store";
+import {get, writable} from "svelte/store";
 import {delApi, getApi, patchApi, postApi} from '../service/api.js'
+import { auth } from './auth.js'
 
 const urlPrefix = '/api/v1'
 
@@ -16,6 +17,7 @@ function setLabels() {
         try {
             const options = {
                 path: urlPrefix + '/labels',
+                access_token: get(auth).accessToken,
             }
 
             const response = await getApi(options)
@@ -47,6 +49,7 @@ function setLabels() {
                     colorCode: label.colorCode,
                     textColor: label.textColor,
                 },
+                access_token: get(auth).accessToken,
             }
 
             await postApi(options)
@@ -81,7 +84,8 @@ function setLabels() {
         try {
             const options = {
                 path: urlPrefix + `/labels/${labelId}`,
-                data: {...changes}
+                data: {...changes},
+                access_token: get(auth).accessToken,
             }
 
             const editedLabel = await patchApi(options);
@@ -107,6 +111,7 @@ function setLabels() {
         try {
             const options = {
                 path: urlPrefix + `/labels/${id}`,
+                access_token: get(auth).accessToken,
             }
 
             await delApi(options)

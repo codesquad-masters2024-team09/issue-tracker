@@ -1,4 +1,4 @@
-package com.issuetracker.domain.milestone;
+package com.issuetracker.domain.milestone.response;
 
 import lombok.*;
 

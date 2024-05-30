@@ -19,7 +19,7 @@
             console.log('새로 로딩된 issueData:', issueData)
 
             if (headerText.startsWith('담당자')) {
-                tags.initAssigneeCheckedState($tags.members, issueData.memberId);
+                tags.initAssigneeCheckedState($tags.members, issueData.assignees);
                 console.log('체크 상태 초기화 :', $tags.checkedStates)
             }
 
@@ -35,15 +35,20 @@
         }
     })
 
-    const onClickAssigneeName = (selectedAssignee) => {
+    const onClickAssigneeName = async (selectedAssignee) => {
         if (currentUrl.endsWith('add')) {
-
-        }
-        else {
             if ($tags.checkedStates.assignees[selectedAssignee.memberId] === true) {
-                tags.deleteAssignee(selectedAssignee.memberId);
+                await tags.deleteAssignee(selectedAssignee.memberId);
             } else {
-                tags.selectAssignee(selectedAssignee.memberId);
+                await tags.selectAssignee(selectedAssignee.memberId);
+            }
+        } else {
+            if ($tags.checkedStates.assignees[selectedAssignee.memberId] === true) {
+                await tags.deleteAssignee(selectedAssignee.memberId);
+                await tags.deleteAssigneeOnIssue(issueData.id, selectedAssignee.memberId);
+            } else {
+                await tags.selectAssignee(selectedAssignee.memberId);
+                await tags.addAssigneeOnIssue(issueData.id, selectedAssignee.memberId);
             }
         }
     }

@@ -1,6 +1,7 @@
 package com.issuetracker.domain.issue.response;
 
 import com.issuetracker.domain.label.Label;
+import com.issuetracker.domain.member.response.SimpleMember;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -16,6 +17,7 @@ public class SimpleIssue {
     private String memberId;
     private String title;
     private boolean isOpen;
+    private Set<SimpleMember> assignees;
     private Set<Label> labels;
     private String milestoneId;
     private LocalDateTime createdAt;

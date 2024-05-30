@@ -1,6 +1,5 @@
 package com.issuetracker.domain.milestone.response;
 
-import com.issuetracker.domain.milestone.MilestoneDetails;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

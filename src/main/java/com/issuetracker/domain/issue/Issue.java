@@ -42,6 +42,10 @@ public class Issue extends BaseDateTime {
 
     @Builder.Default
     @MappedCollection(idColumn = "ISSUE_ID")
+    private Set<Assignee> assignees = new HashSet<>();
+
+    @Builder.Default
+    @MappedCollection(idColumn = "ISSUE_ID")
     private Set<IssueLabel> issueLabels = new HashSet<>();
 
     @Column("MILESTONE_ID")
@@ -55,6 +59,20 @@ public class Issue extends BaseDateTime {
     public void addComment(Comment comment) {
         comment.initBaseDateTime();
         this.comments.add(comment);
+    }
+
+    public void addAssignee(String memberId) {
+        Assignee ref = Assignee.of(memberId);
+        assignees.add(ref);
+    }
+
+    public void addAssignees(List<String> memberIds) {
+        memberIds.forEach(this::addAssignee);
+    }
+
+    public void deleteAssignee(String memberId) {
+        Assignee ref = Assignee.of(memberId);
+        assignees.remove(ref);
     }
 
     public void addLabel(String labelId) {
