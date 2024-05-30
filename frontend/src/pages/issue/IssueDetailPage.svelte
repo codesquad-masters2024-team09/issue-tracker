@@ -3,11 +3,13 @@
     import {issues} from '../../stores/issue';
     import {postApi} from "../../service/api.js";
     import {meta, router} from "tinro";
-    import {MOCK_USER_ID, urlPrefix} from "../../utils/constants.js";
+    import {urlPrefix} from "../../utils/constants.js";
     import IssueEditTitleForm from '../../components/issue/IssueEditTitleForm.svelte';
     import IssueEditContentForm from "../../components/issue/IssueEditContentForm.svelte";
     import SideBar from "../../components/common/SideBar.svelte";
     import Header from "../../components/common/Header.svelte";
+    import {get} from "svelte/store";
+    import {auth} from "../../stores/auth.js";
 
     const route = meta();
     const issueId = Number(route.params.issueId);
@@ -83,10 +85,11 @@
             const options = {
                 path: `${urlPrefix}/comments`,
                 data: {
-                    memberId: MOCK_USER_ID,
+                    memberId: get(auth).memberId,
                     issueId: issueId,
                     content: commentInput,
-                }
+                },
+                access_token: get(auth).accessToken
             }
             await postApi(options);
             const newComments = [...issueData.comments, options.data]
