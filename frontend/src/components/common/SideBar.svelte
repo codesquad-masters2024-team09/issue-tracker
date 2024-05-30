@@ -6,6 +6,9 @@
 
     let isShowPopup = '';
 
+    let mountComplete
+    $: isFullMount = mountComplete
+
     const onShowPopup = (btnId) => {
         const isSameButton = isShowPopup === btnId;
 
@@ -16,13 +19,24 @@
         }
     }
 
-    onMount(() => {
-        tags.fetchMembers().then(() => console.log('패널에 로딩된 담당자들', $tags.members))
-        tags.fetchLabels().then(() => console.log('패널에 로딩된 레이블', $tags.labels))
-        tags.fetchMilestones().then(() => console.log('패널에 로딩된 마일스톤', $tags.milestones))
+    onMount(async () => {
+        try {
+            await Promise.all([
+                tags.fetchMembers(),
+                tags.fetchLabels(),
+                tags.fetchMilestones()
+            ]);
+
+            console.log('패널에 로딩된 담당자들', $tags.members);
+            console.log('패널에 로딩된 레이블', $tags.labels);
+            console.log('패널에 로딩된 마일스톤', $tags.milestones);
+        } finally {
+            mountComplete = true
+        }
     })
 </script>
 
+{#if isFullMount}
 <div class="sidebar-container">
     <div class="sidebar-group-box">
         <button id="assignees" type="button" class="sidebar-btn" on:click={(e) => onShowPopup(e.currentTarget.id)}>
@@ -53,3 +67,4 @@
         <SideBarSelectedItems itemType="milestone" />
     </div>
 </div>
+{/if}
