@@ -222,10 +222,12 @@
                         <div class="writer-badge">작성자</div>
                         <!-- 편집 버튼 -->
                         <div class="issue-edit-container">
-                            <span class="pr-[3px]">
-                                <i class="bi bi-pencil-square"></i>
-                            </span>
-                            <button type="button" on:click={() => onToggleEditContentPopup(issueId)}>편집</button>
+                            {#if issueData.memberId === get(auth).memberId}
+                                <span class="pr-[3px]">
+                                    <i class="bi bi-pencil-square"></i>
+                                </span>
+                                <button type="button" on:click={() => onToggleEditContentPopup(issueId)}>편집</button>
+                            {/if}
                         </div>
                     </div>
 
@@ -271,11 +273,13 @@
                             {/if}
                             <!-- 편집 버튼 -->
                             <div class="issue-edit-container">
-                            <span class="pr-[3px]">
-                                <i class="bi bi-pencil-square"></i>
-                            </span>
-                                <button type="button" on:click={onUpdateComment} data-comment-id={comment.id}>편집
-                                </button>
+                                {#if comment.memberId === get(auth).memberId}
+                                    <span class="pr-[3px]">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </span>
+                                    <button type="button" on:click={onUpdateComment} data-comment-id={comment.id}>편집
+                                    </button>
+                                {/if}
                             </div>
                         </div>
 
