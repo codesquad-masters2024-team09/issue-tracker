@@ -2,6 +2,7 @@ package com.issuetracker.domain.milestone;
 
 import com.issuetracker.domain.milestone.request.MilestoneCreateRequest;
 import com.issuetracker.domain.milestone.request.MilestoneUpdateRequest;
+import com.issuetracker.domain.milestone.response.MilestoneDetails;
 import com.issuetracker.domain.milestone.response.MilestoneListResponse;
 import com.issuetracker.global.exception.milestone.MilestoneDuplicateException;
 import lombok.RequiredArgsConstructor;

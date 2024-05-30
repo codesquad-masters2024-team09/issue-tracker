@@ -1,6 +1,7 @@
-import { writable } from "svelte/store";
+import {get, writable} from "svelte/store";
 import { delApi, getApi, postApi } from "../service/api.js";
 import { urlPrefix } from "../utils/constants.js";
+import { auth } from "./auth.js";
 
 function setTags() {
     let initValues = {
@@ -21,7 +22,8 @@ function setTags() {
 
     const fetchMembers = async () => {
         const options = {
-            path: `${urlPrefix}/members`
+            path: `${urlPrefix}/members`,
+            access_token: get(auth).accessToken,
         }
 
         try {
@@ -43,7 +45,8 @@ function setTags() {
 
     const fetchLabels = async () => {
         const options = {
-            path: `${urlPrefix}/labels`
+            path: `${urlPrefix}/labels`,
+            access_token: get(auth).accessToken,
         }
 
         try {
@@ -65,7 +68,8 @@ function setTags() {
 
     const fetchMilestones = async () => {
         const options = {
-            path: `${urlPrefix}/milestones`
+            path: `${urlPrefix}/milestones`,
+            access_token: get(auth).accessToken,
         }
 
         try {
@@ -94,7 +98,8 @@ function setTags() {
 
             const options = {
                 path: `${urlPrefix}/issues/${issueId}/label`,
-                data: data
+                data: data,
+                access_token: get(auth).accessToken,
             }
 
             console.log(`${issueId}에 레이블 등록:${labelId}`)
@@ -116,7 +121,8 @@ function setTags() {
 
             const options = {
                 path: `${urlPrefix}/issues/${issueId}/label`,
-                data: deleteData
+                data: deleteData,
+                access_token: get(auth).accessToken,
             }
 
             await delApi(options)
@@ -125,6 +131,70 @@ function setTags() {
             alert('레이블을 할당 해제하는데 문제가 있습니다. 다시 시도해주세요.')
             throw err
         }
+    }
+
+    const addAssigneeOnIssue = async (issueId, memberId) => {
+        try {
+            console.log('add issueId assignee ===> ', memberId)
+            const data = {
+                memberId: memberId,
+            }
+
+            const options = {
+                path: `${urlPrefix}/issues/${issueId}/assignee`,
+                data: data,
+                access_token: get(auth).accessToken,
+            }
+
+            console.log(`${issueId}에 담당자 등록:${memberId}`)
+
+            await postApi(options);
+            return true
+        } catch (err) {
+            alert('담당자를 할당하는 중 오류가 발생했습니다. 다시 시도해 주세요.')
+            throw err
+        }
+    }
+
+    const deleteAssigneeOnIssue = async (issueId, memberId) => {
+        try {
+            console.log('del issueId assignee ===> ', memberId)
+            const deleteData = {
+                memberId: memberId
+            }
+
+            const options = {
+                path: `${urlPrefix}/issues/${issueId}/assignee`,
+                data: deleteData,
+                access_token: get(auth).accessToken,
+            }
+
+            console.log(`${issueId}에 담당자 해제:${memberId}`)
+
+            await delApi(options)
+            return true
+        } catch (err) {
+            alert('담당자를 할당 해제하는데 문제가 있습니다. 다시 시도해주세요.')
+            throw err
+        }
+    }
+    
+    const selectAssignee = async (selectedAssignee) => {
+        update(data => {
+            if(!data.selectedMembers.find(member => member.memberId === selectedAssignee.memberId)) {
+                data.selectedMembers.push(selectedAssignee)
+                data.checkedStates.assignees[selectedAssignee.memberId] = !data.checkedStates.assignees[selectedAssignee.memberId]
+            }
+            return data
+        })
+    }
+
+    const deleteAssignee = async (selectedAssignee) => {
+        update(data => {
+            data.selectedAssignee = data.selectedAssignee.filter(member => member.memberId !== selectedAssignee.memberId)
+            data.checkedStates.assignees[selectedAssignee.memberId] = !data.checkedStates.assignees[selectedAssignee.memberId]
+            return data
+        })
     }
 
     const selectLabel = async (selectedLabel) => {
@@ -154,7 +224,8 @@ function setTags() {
 
             const options = {
                 path: `${urlPrefix}/issues/${issueId}/milestone`,
-                data: data
+                data: data,
+                access_token: get(auth).accessToken,
             }
 
             console.log(`${issueId}에 milestone 등록:${milestoneId}`)
@@ -173,6 +244,7 @@ function setTags() {
 
             const options = {
                 path: `${urlPrefix}/issues/${issueId}/milestone`,
+                access_token: get(auth).accessToken,
             }
 
             await delApi(options)
@@ -258,6 +330,10 @@ function setTags() {
         fetchMembers,
         fetchLabels,
         fetchMilestones,
+        selectAssignee,
+        deleteAssignee,
+        addAssigneeOnIssue,
+        deleteAssigneeOnIssue,
         selectLabel,
         addLabelOnIssue,
         deleteLabel,

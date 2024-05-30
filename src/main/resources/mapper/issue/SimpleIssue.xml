@@ -18,6 +18,7 @@
         <result property="isOpen" column="IS_OPEN" />
         <result property="milestoneId" column="MILESTONE_ID" />
         <result property="createdAt" column="ISSUE_CREATED_AT" />
+        <collection property="assignees" ofType="com.issuetracker.domain.member.response.SimpleMember" resultMap="SimpleMemberResultMap" javaType="java.util.Set" />
         <collection property="labels" ofType="com.issuetracker.domain.label.Label" resultMap="LabelResultMap" javaType="java.util.Set" />
     </resultMap>
 
@@ -27,6 +28,8 @@
             COUNT(CASE WHEN I.IS_OPEN = FALSE THEN 1 END) AS CLOSED_ISSUES,
             COUNT(*) AS TOTAL_ISSUES
         FROM ISSUE I
+        LEFT JOIN ASSIGNEE A ON I.ISSUE_ID = A.ISSUE_ID
+        LEFT JOIN MEMBER IM ON A.MEMBER_ID = IM.MEMBER_ID
         LEFT JOIN ISSUE_LABEL IL ON I.ISSUE_ID = IL.ISSUE_ID
         LEFT JOIN LABEL L ON IL.LABEL_ID = L.LABEL_ID
         <where>
@@ -36,6 +39,12 @@
             <if test="milestoneId != null and milestoneId != ''">
                 AND I.MILESTONE_ID = #{milestoneId}
             </if>
+            <if test="assignees != null and assignees.size > 0" >
+                AND A.MEMBER_ID IN
+                <foreach item="memberId" index="index" collection="assignees" open="(" separator="," close=")" >
+                    #{memberId}
+                </foreach>
+            </if>
             <if test="labelIds != null and labelIds.size() > 0">
                 AND IL.LABEL_ID IN
                 <foreach item="labelId" index="index" collection="labelIds" open="(" separator="," close=")">
@@ -44,6 +53,9 @@
             </if>
             <if test="noMilestone == true">
                 AND I.MILESTONE_ID IS NULL
+            </if>
+            <if test="noAssignee == true">
+                AND A.MEMBER_ID IS NULL
             </if>
             <if test="keyword != null and keyword != ''">
                 AND (I.TITLE LIKE CONCAT('%', #{keyword}, '%') OR I.CONTENT LIKE CONCAT('%', #{keyword}, '%'))
@@ -59,21 +71,29 @@
             I.IS_OPEN,
             I.MILESTONE_ID,
             I.CREATED_AT AS ISSUE_CREATED_AT,
+            IM.MEMBER_ID AS ASSIGNEE_ID,
+            IM.IMG_URL AS ASSIGNEE_IMG_URL,
             L.LABEL_ID,
             L.DESCRIPTION,
             L.TEXT_COLOR,
             L.COLOR_CODE
         FROM ISSUE I
-                 LEFT JOIN
-             ISSUE_LABEL IL ON I.ISSUE_ID = IL.ISSUE_ID
-                 LEFT JOIN
-             LABEL L ON IL.LABEL_ID = L.LABEL_ID
+        LEFT JOIN ASSIGNEE A ON I.ISSUE_ID = A.ISSUE_ID
+        LEFT JOIN MEMBER IM ON A.MEMBER_ID = IM.MEMBER_ID
+        LEFT JOIN ISSUE_LABEL IL ON I.ISSUE_ID = IL.ISSUE_ID
+        LEFT JOIN LABEL L ON IL.LABEL_ID = L.LABEL_ID
         <where>
             <if test="author != null and author != ''">
                 I.MEMBER_ID = #{author}
             </if>
             <if test="milestoneId != null and milestoneId != ''">
                 AND I.MILESTONE_ID = #{milestoneId}
+            </if>
+            <if test="assignees != null and assignees.size > 0" >
+                AND A.MEMBER_ID IN
+                <foreach item="memberId" index="index" collection="assignees" open="(" separator="," close=")" >
+                    #{memberId}
+                </foreach>
             </if>
             <if test="labelIds != null and labelIds.size() > 0">
                 AND IL.LABEL_ID IN
@@ -83,6 +103,9 @@
             </if>
             <if test="noMilestone == true">
                 AND I.MILESTONE_ID IS NULL
+            </if>
+            <if test="noAssignee == true">
+                AND A.MEMBER_ID IS NULL
             </if>
             <if test="keyword != null and keyword != ''">
                 AND ((I.TITLE LIKE CONCAT('%', #{keyword}, '%')) OR (I.CONTENT LIKE CONCAT('%', #{keyword}, '%')))

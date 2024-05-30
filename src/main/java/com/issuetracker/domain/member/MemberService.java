@@ -1,9 +1,8 @@
 package com.issuetracker.domain.member;
 
-import com.issuetracker.domain.member.request.LoginRequest;
-import com.issuetracker.domain.member.request.LogoutRequest;
+import com.issuetracker.domain.member.request.LogInRequest;
 import com.issuetracker.domain.member.request.SignUpRequest;
-import com.issuetracker.domain.member.response.AuthResponse;
+import com.issuetracker.domain.member.response.Auth;
 import com.issuetracker.global.exception.member.InvalidLoginDataException;
 import com.issuetracker.global.exception.member.InvalidTokenException;
 import com.issuetracker.global.exception.member.MemberDuplicateException;
@@ -14,6 +13,9 @@ import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -28,50 +30,62 @@ public class MemberService {
         return memberRepository.existsById(memberId);
     }
 
-    public AuthResponse signup(SignUpRequest request) {
+    public Auth signup(SignUpRequest request) {
         if (idDuplicateCheck(request.getMemberId())) {
             throw new MemberDuplicateException();
         }
 
         Member member = request.toEntity(passwordEncoder.encode(request.getPassword()));
+        String profileImgUrl = member.getProfileImgUrl();
 
-        String accessToken = jwtTokenProvider.createAccessToken(member.getId(), null);
+        String accessToken = jwtTokenProvider.createAccessToken(
+                member.getId(), profileImgUrl != null ? Map.of("imgUrl", profileImgUrl) : null);
         String refreshToken = jwtTokenProvider.createRefreshToken(member.getId(), null);
         member.updateRefreshToken(refreshToken);
         memberRepository.save(member);
 
-        return AuthResponse.builder()
+        return Auth.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
     }
 
-    public AuthResponse login(LoginRequest request) {
+    public Auth login(LogInRequest request) {
         Member member = memberRepository.findById(request.getMemberId()).orElseThrow(InvalidLoginDataException::new);
 
         if (!passwordEncoder.matches(request.getPassword(), member.getEncodedPassword())) {
             throw new InvalidLoginDataException();
         }
 
-        String accessToken = jwtTokenProvider.createAccessToken(member.getId(), null);
+        String profileImgUrl = member.getProfileImgUrl();
+        String accessToken = jwtTokenProvider.createAccessToken(
+                member.getId(), profileImgUrl != null ? Map.of("imgUrl", profileImgUrl) : null);
         String refreshToken = jwtTokenProvider.createRefreshToken(member.getId(), null);
         member.updateRefreshToken(refreshToken);
         memberRepository.updateRefreshToken(member.getId(), member.getRefreshToken());
 
-        return AuthResponse.builder()
+        return Auth.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
     }
 
-    public void logout(LogoutRequest request) {
-        Member member = memberRepository.findById(request.getMemberId()).orElseThrow(MemberNotFoundException::new);
+    public void logout(String token) {
+        Claims claims = jwtTokenProvider.validateToken(token);
+        String memberId = claims.getSubject();
+        Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
         member.expireRefreshToken();
         memberRepository.updateRefreshToken(member.getId(), member.getRefreshToken());
     }
 
-    public AuthResponse refresh (String bearerToken) {
-        String token = jwtTokenProvider.getToken(bearerToken);
+    public void withdraw(String token) {
+        Claims claims =jwtTokenProvider.validateToken(token);
+        String memberId = claims.getSubject();
+        Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+        memberRepository.deleteById(member.getId());
+    }
+
+    public Auth refresh (String token) {
         Claims claims = jwtTokenProvider.validateToken(token);
         String memberId = claims.getSubject();
 
@@ -81,7 +95,9 @@ public class MemberService {
             throw new InvalidTokenException();
         }
 
-        String accessToken = jwtTokenProvider.createAccessToken(memberId, null);
+        String profileImgUrl = member.getProfileImgUrl();
+        String accessToken = jwtTokenProvider.createAccessToken(
+                member.getId(), profileImgUrl != null ? Map.of("imgUrl", profileImgUrl) : null);
         String refreshToken = member.getRefreshToken();
 
         if(!jwtTokenProvider.refreshTokenExpired(claims)){
@@ -90,9 +106,13 @@ public class MemberService {
             memberRepository.updateRefreshToken(memberId, refreshToken);
         }
 
-        return AuthResponse.builder()
+        return Auth.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
+    }
+
+    public List<Member> getMembers() {
+        return memberRepository.findAll();
     }
 }
