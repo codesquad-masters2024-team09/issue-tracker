@@ -276,67 +276,59 @@
   }
 
   .input-search-box {
-    @apply bg-gray-200/50 w-[430px] p-2 rounded-md outline-none pl-[35px] text-gray-600 focus:border-white focus:bg-white focus:placeholder-transparent
+    @apply bg-gray-200/50 w-[430px] p-2 rounded-md pl-[35px] text-gray-600 focus:border-white focus:bg-white focus:placeholder-transparent
   }
 
   .label-milestone-panel {
     @apply flex-1 px-[2rem] py-1 h-[44px] shadow-sm whitespace-nowrap text-sm text-gray-700 border border-gray-300/60
   }
 
-  .issue-filter {
-    @apply flex text-sm text-gray-600 cursor-pointer
+  .openCloseTab {
+    @apply flex text-sm pl-[1rem] text-gray-600 cursor-pointer
   }
 
-  .issue-filter.open {
-    @apply pl-[1rem]
+  .filterBar-container {
+    @apply flex gap-5 ml-auto text-sm text-gray-600
   }
 
-  .issue-filter.closed {
-    @apply pl-[1rem]
-  }
-
-  .filter-parent {
-    @apply flex gap-5 ml-auto text-sm
-  }
-
-  .filter-btn-container {
+  .filterBar-btn-container {
     @apply flex gap-1 relative
   }
 
-  .filter-parent-items {
-    @apply flex gap-5 text-[12px]
+  .filterBar-popup-container {
+    @apply absolute z-[99] top-[125%] right-0 w-[240px] bg-white shadow-md rounded-xl animate-slidein
   }
 
-  .popup-filter-container {
-    @apply absolute z-10 top-[125%] right-0 w-[240px] border border-gray-300 bg-white shadow-md rounded-xl
+  .filterBar-popup-header {
+    @apply text-[13px] text-center text-slate-500 px-4 py-2 border border-slate-300/80 border-b border-b-slate-300/80 rounded-t-xl bg-[#F7F7FC]
   }
 
-  .popup-filter-header {
-    @apply text-[13px] text-slate-500 px-4 py-2 border-b border-b-slate-300/80 rounded-t-xl bg-[#F7F7FC]
+  .filterBar-popup-item {
+    @apply px-4 py-2 border border-t-0 border-slate-300/80 text-center text-[13px] text-slate-500
   }
 
-  .popup-filter-item {
-    @apply px-4 py-2 text-[13px] text-slate-700 border-b border-b-slate-300/80
+  .filterBar-popup-item:last-child {
+    @apply rounded-xl rounded-t-none
   }
 
-  .popup-filter-item:last-child {
-    @apply border-b-0
+  .filterBar-popup-item:hover {
+    @apply bg-gray-100/50
   }
 
-  .popup-filter-inner-container {
+  .filterBar-popup-item[aria-checked="true"] {
+    @apply bg-gray-200
+  }
+
+  .filterBar-popup-item-detail {
     @apply flex justify-between items-center cursor-pointer
   }
 
-  .popup-filter-label {
+  .filterBar-popup-label {
     @apply ml-[10px]
   }
 
-  .popup-filter-label-circle {
-    @apply inline-flex size-3 -mr-1 rounded-full
-  }
-
-  .popup-filter-checkbox {
-    @apply cursor-pointer
+  .filterBar-popup-label-circle {
+    @apply inline-flex size-3 -mr-1 rounded-full border border-gray-200/80
   }
 
   .issue-table-header {
