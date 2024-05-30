@@ -15,6 +15,7 @@
     }
 
     const onCreateIssue = async () => {
+        issueFormValues.assignees = $tags.selectedAssignees.map(assignee => assignee.memberId)
         issueFormValues.labels = $tags.selectedLabels.map(label => label.labelId)
         issueFormValues.milestone = $tags.selectedMilestone
         await issues.createIssue(issueFormValues);
