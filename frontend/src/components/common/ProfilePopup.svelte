@@ -16,8 +16,8 @@
 </script>
 
 <div class="profile-popup-container" role="menu">
-    <div class="profile-popup-header">
-        환영합니다 {get(auth).memberId} 님!
+    <div class="profile-popup-header font-bold">
+        {get(auth).memberId}
     </div>
     <button class="profile-popup-btn" role="menuitem" tabindex="0" on:click={(e) => {e.stopPropagation(); onLogout();}}>
         <span class="profile-popup-btn-icon">
