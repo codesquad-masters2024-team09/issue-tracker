@@ -19,13 +19,13 @@
 
 <div class="flex flex-col w-full min-w-[1020px] items-center">
     <div class="issue-table-header">
-        <button class="issue-filter open" on:click={onOpenMilestonesView}>
+        <button class="openCloseTab open" on:click={onOpenMilestonesView}>
             <span class="pr-[3px]">
                 <i class="bi bi-exclamation-circle"></i>
             </span>
             <span class={isOpenMilestoneView ? 'font-bold text-black' : ''}>열린 마일스톤({openMilestones.length})</span>
         </button>
-        <button class="issue-filter closed" on:click={onClosedMilestonesView}>
+        <button class="openCloseTab closed" on:click={onClosedMilestonesView}>
             <span class="pr-[3px]">
                 <i class="bi bi-archive"></i>
             </span>
