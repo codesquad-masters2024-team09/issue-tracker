@@ -34,9 +34,16 @@
             mountComplete = true
         }
     })
+
+    const closePopup = () => {
+        isShowPopup = ''
+    }
 </script>
 
 {#if isFullMount}
+    {#if isShowPopup !== ''}
+        <div class="overlay" on:click={closePopup}></div>
+    {/if}
 <div class="sidebar-container">
     <div class="sidebar-group-box">
         <button id="assignees" type="button" class="sidebar-btn" on:click={(e) => onShowPopup(e.currentTarget.id)}>
