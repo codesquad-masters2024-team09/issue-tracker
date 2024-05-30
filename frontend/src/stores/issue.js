@@ -10,8 +10,10 @@ function setIssues() {
         issueList: [],
         editTitlePopup: '',
         editContentPopup: '',
+        editCommentPopup: '',
         editModeTitle: '', // 게시글 중 수정모드로 전환 시 게시글의 식별자 저장하는 필드
         editModeContent: '', // 게시글 중 수정모드로 전환 시 게시글의 식별자 저장하는 필드
+        editModeComment: '',
     }
 
     const { subscribe, update, set } = writable({...initValues});
@@ -195,6 +197,20 @@ function setIssues() {
         })
     }
 
+    const openEditModeComment = (commentId) => {
+        update(datas => {
+            datas.editModeComment = commentId;
+            return datas;
+        });
+    }
+
+    const closeEditModeComment = () => {
+        update(datas => {
+            datas.editModeComment = '';
+            return datas;
+        });
+    }
+
     return {
         subscribe,
         fetchIssues,
@@ -208,6 +224,8 @@ function setIssues() {
         openEditModeIssueContent,
         closeEditModeIssueTitle,
         closeEditModeIssueContent,
+        openEditModeComment,
+        closeEditModeComment
     }
 }
 

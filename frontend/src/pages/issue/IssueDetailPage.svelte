@@ -1,7 +1,7 @@
 <script>
     import {onMount} from "svelte";
     import {issues} from '../../stores/issue';
-    import {postApi} from "../../service/api.js";
+    import {delApi, patchApi, postApi} from "../../service/api.js";
     import {meta, router} from "tinro";
     import {urlPrefix} from "../../utils/constants.js";
     import IssueEditTitleForm from '../../components/issue/IssueEditTitleForm.svelte';
@@ -81,6 +81,8 @@
         defaultContent = newContent;
     }
 
+    let focusedComment = ''
+
     const onCreateComment = async () => {
         try {
             const options = {
@@ -93,8 +95,7 @@
                 access_token: get(auth).accessToken
             }
             await postApi(options);
-            const newComments = [...issueData.comments, options.data]
-            issueData.comments = newComments
+            issueData.comments = [...issueData.comments, options.data]
             commentInput = '';
         } catch (err) {
             console.log(err);
@@ -115,6 +116,15 @@
             issues.closeEditModeIssueContent()
             return
         }
+        issues.openEditModeIssueContent(issueId.toString())
+    }
+
+    const onToggleEditCommentPopup = (commentId) => {
+        if ($issues.editModeComment === commentId) {
+            issues.closeEditModeComment();
+            return;
+        }
+        issues.openEditModeComment(commentId);
     }
 
     $: issueState = issueData.open;
@@ -131,8 +141,47 @@
         }
     }
 
-    const onUpdateComment = async (commentId) => {
-        // TODO: 댓글 수정 api 연결
+    const onCloseEditModeIssueComment = () => {
+        issues.closeEditModeComment()
+        focusedComment = ''
+    }
+
+    const onUpdateComment = async (commentId, content) => {
+        try {
+            const options = {
+                path: `${urlPrefix}/comments/${commentId}`,
+                data: {
+                    content: content
+                },
+                access_token: get(auth).accessToken
+            }
+
+            await patchApi(options)
+
+            const updatedComments = issueData.comments.map(comment => {
+                if (comment.id === commentId) {
+                    return {...comment, content: content}
+                }
+                return comment
+            })
+            issueData.comments = updatedComments
+            issues.closeEditModeComment()
+        } catch (err) {
+            alert("댓글 수정 중 오류가 발생했습니다. 다시 시도해 주세요!")
+        }
+    }
+
+    const onDeleteComment = async (commentId) => {
+        try {
+            const options = {
+                path: `${urlPrefix}/comments/${commentId}`,
+                access_token: get(auth).accessToken
+            }
+            await delApi(options)
+            issueData.comments = issueData.comments.filter(comment => comment.id !== commentId)
+        } catch (err) {
+            alert("댓글 삭제 중 오류가 발생했습니다. 다시 시도해 주세요!")
+        }
     }
 
     /* 파일 업로드 */
@@ -151,7 +200,7 @@
     }
 </script>
 
-<Header />
+<Header/>
 <div class="flex flex-col w-full">
     <div class="w-full">
         <!-- 이슈 제목 컴포넌트 -->
@@ -187,7 +236,7 @@
         <!-- 제목 편집 폼 -->
         {#if $issues.editModeTitle === issueId.toString()}
             <div class="flex justify-between items-center" class:block={isViewEditModeTitle}>
-                <IssueEditTitleForm {issueId} {defaultTitle} on:updateIssueTitle={e => updateIssueTitle(e.detail)} />
+                <IssueEditTitleForm {issueId} {defaultTitle} on:updateIssueTitle={e => updateIssueTitle(e.detail)}/>
             </div>
         {/if}
 
@@ -231,7 +280,7 @@
                 <!-- 이슈와 댓글 -->
                 <div class="parent-container w-full flex-col my-3 w-min-[500px]">
                     <!-- 이슈 -->
-                    <div class={`${isFocused ? 'content-box header-border flex gap-2 justify-start items-center' : 'content-box header flex gap-2 justify-start items-center'}`} >
+                    <div class={`${isFocused ? 'content-box header-border flex gap-2 justify-start items-center' : 'content-box header flex gap-2 justify-start items-center'}`}>
                         <!-- 프로필 아이콘 -->
                         <div class="size-9">
                             <img src="/assets/profile_icon.svg" alt="Profile Icon" class="profile-icon">
@@ -243,24 +292,26 @@
                         <!-- 편집 버튼 -->
                         <div class="issue-edit-container">
                             {#if issueData.memberId === get(auth).memberId}
-                                <span class="pr-[3px]">
+                                <button type="button" on:click={() => onToggleEditContentPopup(issueId)}>편집
+                                    <span class="pr-[3px]">
                                     <i class="bi bi-pencil-square"></i>
-                                </span>
-                                <button type="button" on:click={() => onToggleEditContentPopup(issueId)}>편집</button>
+                                    </span>
+                                </button>
                             {/if}
                         </div>
                     </div>
 
                     <!-- 이슈 내용 -->
                     {#if !($issues.editModeContent === issueId.toString())}
-                        <div class="content-box main">
+                        <div class="content-box main whitespace-pre-wrap">
                             <p>{defaultContent}</p>
                         </div>
 
                         <!--이슈 내용 편집 폼 -->
                     {:else if $issues.editModeContent === issueId.toString()}
                         <div class:block={isViewEditModeContent}>
-                            <IssueEditContentForm {issueId} {defaultContent} bind:isFocused={isFocused} on:updateIssueContent={e => updateIssueContent(e.detail)} />
+                            <IssueEditContentForm {issueId} {defaultContent} bind:isFocused={isFocused}
+                                                  on:updateIssueContent={e => updateIssueContent(e.detail)}/>
                         </div>
                     {/if}
 
@@ -268,19 +319,19 @@
                     <div class="content-box header mt-3 flex gap-2 justify-start items-center">
                         <!-- 프로필 아이콘 -->
                         <div class="size-9">
-                            <img src="/assets/profile_icon.svg" alt="Profile Icon" class="profile-icon">
+                            <img src="/assets/profile_icon_duck.svg" alt="Profile Icon" class="profile-icon">
                         </div>
                         <!-- 작성자 -->
                         <div class="grow">댓글돌이</div>
                     </div>
                     <!-- 댓글 내용 -->
                     <div class="content-box main">
-                        <p>모든 이슈에 댓글돌이가 댓글을 달아줍니다 :) </p>
+                        <p>모든 이슈에 댓글돌이가 댓글을 달아줍니다 :)</p>
                     </div>
 
                     <!-- 댓글 리스트 -->
                     {#each issueData.comments as comment}
-                        <div class="content-box header mt-3 flex gap-2 justify-start items-center">
+                        <div class={`${focusedComment === comment.id ? 'content-box header-border mt-3 flex gap-2 justify-start items-center' : 'content-box header mt-3 flex gap-2 justify-start items-center'}`}>
                             <!-- 프로필 아이콘 -->
                             <div class="size-9">
                                 <img src="/assets/profile_icon.svg" alt="Profile Icon" class="profile-icon">
@@ -292,21 +343,53 @@
                                 <div class="writer-badge">작성자</div>
                             {/if}
                             <!-- 편집 버튼 -->
-                            <div class="issue-edit-container">
-                                {#if comment.memberId === get(auth).memberId}
-                                    <span class="pr-[3px]">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </span>
-                                    <button type="button" on:click={onUpdateComment} data-comment-id={comment.id}>편집
-                                    </button>
-                                {/if}
-                            </div>
+                            {#if comment.memberId === get(auth).memberId}
+                                <div class="issue-edit-container gap-1">
+                                        <button type="button" class="text-gray-800"
+                                                on:click={() => onToggleEditCommentPopup(comment.id)}
+                                                data-comment-id={comment.id}>편집
+                                            <span class="pr-[3px]">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </span>
+                                        </button>
+                                        <button type="button" class="text-red-500"
+                                                on:click={() => onDeleteComment(comment.id)}>삭제
+                                            <span class="pr-[3px]">
+                                                <i class="bi bi-trash"></i>
+                                            </span>
+                                        </button>
+                                </div>
+                            {/if}
                         </div>
 
                         <!-- 댓글 내용 -->
-                        <div class="content-box main">
-                            <p>{comment.content}</p>
-                        </div>
+                        {#if $issues.editModeComment !== comment.id}
+                            <div class="content-box main whitespace-break-spaces">
+                                <p>{comment.content}</p>
+                            </div>
+                        {:else if $issues.editModeComment === comment.id}
+                            <div class={`${focusedComment ? 'content-box main-border flex gap-2 justify-start items-center' : 'content-box main flex gap-2 justify-start items-center'}`}>
+                                <textarea placeholder="내용을 입력하세요" class="comment-edit-textarea"
+                                          bind:value={comment.content} on:focus={() => focusedComment = comment.id} on:blur={() => focusedComment = ''} />
+                            </div>
+                            <!-- 버튼 컨테이너 -->
+                            <div class="edit-title-container mt-3">
+                                <!-- 편집 취소 버튼 -->
+                                <button id="edit-title-cancel" class="edit-title-btn blue-border" type="button" on:click={onCloseEditModeIssueComment}>
+                                    <span class="text-[12px] text-center pr-1">
+                                        <i class="bi bi-x-lg"></i>
+                                    </span>
+                                    편집 취소
+                                </button>
+                                <!-- 편집 완료 버튼 -->
+                                <button id="edit-title-apply" type="button" class="edit-title-btn apply" disabled={comment.content.trim() === ''} on:click={() => onUpdateComment(comment.id, comment.content)}>
+                                    <span class="text-[12px] text-center pr-1">
+                                        <i class="bi bi-archive"></i>
+                                    </span>
+                                    편집 완료
+                                </button>
+                            </div>
+                        {/if}
                     {/each}
 
                     <!-- 댓글 입력 폼 -->
@@ -314,7 +397,9 @@
                         <div class="comment-container">
                             <div class="flex flex-col p-1 w-full">
                                 <div class="flex flex-col rounded-lg">
-                                    <label for="comment-form" class="absolute translate-y-3 translate-x-3 text-sm text-gray-600">댓글로 의견을 공유해 보세요</label>
+                                    <label for="comment-form"
+                                           class="absolute translate-y-3 translate-x-3 text-sm text-gray-600">댓글로 의견을
+                                        공유해 보세요</label>
                                     <textarea id="comment-form"
                                               class="comment-add-textarea"
                                               bind:value={commentInput}></textarea>
@@ -324,7 +409,8 @@
                                             <i class="bi bi-paperclip"></i>
                                         </span>
                                         파일 업로드
-                                        <input type="file" id="file-upload" class="hidden" on:change={handleFileUpload}/>
+                                        <input type="file" id="file-upload" class="hidden"
+                                               on:change={handleFileUpload}/>
                                         {#if selectedFile}
                                             <div class="flex gap-2 justify-start mx-4 text-[14px] text-gray-400 whitespace-nowrap">
                                                 <p class="inline-flex"><span
@@ -351,7 +437,7 @@
                 <!-- 우측 패널 -->
                 <div class="flex flex-col items-end relative">
                     <!-- 담당자 & 레이블 & 마일스턴 지정 패널 -->
-                    <SideBar />
+                    <SideBar/>
                 </div>
             </div>
         </div>
