@@ -25,6 +25,12 @@
         await auth.login(data)
         resetData()
     }
+
+    const onEnterKey = (e) => {
+        if (e.key === 'Enter') {
+            onLogin();
+        }
+    }
 </script>
 
 <div class="login-form-input-container">
@@ -35,9 +41,9 @@
 <div class="login-form-input-container">
     <span class="login-form-label">비밀번호</span>
     <input name="password" bind:value={data.password} class="login-input-field" type="password" required
-           autocomplete="new-password" placeholder="비밀번호를 입력하세요" maxlength="20"/>
+           on:keyup={(e) => {onEnterKey(e)}} autocomplete="new-password" placeholder="비밀번호를 입력하세요" maxlength="20"/>
 </div>
-<button type="submit" class="login-btn" disabled={isSubmitLock} on:click={onLogin}>
+<button id="login" type="submit" class="login-btn" disabled={isSubmitLock} on:click={onLogin}>
     <span class="mr-1 text-[16px]">
         <i class="bi bi-box-arrow-in-right"></i>
     </span>
