@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum IssueQueryParser {
 
-    QUERY_STRING_PATTERN(Pattern.compile("(no:milestone|no:assignee|is:open|is:closed|label:[^\"]\\S+|label:\".*?\"|author:[^\"]\\S+|author:\".*?\"|milestone:[^\"]\\S+|milestone:\".*?\"|\\S+)")),
+    QUERY_STRING_PATTERN(Pattern.compile("(no:milestone|no:assignee|is:open|is:closed|label:[^\"]\\S+|label:\".*?\"|assignee:\".*?\"|assignee:[^\"]\\S+|author:[^\"]\\S+|author:\".*?\"|milestone:[^\"]\\S+|milestone:\".*?\"|\\S+)")),
     KEYWORD_PATTERN(Pattern.compile("\\b(?!no:milestone\\b|no:assignee\\b|is:open\\b|is:closed\\b|label:.+\\b|milestone:.+\\b|author:.+\\b|assignee:.+\\b)(\\S+)")),
     AUTHOR_PATTERN(Pattern.compile("(?i)author:\"?([^\"]+)")),
     LABELS_PATTERN(Pattern.compile("(?i)label:\"?([^\"]+)")),

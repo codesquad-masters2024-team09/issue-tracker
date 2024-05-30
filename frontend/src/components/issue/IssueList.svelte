@@ -1,17 +1,21 @@
 <script>
-    import { onMount } from "svelte";
+    import {onDestroy, onMount} from "svelte";
     import { get } from 'svelte/store';
     import { issues, loadingIssue, issuesPageLock } from '../../stores/issue';
     import { handleCheckboxes } from "../../service/buttonSelection.js";
+    import { filters } from "../../stores/filter";
     import { router } from "tinro";
-    import { optionsStore } from "../../stores/filter.js";
-    import IssueFilterOptions from "./FilterOptions.svelte";
+    import FilterBar from "./FilterBar.svelte";
     import Issue from './IssueItem.svelte';
     import NoIssue from "./NoIssue.svelte";
     import IssueLoading from "./IssueLoading.svelte";
     import LabelMilestoneNavTab from "../common/LabelMilestoneNavtab.svelte";
 
     onMount(() => {
+        // 필터 상태 초기화
+        filters.resetSelectedItems()
+        filters.resetCheckedState()
+
         // checkbox multi select 부분
         const parentCheckbox = document.querySelector(".parent-checkbox");
         const childCheckboxes = document.querySelectorAll(".child-checkbox");
@@ -19,12 +23,56 @@
             handleCheckboxes(parentCheckbox, childCheckboxes);
         }
 
+        let initQ = document.getElementById('q').value;
+        filters.reloadSearchCondition()
+        console.log('adsad', $filters.searchCondition)
+        document.getElementById('q').value = $filters.searchCondition + ' '
+
         // 이슈 리스트 가져오기
-        issues.resetIssues()
+        issues.resetIssues();
         issues.fetchIssues().then(() => {
             console.log('리스트 컴포넌트에서 받은 이슈 목록: ', get(issues).issueList)
         });
     })
+
+    let userInput = ''
+    $: userInput
+
+    $: openIssues = $issues.issueList.filter(issue => issue.open === true)
+    $: closedIssues = $issues.issueList.filter(issue => issue.open === false)
+
+    $: isOpenIssueView = true
+    const onOpenIssueView = async () => {
+        if (isOpenIssueView) {
+            return
+        }
+
+        filters.changeViewMode();
+        await filters.searchIssueByFilterCondition()
+        isOpenIssueView = true
+    }
+
+    const onClosedIssueView = async () => {
+        if (!isOpenIssueView) {
+            return
+        }
+
+        filters.changeViewMode();
+        await filters.searchIssueByFilterCondition()
+        isOpenIssueView = false
+    }
+
+    const onEnterKey = async (e) => {
+        if (e.key === 'Enter') {
+            filters.resetSelectedItems()
+            filters.resetCheckedState()
+
+            let query = document.getElementById('q').value;
+            console.log(query)
+            filters.updateUserInput(query)
+            await filters.searchIssueByUserInput()
+        }
+    }
 </script>
 
 <div class="flex-col">
@@ -38,7 +86,8 @@
                 <span class="absolute text-[16px] text-gray-500 left-[10px] top-[6px] pointer-events-none">
                     <i class="bi bi-search"></i>
                 </span>
-                <input class="input-search-box" type="text" placeholder="Search...">
+                <input id="q" class="input-search-box" type="text" placeholder="Search..."
+                       on:keyup={onEnterKey} value={userInput}>
             </button>
         </div>
 
@@ -64,36 +113,44 @@
         <div class="checkbox">
             <input type="checkbox" class="parent-checkbox">
         </div>
-        <div class="issue-filter open on:click={() => optionsStore.toggleIsOpenOption('isOpen')}">
+        <button class="openCloseTab" on:click={onOpenIssueView}>
             <span class="pr-[3px]">
                 <i class="bi bi-exclamation-circle"></i>
             </span>
-            열린 이슈(2)
-        </div>
-        <div class="issue-filter closed on:click={() => optionsStore.toggleIsOpenOption('isClosed')}">
+            <span class={isOpenIssueView ? 'font-bold text-black' : ''}>열린 이슈({$issues.openIssues})</span>
+        </button>
+        <button class="openCloseTab" on:click={onClosedIssueView}>
             <span class="pr-[3px]">
                 <i class="bi bi-archive"></i>
             </span>
-            닫힌 이슈(0)
-        </div>
-        <!--     드롭다운 버튼       -->
+            <span class={!isOpenIssueView ? 'font-bold text-black' : ''}>닫힌 이슈({$issues.closedIssues})</span>
+        </button>
 
         <!-- 테이블 헤더 필터 -->
-        <IssueFilterOptions />
+        <FilterBar />
     </div>
 
     <!-- 이슈 리스트 생성 -->
-    {#each $issues.issueList as issue, index}
-        <Issue {issue} />
-    {/each}
-
-    <!-- 이슈가 하나도 없을 때 이슈 없음을 나타내는 컴포넌트 -->
-    {#if $issues.issueList.length === 0}
-        <NoIssue />
-    {/if}
-
     {#if $loadingIssue }
         <IssueLoading />
+    {/if}
+
+    {#if isOpenIssueView}
+        {#each openIssues as issue, index}
+            <Issue {issue} />
+        {/each}
+        <!-- 이슈가 하나도 없을 때 이슈 없음을 나타내는 컴포넌트 -->
+        {#if openIssues.length === 0}
+            <NoIssue isOpen={true} />
+        {/if}
+    {:else}
+        {#each closedIssues as issue, index}
+            <Issue {issue} />
+        {/each}
+        <!-- 이슈가 하나도 없을 때 이슈 없음을 나타내는 컴포넌트 -->
+        {#if closedIssues.length === 0}
+            <NoIssue isOpen={false} />
+        {/if}
     {/if}
 
 </div>
