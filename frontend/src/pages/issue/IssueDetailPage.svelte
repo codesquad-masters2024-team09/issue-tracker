@@ -303,8 +303,8 @@
 
                     <!-- 이슈 내용 -->
                     {#if !($issues.editModeContent === issueId.toString())}
-                        <div class="content-box main whitespace-pre-wrap">
-                            <p>{defaultContent}</p>
+                        <div class="content-box main">
+                            <p class="whitespace-pre-wrap">{defaultContent}</p>
                         </div>
 
                         <!--이슈 내용 편집 폼 -->
@@ -364,8 +364,8 @@
 
                         <!-- 댓글 내용 -->
                         {#if $issues.editModeComment !== comment.id}
-                            <div class="content-box main whitespace-break-spaces">
-                                <p>{comment.content}</p>
+                            <div class="content-box main">
+                                <p class="whitespace-pre-wrap">{comment.content}</p>
                             </div>
                         {:else if $issues.editModeComment === comment.id}
                             <div class={`${focusedComment ? 'content-box main-border flex gap-2 justify-start items-center' : 'content-box main flex gap-2 justify-start items-center'}`}>
