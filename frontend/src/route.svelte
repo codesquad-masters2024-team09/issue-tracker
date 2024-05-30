@@ -33,6 +33,6 @@
 <Route path="/labels"><LabelPage /></Route>
 <Route path="/milestones"><MilestonePage /></Route>
 
-{#if !isValidPath(window.location.pathname)}
-    <NotFound />
-{/if}
+<!--{#if !isValidPath(window.location.pathname)}-->
+<!--    <NotFound />-->
+<!--{/if}-->

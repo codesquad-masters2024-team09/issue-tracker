@@ -22,9 +22,20 @@
         if (!currentUrl.endsWith('add')) {
             issueId = currentUrl.substring(currentUrl.lastIndexOf('/') + 1);
             issueData = await issues.fetchIssueDetail(issueId);
-            tags.initAssigneeCheckedState($tags.members, issueData.assignees)
-            tags.initLabelCheckedState($tags.labels, issueData.labels)
-            tags.initMilestoneCheckedState($tags.milestones, issueData.milestoneId)
+
+            if (itemType === 'assignee') {
+                tags.initAssigneeCheckedState($tags.members, issueData.assignees)
+                return
+            }
+
+            if (itemType === 'label') {
+                tags.initLabelCheckedState($tags.labels, issueData.labels)
+                return
+            }
+
+            if (itemType === 'milestone') {
+                tags.initMilestoneCheckedState($tags.milestones, issueData.milestoneId)
+            }
         }
     })
 
@@ -37,10 +48,10 @@
             }
         } else {
             if ($tags.checkedStates.assignees[selectedAssignee.memberId] === true) {
-                await tags.deleteAssignee(selectedAssignee.memberId)
+                await tags.deleteAssignee(selectedAssignee)
                 await tags.deleteAssigneeOnIssue(issueId, selectedAssignee.memberId)
             } else {
-                await tags.selectAssignee(selectedAssignee.memberId)
+                await tags.selectAssignee(selectedAssignee)
                 await tags.addAssigneeOnIssue(issueId, selectedAssignee.memberId)
             }
         }
@@ -86,9 +97,9 @@
         }
     }
 </script>
-{#if itemType === 'assignee' && $tags.selectedMembers.every(member => member !== null)}
+{#if itemType === 'assignee' && $tags.selectedAssignees.length > 0}
     <div class="selected-items-list">
-        {#each $tags.selectedMembers as assignee}
+        {#each $tags.selectedAssignees as assignee}
             <div class="selected-items-container">
                 <button class="selected-items-label" on:click={() => onClickAssigneeName(assignee)}>
                 <span class="text-[11px] -translate-x-1">

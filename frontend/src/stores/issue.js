@@ -76,6 +76,7 @@ function setIssues() {
                     title: form.title,
                     content: form.content,
                     labels: form.labels,
+                    assignees: form.assignees,
                     milestoneId: form.milestone
                 },
                 access_token: get(auth).accessToken
