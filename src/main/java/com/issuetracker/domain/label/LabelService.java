@@ -40,6 +40,11 @@ public class LabelService {
         );
     }
 
+    @Transactional(readOnly = true)
+    public Long count() {
+        return labelRepository.count();
+    }
+
     public LabelResponse edit(String labelId, LabelUpdateRequest request) {
         if (!request.validateNullOrBlank()) {
             throw new IllegalArgumentException();

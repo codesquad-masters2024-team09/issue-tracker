@@ -14,9 +14,9 @@
 
     $: formatDueDate = milestone.dueDate ? formatDateStr(milestone.dueDate) : milestone.dueDate;
 
-    const onCloseMilestone = (id) => {
-        if(confirm('이 마일스톤을 닫겠습니까?')) {
-            const isOpen = false
+    const onUpdateStateMilestone = (id) => {
+        if(confirm(milestone.open ? '이 마일스톤을 닫겠습니까?' : '이 마일스톤을 열겠습니까?')) {
+            const isOpen = !milestone.open
             milestones.patchMilestone(id, isOpen)
         }
     }
@@ -72,11 +72,11 @@
         <div class="flex flex-col gap-2 ml-auto justify-between items-center">
             <!--      편집 버튼      -->
             <div class="label-btn-container ml-auto flex gap-5 mx-4 my-1 items-center text-sm whitespace-nowrap">
-                <button class="text-gray-800" on:click={() => onCloseMilestone(milestone.id)}>
+                <button class="text-gray-800" on:click={() => onUpdateStateMilestone(milestone.id)}>
                     <span>
                         <i class="bi bi-archive"></i>
                     </span>
-                    닫기
+                    {milestone.open ? "닫기" : "열기"}
                 </button>
                 <button class="text-gray-800" on:click={() => onEditModeMilestone(milestone.id)}>
                     <span>

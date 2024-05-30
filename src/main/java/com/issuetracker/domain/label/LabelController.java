@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
+
 @RequestMapping("/api/v1/labels")
 @RestController
 @RequiredArgsConstructor
@@ -30,6 +32,13 @@ public class LabelController {
         return ResponseEntity.ok(
                 labelService.getLabels()
         );
+    }
+
+    @GetMapping("/count")
+    public ResponseEntity<?> getLabelsCount() {
+        return ResponseEntity
+                .ok()
+                .body(Collections.singletonMap("countResult", labelService.count()));
     }
 
     @PatchMapping("/{labelId}")
