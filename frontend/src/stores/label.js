@@ -9,9 +9,27 @@ function setLabels() {
         labels : [],
         addMode: '',
         editMode: '',
+        labelCnt: '',
     }
 
     const {subscribe, update, set} = writable({...initValues})
+
+    const countLabels = async () => {
+        try {
+            const options = {
+                path: `${urlPrefix}/labels/count`,
+                access_token: get(auth).accessToken,
+            }
+
+            const response = await getApi(options)
+            update(data => {
+                data.labelCnt = response.countResult
+                return data
+            })
+        } catch (error) {
+            alert(error)
+        }
+    }
 
     const fetchLabels = async () => {
         try {
@@ -127,6 +145,7 @@ function setLabels() {
 
     return {
         subscribe,
+        countLabels,
         fetchLabels,
         resetLabels,
         registerLabel,

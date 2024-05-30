@@ -8,9 +8,27 @@ function setMilestones() {
         milestones: [],
         addMode: '',
         editMode: '',
+        milestoneCnt: ''
     }
 
     const {subscribe, update, set} = writable({...initValues})
+
+    const countMilestones = async () => {
+        try {
+            const options = {
+                path: `${urlPrefix}/milestones/count`,
+                access_token: get(auth).accessToken,
+            }
+
+            const response = await getApi(options)
+            update(data => {
+                data.milestoneCnt = response.countResult
+                return data
+            })
+        } catch (e) {
+          alert(e)
+        }
+    }
 
     const fetchMilestones = async () => {
         try {
@@ -82,6 +100,7 @@ function setMilestones() {
         try {
             const options = {
                 path: urlPrefix + `/milestones/status?milestoneId=${milestoneId}&isOpen=${isOpen}`,
+                access_token: get(auth).accessToken
             }
 
             await patchApi(options);
@@ -96,7 +115,7 @@ function setMilestones() {
                 return data;
             })
 
-            alert('마일스톤을 닫았습니다.')
+            alert(isOpen ? '마일스톤을 열었습니다.' : '마일스톤을 닫았습니다.')
         } catch (err) {
             alert('마일스톤을 닫는 중 오류가 발생했습니다. 다시 시도해 주세요.')
         }
@@ -149,6 +168,7 @@ function setMilestones() {
 
     return {
         subscribe,
+        countMilestones,
         fetchMilestones,
         resetMilestones,
         registerMilestone,
