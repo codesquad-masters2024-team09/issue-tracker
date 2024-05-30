@@ -38,6 +38,11 @@
         }
     }
 
+    const onEnterKey = (e) => {
+        if (e.key === 'Enter') {
+            onRegister();
+        }
+    }
 </script>
 
 
@@ -54,9 +59,10 @@
 <div class="login-form-input-container">
     <span class="login-form-label">비밀번호 확인</span>
     <input name="password" bind:value={password_second} class="login-input-field" type="password" required
-           autocomplete="new-password" placeholder="같은 비밀번호를 입력하세요" maxlength="20"/>
+           on:keyup={(e) => {onEnterKey(e)}} autocomplete="new-password" placeholder="같은 비밀번호를 입력하세요" maxlength="20"/>
+
 </div>
-<button type="submit" class="signup-btn" disabled={isSubmitLock} on:click={onRegister}>
+<button id="register" type="submit" class="signup-btn" disabled={isSubmitLock} on:click={onRegister}>
     회원가입
 </button>
 
