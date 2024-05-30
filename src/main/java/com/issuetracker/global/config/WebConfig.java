@@ -42,6 +42,6 @@ public class WebConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new AuthTokenInterceptor(jwtTokenProvider, memberRepository))
                 .addPathPatterns("/**")
-                .excludePathPatterns("/api/v1/auth/**");
+                .excludePathPatterns("/api/v1/auth/**", "/swagger-ui/**", "/swagger-resources/**", "/v2/api-docs/**", "/v3/api-docs/**");
     }
 }
