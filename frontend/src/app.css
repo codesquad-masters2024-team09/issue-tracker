@@ -204,7 +204,7 @@
   }
 
   .profile-popup-container {
-    @apply absolute z-[99] top-[70px] right-[60px] w-[150px] bg-white shadow-md rounded-xl animate-slidein
+    @apply absolute z-[99] top-[70px] right-[60px] max-w-[300px] min-w-[150px] bg-white shadow-md rounded-xl animate-slidein
   }
 
   .profile-popup-header {
