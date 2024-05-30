@@ -1,5 +1,6 @@
-import {writable} from "svelte/store";
-import {delApi, getApi, patchApi, postApi, putApi} from "../service/api.js";
+import {get, writable} from "svelte/store";
+import {postApi, getApi, patchApi, delApi, putApi} from "../service/api.js";
+import {auth} from "./auth.js";
 import {urlPrefix} from "../utils/constants.js";
 
 function setMilestones() {
@@ -15,6 +16,7 @@ function setMilestones() {
         try {
             const options = {
                 path: urlPrefix + '/milestones',
+                access_token: get(auth).accessToken,
             }
 
             const response = await getApi(options)
@@ -44,7 +46,8 @@ function setMilestones() {
                     id: milestone.id,
                     dueDate: milestone.dueDate,
                     description: milestone.description,
-                }
+                },
+                access_token: get(auth).accessToken,
             }
 
             await postApi(options)
@@ -103,7 +106,8 @@ function setMilestones() {
         try {
             const options = {
                 path: urlPrefix + `/milestones/${milestoneId}`,
-                data: {...changes}
+                data: {...changes},
+                access_token: get(auth).accessToken,
             }
 
             const editedMilestone = await putApi(options);
@@ -128,7 +132,8 @@ function setMilestones() {
     const deleteMilestone = async (id) => {
         try {
             const options = {
-                path: urlPrefix + `/milestones/${id}`
+                path: urlPrefix + `/milestones/${id}`,
+                access_token: get(auth).accessToken,
             }
 
             await delApi(options)
@@ -155,28 +160,5 @@ function setMilestones() {
         patchMilestone,
     }
 }
-
-// function getStatistic() {
-//     const getMilestoneCount = async () => {
-//
-//         try {
-//             const options = {
-//                 path: urlPrefix + '/milestones/count',
-//             }
-//
-//             const response = await getApi(options)
-//
-//             console.log('fetchCount:', response.countResult)
-//
-//             return response.countResult
-//         } catch (err) {
-//             throw err
-//         }
-//     }
-//
-//     return {
-//         getMilestoneCount,
-//     }
-// }
 
 export const milestones = setMilestones()

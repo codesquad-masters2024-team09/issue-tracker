@@ -1,6 +1,7 @@
 package com.issuetracker.domain.issue;
 
 import com.issuetracker.domain.issue.response.IssueCount;
+import com.issuetracker.domain.issue.response.IssueDetails;
 import com.issuetracker.domain.issue.response.SimpleIssue;
 import org.apache.ibatis.annotations.Mapper;
 

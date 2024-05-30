@@ -35,6 +35,8 @@ logging:
 pwd:
   encrypt:
     secret-key:
-
 jwt:
   secret-key:
+
+cors:
+  originUrl: http://localhost:5173
