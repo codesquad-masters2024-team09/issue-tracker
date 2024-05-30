@@ -22,6 +22,7 @@
         comments: [],
         assignees: [],
         labels: [],
+        open: true,
         milestoneId: '',
         milestoneProgress: '',
         createdAt: '',
@@ -114,7 +115,13 @@
             issues.closeEditModeIssueContent()
             return
         }
-        issues.openEditModeIssueContent(issueId.toString())
+    }
+
+    $: issueState = issueData.open;
+
+    const onUpdateIssueState = (issueId) => {
+        issueState = !issueState
+        issues.updateIssueState(issueId.toString(), issueState);
     }
 
     const onDeleteIssue = () => {
@@ -166,11 +173,11 @@
                             제목 편집
                         </button>
                         <button type="button" id="close-issue" class="edit-title-btn blue-border"
-                                on:click={() => onToggleEditTitlePopup(issueId)}>
-                    <span class="text-[12px] text-center pr-1">
-                        <i class="bi bi-x-lg"></i>
-                    </span>
-                            이슈 닫기
+                                on:click={() => onUpdateIssueState(issueId)}>
+                            <span class="text-[12px] text-center pr-1">
+                                <i class="bi bi-x-lg"></i>
+                            </span>
+                            {issueState ? "이슈 닫기" : "이슈 열기"}
                         </button>
                     {/if}
                 </div>
@@ -185,12 +192,21 @@
         {/if}
 
         <div class="flex gap-1 m-4 justify-start items-center translate-y-3">
-            <div class="flex m-1 p-1 justify-center items-center bg-blue-500 text-white text-[11px] w-[80px] min-w-[80px] rounded-2xl">
-                <span class="pr-[3px]">
-                    <i class="bi bi-exclamation-circle"></i>
+            {#if issueState}
+                <div class="flex m-1 p-1 justify-center items-center bg-blue-500 text-white text-[11px] w-[80px] min-w-[80px] rounded-2xl">
+                    <span class="pr-[3px]">
+                        <i class="bi bi-exclamation-circle"></i>
+                    </span>
                     열린 이슈
-                </span>
-            </div>
+                </div>
+            {:else}
+                <div class="flex m-1 p-1 justify-center items-center bg-purple-700 text-white text-[11px] w-[80px] min-w-[80px] rounded-2xl">
+                    <span class="pr-[3px]">
+                        <i class="bi bi-exclamation-circle"></i>
+                    </span>
+                    닫힌 이슈
+                </div>
+            {/if}
             <p class="inline-block whitespace-nowrap">이 이슈는 {issueData.createdAt}에 {issueData.memberId}에 의해 열렸습니다</p>
             <!-- 이슈 삭제 버튼 -->
             {#if issueData.memberId === get(auth).memberId}

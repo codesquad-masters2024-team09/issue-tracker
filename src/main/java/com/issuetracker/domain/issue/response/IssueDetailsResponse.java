@@ -30,6 +30,7 @@ public class IssueDetailsResponse {
 
     @Builder.Default
     private List<LabelResponse> labels = new ArrayList<>();
+    private boolean isOpen;
     private String milestoneId;
     private Integer milestoneProgress;
     private String createdAt;
@@ -40,6 +41,7 @@ public class IssueDetailsResponse {
                 .memberId(issueDetails.getMemberId())
                 .title(issueDetails.getTitle())
                 .content(issueDetails.getContent())
+                .isOpen(issueDetails.isOpen())
                 .comments(issueDetails.getComments().stream().map(CommentResponse::of).toList())
                 .assignees(issueDetails.getAssignees().stream().map(MemberResponse::of).toList())
                 .labels(issueDetails.getLabels().stream().map(LabelResponse::of).toList())

@@ -90,6 +90,19 @@ function setIssues() {
         }
     }
 
+    const updateIssueState = async (issueId, state) => {
+        try {
+            const options = {
+                path: `${urlPrefix}/issues/status?issueId=${issueId}&isOpen=${state}`,
+                access_token: get(auth).accessToken,
+            }
+
+            await patchApi(options)
+        } catch(err) {
+            throw err;
+        }
+    }
+
     const updateIssue = async (issueId, form) => {
 
         try {
@@ -189,6 +202,7 @@ function setIssues() {
         updateIssue,
         deleteIssue,
         resetIssues,
+        updateIssueState,
         openEditModeIssueTitle,
         openEditModeIssueContent,
         closeEditModeIssueTitle,
