@@ -1,14 +1,9 @@
 package com.issuetracker.domain.issue;
 
-import com.issuetracker.domain.issue.request.IssueCreateRequest;
-import com.issuetracker.domain.issue.request.IssueSearchCondition;
-import com.issuetracker.domain.issue.request.LabelAssignRequest;
-import com.issuetracker.domain.issue.request.MilestoneAssignRequest;
-import com.issuetracker.domain.issue.request.IssueUpdateRequest;
+import com.issuetracker.domain.issue.request.*;
 import com.issuetracker.domain.issue.response.IssueDetailsResponse;
 import com.issuetracker.domain.issue.response.IssueListResponse;
 import com.issuetracker.domain.issue.response.IssueStatusResponse;
-import com.issuetracker.domain.issue.request.*;
 import jakarta.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +24,20 @@ public class IssueController {
     public ResponseEntity<?> create(@Valid @RequestBody IssueCreateRequest request) {
         return ResponseEntity
                 .ok(Collections.singletonMap("issueId", issueService.create(request.toEntity())));
+    }
+
+    @PostMapping("/{issueId}/assignee")
+    public ResponseEntity<Void> addAssignee(@PathVariable("issueId") Long issueId,
+                                            @Valid @RequestBody MemberAssignRequest memberAssignRequest) {
+        issueService.addAssignee(issueId, memberAssignRequest.getMemberId());
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{issueId}/assignee")
+    public ResponseEntity<Void> deleteAssignee(@PathVariable("issueId") Long issueId,
+                                               @Valid @RequestBody MemberAssignRequest memberAssignRequest) {
+        issueService.deleteAssignee(issueId, memberAssignRequest.getMemberId());
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/{issueId}/label")

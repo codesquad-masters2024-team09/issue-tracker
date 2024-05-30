@@ -13,6 +13,12 @@
         <result property="modifiedAt" column="COMMENT_MODIFIED_AT" />
     </resultMap>
 
+    <!-- SimpleMemberResultMap -->
+    <resultMap id="SimpleMemberResultMap" type="com.issuetracker.domain.member.response.SimpleMember">
+        <id property="memberId" column="ASSIGNEE_ID" />
+        <result property="profileImgUrl" column="ASSIGNEE_IMG_URL" />
+    </resultMap>
+
     <!-- LabelResultMap -->
     <resultMap id="LabelResultMap" type="com.issuetracker.domain.label.Label">
         <id property="id" column="LABEL_ID" />
@@ -22,7 +28,8 @@
     </resultMap>
 
     <!-- IssueDetailsResultMap -->
-    <resultMap id="IssueDetailsResultMap" type="com.issuetracker.domain.issue.IssueDetails">
+    <!-- TODO: 이슈 작성자, 댓글 작성자 이미지도 같이 가져오기 -->
+    <resultMap id="IssueDetailsResultMap" type="com.issuetracker.domain.issue.response.IssueDetails">
         <id property="id" column="ISSUE_ID" />
         <result property="memberId" column="ISSUE_MEMBER_ID" />
         <result property="title" column="TITLE" />
@@ -32,6 +39,7 @@
         <result property="milestoneProgress" column="MILESTONE_PROGRESS" />
         <result property="createdAt" column="ISSUE_CREATED_AT" />
         <result property="modifiedAt" column="ISSUE_MODIFIED_AT" />
+        <collection property="assignees" ofType="com.issuetracker.domain.member.response.SimpleMember" resultMap="SimpleMemberResultMap" javaType="java.util.Set" />
         <collection property="comments" ofType="com.issuetracker.domain.comment.Comment" resultMap="CommentResultMap" javaType="java.util.List" />
         <collection property="labels" ofType="com.issuetracker.domain.label.Label" resultMap="LabelResultMap" javaType="java.util.Set" />
     </resultMap>
@@ -62,6 +70,8 @@
             C.CONTENT AS COMMENT_CONTENT,
             C.CREATED_AT AS COMMENT_CREATED_AT,
             C.MODIFIED_AT AS COMMENT_MODIFIED_AT,
+            IM.MEMBER_ID AS ASSIGNEE_ID,
+            IM.IMG_URL AS ASSIGNEE_IMG_URL,
             L.LABEL_ID,
             L.DESCRIPTION,
             L.TEXT_COLOR,
@@ -69,6 +79,8 @@
             MP.PROGRESS AS MILESTONE_PROGRESS
         FROM ISSUE I
             LEFT JOIN COMMENT C ON I.ISSUE_ID = C.ISSUE_ID
+            LEFT JOIN ASSIGNEE A ON I.ISSUE_ID = A.ISSUE_ID
+            LEFT JOIN MEMBER IM ON A.MEMBER_ID = IM.MEMBER_ID
             LEFT JOIN ISSUE_LABEL IL ON I.ISSUE_ID = IL.ISSUE_ID
             LEFT JOIN LABEL L ON IL.LABEL_ID = L.LABEL_ID
             LEFT JOIN MILESTONE_PROGRESS MP ON I.MILESTONE_ID = MP.MILESTONE_ID

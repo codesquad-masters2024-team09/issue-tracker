@@ -4,6 +4,7 @@
     import LabelList from "../../components/label/LabelList.svelte";
     import LabelAddForm from "../../components/label/LabelAddForm.svelte";
     import LabelMilestoneNavTab from "../../components/common/LabelMilestoneNavtab.svelte";
+    import Header from "../../components/common/Header.svelte";
 
     onMount(() => {
         labels.fetchLabels();
@@ -14,6 +15,7 @@
     }
 </script>
 
+<Header />
 <div class="flex my-[3rem] justify-between items-center w-full min-w-[1020px]">
     <LabelMilestoneNavTab />
     <button on:click={toggleAddMode} class="btn issue create max-h-[44px] h-lvh" class:addMode={$labels.addMode}>

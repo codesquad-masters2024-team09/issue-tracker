@@ -4,11 +4,12 @@
     import { tags } from "../../stores/tags";
     import {onDestroy, onMount} from "svelte";
     import SideBar from "../../components/common/SideBar.svelte";
+    import Header from "../../components/common/Header.svelte";
 
     const issueFormValues = {
-        memberId: 'testUser',
         title: '',
         content: '',
+        assignees: [],
         labels: [],
         milestoneId: '',
     }
@@ -45,6 +46,7 @@
 
 </script>
 
+<Header />
 <div class="flex flex-col w-full animate-slidein">
 
     <div id="header-area" class="text-gray-800 text-4xl">

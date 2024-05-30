@@ -25,7 +25,7 @@ public class JwtTokenProvider {
     public static final long DAY = 24 * HOUR;
     public static final long MONTH = 30 * DAY;
 
-    public static final long ACCESS_TOKEN_EXP_TIME = 12 * HOUR;
+    public static final long ACCESS_TOKEN_EXP_TIME = 30 * MINUTE;
     public static final long REFRESH_TOKEN_EXP_TIME = 3 * MONTH;
 
     public static final long TOKEN_REFRESH_DURATION = 30;
