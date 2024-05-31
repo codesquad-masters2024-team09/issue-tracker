@@ -108,7 +108,7 @@
                     <span>{milestone.progress}%</span>
                     <div class="flex gap-1">
                         <span>열린 이슈 {milestone.openIssues}</span>
-                        <span>닫힌 이슈 {milestone.closedIssues}</span>
+                        <span>닫힌 이슈 {milestone.closeIssues}</span>
                     </div>
                 </div>
             </div>
