@@ -23,7 +23,7 @@ public class MilestoneResponse {
         Integer totalIssues = milestone.getTotalIssues();
         Integer openIssues = milestone.getOpenIssues();
         int closeIssues = totalIssues - openIssues;
-        int progress = closeIssues > 0 ? closeIssues / totalIssues * 100 : 0;
+        int progress = closeIssues > 0 ? (int) (((double) closeIssues / totalIssues) * 100) : 0;
 
         return MilestoneResponse.builder()
                 .id(milestone.getId())
