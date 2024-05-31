@@ -60,6 +60,7 @@
 
     /* 업데이트 된 이슈 제목을 IssueEditTitleForm 컴포넌트로부터 받아 갱신 */
     function updateIssueTitle(newTitle) {
+        issueData.title = newTitle
         defaultTitle = newTitle;
     }
 
@@ -79,6 +80,7 @@
 
     /* 업데이트 된 이슈 본문 내용을 IssueEditContentForm 컴포넌트로부터 받아 갱신 */
     function updateIssueContent(newContent) {
+        issueData.content = newContent
         defaultContent = newContent;
     }
 
@@ -131,6 +133,7 @@
     $: issueState = issueData.open;
 
     const onUpdateIssueState = (issueId) => {
+        issueData.open = !issueData.open
         issueState = !issueState
         issues.updateIssueState(issueId.toString(), issueState);
     }

@@ -154,35 +154,43 @@ function setIssues() {
     }
 
     const updateIssue = async (issueId, form) => {
-
         try {
-
             const updateData = {
                 title: form.title !== null ? form.title : null,
                 content: form.content !== null ? form.content : null
-            }
+            };
 
             const options = {
                 path: `${urlPrefix}/issues/${issueId}`,
                 data: updateData,
                 access_token: get(auth).accessToken,
-            }
+            };
 
-            await patchApi(options)
+            await patchApi(options);
 
-            if (form.title) {
-                closeEditModeIssueTitle()
-            }
+            // 상태 업데이트
+            update(data => {
+                data.issueList = data.issueList.map(issue => {
+                    if (issue.id === issueId) {
+                        return {
+                            ...issue,
+                            title: form.title !== null ? form.title : issue.title,
+                            content: form.content !== null ? form.content : issue.content,
+                        };
+                    }
+                    return issue;
+                });
 
-            if (form.content) {
-                closeEditModeIssueContent()
-            }
+                // 편집 모드 종료
+                data.editModeTitle = form.title ? '' : data.editModeTitle;
+                data.editModeContent = form.content ? '' : data.editModeContent;
+                return data;
+            });
 
-            return true
-        }
-        catch(error) {
-            alert('수정 중 오류가 발생했습니다. 다시 시도해 주세요.')
-            throw error
+            return true;
+        } catch (error) {
+            alert('수정 중 오류가 발생했습니다. 다시 시도해 주세요.');
+            throw error;
         }
     }
 
